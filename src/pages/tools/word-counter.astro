@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Free Word Counter — ToolPulse" description="Count words, characters, sentences, paragraphs, and estimated reading time instantly.">
+	<section class="page-container py-8 sm:py-10">
+		<nav class="mb-4 text-sm text-slate-500" aria-label="Breadcrumb">
+			<a href="/" class="hover:text-blue-600">Home</a>
+			<span class="mx-2" aria-hidden="true">/</span>
+			<span class="text-slate-700">Word Counter</span>
+		</nav>
+
+		<div class="mb-6">
+			<h1 class="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">Word Counter</h1>
+			<p class="mt-2 max-w-2xl text-slate-600">Paste or type your text below to get an instant, private analysis.</p>
+		</div>
+
+		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-6" aria-label="Text statistics">
+			<div class="stat-card"><span>Words</span><strong id="word-count">0</strong></div>
+			<div class="stat-card"><span>Characters</span><strong id="character-count">0</strong></div>
+			<div class="stat-card"><span>No spaces</span><strong id="no-space-count">0</strong></div>
+			<div class="stat-card"><span>Sentences</span><strong id="sentence-count">0</strong></div>
+			<div class="stat-card"><span>Paragraphs</span><strong id="paragraph-count">0</strong></div>
+			<div class="stat-card"><span>Reading time</span><strong id="reading-time">0 min</strong></div>
+		</div>
+
+		<div class="mt-5 rounded-2xl border border-slate-200 bg-white shadow-sm">
+			<div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
+				<label for="text-input" class="text-sm font-semibold text-slate-700">Your text</label>
+				<div class="flex gap-2">
+					<button id="clear-button" type="button" class="button-secondary">Clear</button>
+					<button id="copy-button" type="button" class="button-primary">
+						<svg class="size-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+							<rect x="8" y="8" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/>
+							<path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="2"/>
+						</svg>
+						<span id="copy-label">Copy</span>
+					</button>
+				</div>
+			</div>
+			<textarea
+				id="text-input"
+				class="block min-h-[360px] w-full resize-y rounded-b-2xl p-5 text-base leading-7 text-slate-800 outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-inset focus:ring-blue-100"
+				placeholder="Start typing or paste your text here..."
+				autofocus
+			></textarea>
+			<p id="copy-status" class="sr-only" aria-live="polite"></p>
+		</div>
+
+		<div class="mt-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900">
+			<strong>Private by design:</strong> your text is processed entirely in your browser and is never uploaded.
+		</div>
+	</section>
+
+	<script>
+		const input = document.querySelector<HTMLTextAreaElement>('#text-input');
+		const clearButton = document.querySelector<HTMLButtonElement>('#clear-button');
+		const copyButton = document.querySelector<HTMLButtonElement>('#copy-button');
+		const copyLabel = document.querySelector<HTMLElement>('#copy-label');
+		const copyStatus = document.querySelector<HTMLElement>('#copy-status');
+
+		const outputs = {
+			words: document.querySelector<HTMLElement>('#word-count'),
+			characters: document.querySelector<HTMLElement>('#character-count'),
+			noSpaces: document.querySelector<HTMLElement>('#no-space-count'),
+			sentences: document.querySelector<HTMLElement>('#sentence-count'),
+			paragraphs: document.querySelector<HTMLElement>('#paragraph-count'),
+			readingTime: document.querySelector<HTMLElement>('#reading-time'),
+		};
+
+		function updateStats() {
+			const text = input?.value ?? '';
+			const trimmed = text.trim();
+			const words = trimmed ? trimmed.split(/\s+/u).length : 0;
+			const sentences = trimmed ? (trimmed.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/gu) ?? []).filter((item) => item.trim()).length : 0;
+			const paragraphs = trimmed ? text.split(/\n\s*\n/u).filter((item) => item.trim()).length : 0;
+
+			if (outputs.words) outputs.words.textContent = words.toLocaleString();
+			if (outputs.characters) outputs.characters.textContent = text.length.toLocaleString();
+			if (outputs.noSpaces) outputs.noSpaces.textContent = text.replace(/\s/gu, '').length.toLocaleString();
+			if (outputs.sentences) outputs.sentences.textContent = sentences.toLocaleString();
+			if (outputs.paragraphs) outputs.paragraphs.textContent = paragraphs.toLocaleString();
+			if (outputs.readingTime) outputs.readingTime.textContent = words === 0 ? '0 min' : `${Math.max(1, Math.ceil(words / 200))} min`;
+		}
+
+		input?.addEventListener('input', updateStats);
+		clearButton?.addEventListener('click', () => {
+			if (!input) return;
+			input.value = '';
+			updateStats();
+			input.focus();
+		});
+
+		copyButton?.addEventListener('click', async () => {
+			if (!input || !input.value) return;
+			try {
+				await navigator.clipboard.writeText(input.value);
+			} catch {
+				input.select();
+				document.execCommand('copy');
+				input.setSelectionRange(input.value.length, input.value.length);
+			}
+			if (copyLabel) copyLabel.textContent = 'Copied!';
+			if (copyStatus) copyStatus.textContent = 'Text copied to clipboard.';
+			window.setTimeout(() => {
+				if (copyLabel) copyLabel.textContent = 'Copy';
+			}, 1600);
+		});
+
+		updateStats();
+	</script>
+</BaseLayout>

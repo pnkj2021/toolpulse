@@ -1,0 +1,37 @@
+---
+interface Props {
+	name: string;
+	description: string;
+	href?: string;
+	icon: string;
+	available?: boolean;
+	category: string;
+}
+
+const { name, description, href = '#', icon, available = false, category } = Astro.props;
+---
+
+<article
+	class="tool-card group relative flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md"
+	data-tool-card
+	data-search={`${name} ${description} ${category}`.toLowerCase()}
+>
+	<div class="mb-4 flex items-start justify-between gap-3">
+		<span class="grid size-11 place-items-center rounded-xl bg-blue-50 text-xl" aria-hidden="true">{icon}</span>
+		{available ? (
+			<span class="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">Available</span>
+		) : (
+			<span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">Coming Soon</span>
+		)}
+	</div>
+	<h3 class="text-base font-bold text-slate-900">{name}</h3>
+	<p class="mt-1.5 flex-1 text-sm leading-6 text-slate-600">{description}</p>
+	{available ? (
+		<a href={href} class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700">
+			Open tool
+			<span aria-hidden="true">&rarr;</span>
+		</a>
+	) : (
+		<span class="mt-4 text-sm font-medium text-slate-400">In development</span>
+	)}
+</article>
