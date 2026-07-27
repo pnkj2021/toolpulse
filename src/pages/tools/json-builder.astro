@@ -1,0 +1,218 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'Visual JSON Builder Online — ToolPulse';
+const pageDescription = 'Create valid JSON visually with nested objects, arrays, data types, live preview, import, copy, and download tools. Everything runs in your browser.';
+const faqs = [
+	{ question: 'What is a JSON Builder?', answer: 'A JSON Builder is a visual editor that creates JSON syntax for you. Add properties or array items, choose their data types, and enter values while the tool generates the JSON.' },
+	{ question: 'Is the generated JSON valid?', answer: 'Yes, whenever the builder shows a valid status. Empty keys, duplicate keys, and invalid numbers are clearly flagged and must be fixed before copying or downloading.' },
+	{ question: 'Is my data uploaded to a server?', answer: 'No. Building, importing, previewing, copying, and downloading all happen locally in your browser.' },
+	{ question: 'Can I create nested JSON?', answer: 'Yes. Object properties and array items can contain additional objects or arrays, allowing deeply nested structures up to the tool’s browser-safety limit.' },
+	{ question: 'Can I import existing JSON?', answer: 'Yes. Use Import JSON, paste a valid object or array, and confirm the import. Existing builder data is replaced only after the pasted JSON parses successfully.' },
+	{ question: 'What is the difference between an object and an array?', answer: 'An object stores named key-value properties and uses braces. An array stores ordered items and uses brackets. Both can contain any JSON data type.' },
+	{ question: 'Can JSON contain duplicate keys?', answer: 'The JSON specification expects object property names to be unique. This builder warns about duplicate keys in the same object and disables generated output until they are fixed.' },
+	{ question: 'How do I download the generated JSON?', answer: 'Once the builder is valid, select Download JSON. Your browser creates a local file named toolpulse-data.json without contacting a server.' },
+];
+const appSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebApplication',
+	name: 'ToolPulse Visual JSON Builder',
+	applicationCategory: 'DeveloperApplication',
+	operatingSystem: 'Any',
+	description: pageDescription,
+	...(Astro.site ? { url: new URL('/tools/json-builder', Astro.site).href } : {}),
+	offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+const faqSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faqs.map((faq) => ({
+		'@type': 'Question',
+		name: faq.question,
+		acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+	})),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonicalPath="/tools/json-builder">
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify(appSchema)} />
+		<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+	</Fragment>
+
+	<section class="page-container py-8 sm:py-10">
+		<nav class="mb-4 text-sm text-slate-500" aria-label="Breadcrumb">
+			<a href="/" class="hover:text-blue-600">Home</a><span class="mx-2" aria-hidden="true">/</span><span class="text-slate-700">JSON Builder</span>
+		</nav>
+		<div class="mb-6">
+			<p class="eyebrow">Developer tool</p>
+			<h1 class="mt-1 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">Visual JSON Builder</h1>
+			<p class="mt-2 max-w-3xl text-slate-600">Create valid JSON through a visual interface—no manual braces, commas, or quoting required.</p>
+		</div>
+
+		<div class="mb-4 flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+			<label for="root-type" class="text-sm font-medium text-slate-600">Root</label>
+			<select id="root-type" class="builder-toolbar-select" aria-label="Root JSON type">
+				<option value="object">Object</option>
+				<option value="array">Array</option>
+			</select>
+			<button id="add-root" type="button" class="button-primary">Add property</button>
+			<button id="load-builder-sample" type="button" class="button-secondary">Load sample</button>
+			<button id="open-import" type="button" class="button-secondary">Import JSON</button>
+			<button id="clear-builder" type="button" class="button-danger">Clear</button>
+		</div>
+
+		<div id="builder-status" class="mb-4 rounded-xl border px-4 py-3 text-sm" role="status" aria-live="polite"></div>
+
+		<div class="grid items-start gap-4 lg:grid-cols-2">
+			<section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" aria-labelledby="builder-heading">
+				<div class="border-b border-slate-200 px-4 py-3">
+					<h2 id="builder-heading" class="text-sm font-semibold text-slate-800">Visual JSON builder</h2>
+				</div>
+				<div id="builder-root" class="min-h-64 p-4"></div>
+			</section>
+
+			<section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:sticky lg:top-20" aria-labelledby="preview-heading">
+				<div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-2.5">
+					<h2 id="preview-heading" class="text-sm font-semibold text-slate-800">Live JSON preview</h2>
+					<div class="flex flex-wrap items-center gap-2">
+						<label for="builder-indent" class="sr-only">Preview indentation</label>
+						<select id="builder-indent" class="builder-toolbar-select" aria-label="Preview indentation">
+							<option value="2">2 spaces</option>
+							<option value="4">4 spaces</option>
+							<option value="tab">Tab</option>
+						</select>
+						<button id="format-preview" type="button" class="button-secondary">Format</button>
+						<button id="minify-preview" type="button" class="button-secondary">Minify</button>
+					</div>
+				</div>
+				<textarea id="json-preview" class="block min-h-[390px] w-full resize-y bg-slate-50 p-4 font-mono text-sm leading-6 text-slate-800 outline-none focus:ring-4 focus:ring-inset focus:ring-blue-100" readonly aria-label="Generated JSON preview"></textarea>
+				<div class="flex flex-wrap justify-end gap-2 border-t border-slate-200 p-3">
+					<button id="copy-json" type="button" class="button-secondary">Copy JSON</button>
+					<button id="download-json" type="button" class="button-primary">Download JSON</button>
+				</div>
+			</section>
+		</div>
+
+		<div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-6" aria-label="JSON builder statistics">
+			<div class="stat-card"><span>Properties</span><strong id="builder-properties">0</strong></div>
+			<div class="stat-card"><span>Array items</span><strong id="builder-items">0</strong></div>
+			<div class="stat-card"><span>Objects</span><strong id="builder-objects">1</strong></div>
+			<div class="stat-card"><span>Arrays</span><strong id="builder-arrays">0</strong></div>
+			<div class="stat-card"><span>Max depth</span><strong id="builder-depth">1</strong></div>
+			<div class="stat-card"><span>JSON characters</span><strong id="builder-characters">2</strong></div>
+		</div>
+
+		<div class="mt-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900">
+			<strong>Private by design:</strong> your builder data, imports, and downloads remain entirely in your browser.
+		</div>
+
+		<div class="mt-10 grid gap-6 lg:grid-cols-[2fr_1fr]">
+			<div class="space-y-6">
+				<article class="content-card"><h2>What is a JSON Builder?</h2><p>A JSON Builder provides controls for adding keys, selecting data types, entering values, and nesting structures. It generates the exact JSON syntax in real time, helping both beginners and developers avoid manual syntax errors.</p></article>
+				<article class="content-card"><h2>How to create JSON without coding</h2><p>Choose an object or array root, add a property or item, then select its type and value. Use Object or Array when you need a nested structure. The preview updates after every change and becomes available to copy or download when all entries are valid.</p></article>
+				<article class="content-card"><h2>JSON objects versus arrays</h2><p>Objects organize values under unique text keys, which works well for records such as a user or product. Arrays hold an ordered sequence of values, making them useful for lists. Real JSON documents commonly combine both structures.</p></article>
+				<article class="content-card"><h2>JSON data types explained</h2><p>JSON supports strings, numbers, booleans, null, objects, and arrays. Strings contain text, numbers contain finite numeric values, booleans are true or false, and null represents an intentional absence of data.</p></article>
+				<article class="content-card"><h2>How nested JSON works</h2><p>An object property or array item can itself contain another object or array. Nesting models relationships such as an order containing customer details and a list of products. Visual indentation shows each structure’s depth.</p></article>
+				<article class="content-card"><h2>Common JSON structure mistakes</h2><p>Frequent problems include empty or duplicate object keys, invalid numbers, choosing the wrong root structure, and excessive nesting. The builder detects these issues before allowing invalid JSON to be copied or downloaded.</p></article>
+				<article class="content-card"><h2>Privacy and browser-based processing</h2><p>ToolPulse builds and parses data using JavaScript in your browser. Imports are not uploaded, and downloaded files are generated locally. Continue to follow your organization’s policies when working with confidential information.</p></article>
+			</div>
+			<div class="space-y-6">
+				<aside class="content-card">
+					<h2>Frequently asked questions</h2>
+					<div class="mt-2 divide-y divide-slate-200">
+						{faqs.map((faq, index) => (
+							<details class="group py-4" open={index === 0}>
+								<summary class="flex cursor-pointer list-none items-start justify-between gap-3 text-sm font-semibold text-slate-800">{faq.question}<span class="text-blue-600 transition group-open:rotate-45" aria-hidden="true">+</span></summary>
+								<p class="mt-2 text-sm leading-6 text-slate-600">{faq.answer}</p>
+							</details>
+						))}
+					</div>
+				</aside>
+				<aside class="content-card">
+					<h2>Related tools</h2>
+					<div class="mt-3 space-y-2 text-sm">
+						<a href="/tools/json-formatter" class="related-link"><span>JSON Formatter</span><span>&rarr;</span></a>
+						<a href="/tools/word-counter" class="related-link"><span>Word Counter</span><span>&rarr;</span></a>
+						<a href="/tools/character-counter" class="related-link"><span>Character Counter</span><span>&rarr;</span></a>
+						<div class="related-link text-slate-400"><span>Base64 Encoder</span><small>Coming soon</small></div>
+						<div class="related-link text-slate-400"><span>JWT Decoder</span><small>Coming soon</small></div>
+					</div>
+				</aside>
+			</div>
+		</div>
+	</section>
+
+	<dialog id="import-dialog" class="m-auto w-[min(92vw,42rem)] rounded-2xl border border-slate-200 p-0 shadow-2xl backdrop:bg-slate-950/50" aria-labelledby="import-title">
+		<div class="p-5">
+			<h2 id="import-title" class="text-xl font-bold text-slate-950">Import JSON</h2>
+			<p class="mt-1 text-sm text-slate-600">Paste a JSON object or array. Current data changes only after a valid import.</p>
+			<textarea id="import-json" class="mt-4 min-h-56 w-full rounded-xl border border-slate-300 p-3 font-mono text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" placeholder='{"name":"ToolPulse"}' aria-label="JSON to import"></textarea>
+			<p id="import-error" class="mt-2 min-h-5 text-sm text-red-700" role="alert"></p>
+			<div class="mt-4 flex justify-end gap-2">
+				<button id="cancel-import" type="button" class="button-secondary">Cancel</button>
+				<button id="confirm-import" type="button" class="button-primary">Import JSON</button>
+			</div>
+		</div>
+	</dialog>
+
+	<script>
+		import '../../scripts/json-builder';
+	</script>
+</BaseLayout>
+
+<style>
+	.builder-toolbar-select {
+		border: 1px solid rgb(203 213 225);
+		border-radius: 0.5rem;
+		background: white;
+		padding: 0.5rem 0.75rem;
+		font-size: 0.875rem;
+		outline: none;
+	}
+	.builder-toolbar-select:focus {
+		border-color: rgb(59 130 246);
+		box-shadow: 0 0 0 4px rgb(219 234 254);
+	}
+	.button-danger {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid rgb(254 202 202);
+		border-radius: 0.5rem;
+		background: white;
+		padding: 0.5rem 0.875rem;
+		color: rgb(185 28 28);
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+	.button-danger:hover { background: rgb(254 242 242); }
+	.button-danger:focus { outline: none; box-shadow: 0 0 0 4px rgb(254 226 226); }
+	:global(button:disabled) { cursor: not-allowed; opacity: 0.45; }
+	:global(.builder-container) {
+		border-left: 3px solid rgb(191 219 254);
+		border-radius: 0.75rem;
+		background: rgb(248 250 252);
+		padding: 0.75rem;
+	}
+	:global(.builder-container .builder-container) { margin-top: 0.5rem; border-left-color: rgb(147 197 253); }
+	:global(.builder-container-heading) { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; color: rgb(71 85 105); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+	:global(.builder-children) { margin-top: 0.625rem; display: grid; gap: 0.625rem; }
+	:global(.builder-row) { border: 1px solid rgb(226 232 240); border-radius: 0.75rem; background: white; padding: 0.625rem; }
+	:global(.builder-row-header) { display: grid; grid-template-columns: minmax(7rem, 1fr) 7rem auto; align-items: center; gap: 0.5rem; }
+	:global(.builder-key), :global(.builder-type), :global(.builder-input) { width: 100%; border: 1px solid rgb(203 213 225); border-radius: 0.5rem; background: white; padding: 0.45rem 0.6rem; font-size: 0.8125rem; outline: none; }
+	:global(.builder-key:focus), :global(.builder-type:focus), :global(.builder-input:focus) { border-color: rgb(59 130 246); box-shadow: 0 0 0 3px rgb(219 234 254); }
+	:global(.builder-value) { margin-top: 0.5rem; }
+	:global(.builder-row-actions) { display: flex; justify-content: flex-end; gap: 0.25rem; }
+	:global(.builder-action) { border: 1px solid rgb(203 213 225); border-radius: 0.4rem; background: white; padding: 0.35rem 0.5rem; color: rgb(71 85 105); font-size: 0.7rem; font-weight: 600; }
+	:global(.builder-action:hover) { background: rgb(241 245 249); }
+	:global(.builder-action:focus) { outline: none; box-shadow: 0 0 0 3px rgb(219 234 254); }
+	:global(.builder-danger) { border-color: rgb(254 202 202); color: rgb(185 28 28); }
+	:global(.builder-danger:hover) { background: rgb(254 242 242); }
+	:global(.builder-index), :global(.builder-null) { color: rgb(100 116 139); font-family: ui-monospace, monospace; font-size: 0.8125rem; }
+	:global(.builder-empty) { padding: 0.5rem; color: rgb(148 163 184); font-size: 0.8125rem; text-align: center; }
+	@media (max-width: 640px) {
+		:global(.builder-row-header) { grid-template-columns: 1fr 6.5rem; }
+		:global(.builder-row-actions) { grid-column: 1 / -1; justify-content: flex-start; flex-wrap: wrap; }
+	}
+</style>
