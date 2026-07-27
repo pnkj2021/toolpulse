@@ -70,4 +70,33 @@
 	.button-secondary {
 		@apply border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus:ring-slate-100;
 	}
+
+	.content-card {
+		@apply rounded-2xl border border-slate-200 bg-white p-6 shadow-sm;
+	}
+
+	.content-card h2 {
+		@apply text-xl font-bold text-slate-950;
+	}
+
+	.content-card > p,
+	.content-card > ol {
+		@apply mt-3 text-sm leading-7 text-slate-600;
+	}
+
+	.content-card ol {
+		@apply space-y-2;
+	}
+
+	.content-card ol strong {
+		@apply mr-2 text-blue-600;
+	}
+
+	.related-link {
+		@apply flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 font-medium;
+	}
+
+	a.related-link {
+		@apply text-slate-700 hover:bg-blue-50 hover:text-blue-700;
+	}
 }

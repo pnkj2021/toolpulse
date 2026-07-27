@@ -6,12 +6,20 @@ import '../styles/global.css';
 interface Props {
 	title: string;
 	description?: string;
+	canonicalPath?: string;
+	ogType?: 'website' | 'article';
 }
 
 const {
 	title,
 	description = 'Free, fast, and simple online tools for everyday tasks.',
+	canonicalPath,
+	ogType = 'website',
 } = Astro.props;
+
+const canonicalUrl = canonicalPath && Astro.site
+	? new URL(canonicalPath, Astro.site).href
+	: undefined;
 ---
 
 <!doctype html>
@@ -20,10 +28,17 @@ const {
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="description" content={description} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content={ogType} />
+		<meta property="og:site_name" content="ToolPulse" />
+		{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+		{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 		<meta name="generator" content={Astro.generator} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<title>{title}</title>
+		<slot name="head" />
 	</head>
 	<body class="flex min-h-screen flex-col bg-slate-50 text-slate-900 antialiased">
 		<Header />

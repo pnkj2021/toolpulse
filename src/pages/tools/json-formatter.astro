@@ -1,0 +1,384 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'Free JSON Formatter and Validator — ToolPulse';
+const pageDescription = 'Format, minify, and validate JSON online with indentation controls, helpful errors, and JSON statistics. Your data stays in your browser.';
+
+const faqs = [
+	{ question: 'Is my JSON uploaded to a server?', answer: 'No. Parsing, formatting, validation, and copying all happen locally in your browser. Your JSON is never uploaded by this tool.' },
+	{ question: 'What is the difference between JSON formatting and validation?', answer: 'Validation checks whether text follows JSON syntax. Formatting first validates the JSON, then adds indentation and line breaks to make its structure easier to read.' },
+	{ question: 'Why is my JSON invalid?', answer: 'Common causes include trailing commas, single-quoted strings, unquoted property names, comments, or missing brackets. The error message points near the location where parsing stopped.' },
+	{ question: 'Can JSON contain comments?', answer: 'Standard JSON does not support comments. Remove // and /* */ comments before validating, or use a format designed to support them, such as JSON5, in a compatible application.' },
+	{ question: 'What indentation should I use?', answer: 'Two spaces is compact and widely used. Four spaces can be easier to scan, while tabs let editors display indentation at a preferred width. The data itself is identical.' },
+	{ question: 'What is minified JSON?', answer: 'Minified JSON has unnecessary whitespace removed. It is useful when reducing payload size for storage or transmission, but it is harder for people to read.' },
+];
+
+const webApplicationSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebApplication',
+	name: 'ToolPulse JSON Formatter',
+	applicationCategory: 'DeveloperApplication',
+	operatingSystem: 'Any',
+	description: pageDescription,
+	...(Astro.site ? { url: new URL('/tools/json-formatter', Astro.site).href } : {}),
+	offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+	featureList: ['Format JSON', 'Minify JSON', 'Validate JSON', 'JSON statistics', 'Browser-based processing'],
+};
+
+const faqSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faqs.map((faq) => ({
+		'@type': 'Question',
+		name: faq.question,
+		acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+	})),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonicalPath="/tools/json-formatter">
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify(webApplicationSchema)} />
+		<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+	</Fragment>
+
+	<section class="page-container py-8 sm:py-10">
+		<nav class="mb-4 text-sm text-slate-500" aria-label="Breadcrumb">
+			<a href="/" class="hover:text-blue-600">Home</a>
+			<span class="mx-2" aria-hidden="true">/</span>
+			<span class="text-slate-700">JSON Formatter</span>
+		</nav>
+
+		<div class="mb-6">
+			<p class="eyebrow">Developer tool</p>
+			<h1 class="mt-1 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">JSON Formatter</h1>
+			<p class="mt-2 max-w-3xl text-slate-600">Format, minify, and validate JSON without sending your data anywhere.</p>
+		</div>
+
+		<div class="mb-4 flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+			<button id="format-button" type="button" class="button-primary">Format JSON</button>
+			<button id="minify-button" type="button" class="button-secondary">Minify JSON</button>
+			<button id="validate-button" type="button" class="button-secondary">Validate JSON</button>
+			<label for="file-input" class="button-secondary cursor-pointer">
+				Upload file
+				<input id="file-input" type="file" accept=".json,application/json,text/json" class="sr-only" aria-label="Upload a JSON file" />
+			</label>
+			<button id="sample-button" type="button" class="button-secondary">Load sample</button>
+			<button id="clear-button" type="button" class="button-secondary">Clear</button>
+			<div class="ml-0 flex items-center gap-2 sm:ml-auto">
+				<label for="indent-select" class="text-sm font-medium text-slate-600">Indent</label>
+				<select id="indent-select" class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+					<option value="2" selected>2 spaces</option>
+					<option value="4">4 spaces</option>
+					<option value="tab">Tab</option>
+				</select>
+			</div>
+		</div>
+
+		<div id="status" class="mb-4 hidden rounded-xl border px-4 py-3 text-sm" role="status" aria-live="polite"></div>
+
+		<div class="grid gap-4 lg:grid-cols-2">
+			<section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" aria-labelledby="input-heading">
+				<div class="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+					<h2 id="input-heading" class="text-sm font-semibold text-slate-800">Input JSON</h2>
+					<span id="input-lines" class="text-xs text-slate-400">0 lines</span>
+				</div>
+				<textarea id="json-input" class="block min-h-[390px] w-full resize-y p-4 font-mono text-sm leading-6 text-slate-800 outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-inset focus:ring-blue-100" placeholder='Paste JSON here, for example: {"name":"ToolPulse"}' spellcheck="false" aria-label="Input JSON"></textarea>
+			</section>
+
+			<section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" aria-labelledby="output-heading">
+				<div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-2.5">
+					<h2 id="output-heading" class="text-sm font-semibold text-slate-800">Formatted Output</h2>
+					<div class="flex gap-2">
+						<button id="swap-button" type="button" class="button-secondary" disabled aria-label="Swap input and output">Swap</button>
+						<button id="copy-button" type="button" class="button-primary" disabled>
+							<span id="copy-label">Copy output</span>
+						</button>
+					</div>
+				</div>
+				<textarea id="json-output" class="block min-h-[390px] w-full resize-y bg-slate-50 p-4 font-mono text-sm leading-6 text-slate-800 outline-none focus:ring-4 focus:ring-inset focus:ring-blue-100" placeholder="Formatted JSON will appear here..." readonly aria-label="Formatted JSON output"></textarea>
+			</section>
+		</div>
+
+		<div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-6" aria-label="JSON statistics">
+			<div class="stat-card"><span>Total characters</span><strong id="input-characters">0</strong></div>
+			<div class="stat-card"><span>Output characters</span><strong id="output-characters">0</strong></div>
+			<div class="stat-card"><span>Objects</span><strong id="object-count">0</strong></div>
+			<div class="stat-card"><span>Arrays</span><strong id="array-count">0</strong></div>
+			<div class="stat-card"><span>Properties</span><strong id="property-count">0</strong></div>
+			<div class="stat-card"><span>Max depth</span><strong id="max-depth">0</strong></div>
+		</div>
+
+		<div class="mt-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900">
+			<strong>Private by design:</strong> this formatter processes JSON entirely in your browser. Nothing is uploaded or stored.
+		</div>
+
+		<div class="mt-10 grid gap-6 lg:grid-cols-[2fr_1fr]">
+			<div class="space-y-6">
+				<article class="content-card">
+					<h2>What is a JSON Formatter?</h2>
+					<p>A JSON formatter turns compact or uneven JSON into a consistent, readable structure using indentation and line breaks. It also confirms that the input follows standard JSON syntax before producing output.</p>
+				</article>
+				<article class="content-card">
+					<h2>How to format JSON</h2>
+					<ol>
+						<li><strong>1.</strong> Paste or type JSON into the Input JSON panel.</li>
+						<li><strong>2.</strong> Choose two spaces, four spaces, or tabs for indentation.</li>
+						<li><strong>3.</strong> Select Format JSON, then copy the readable result from the output panel.</li>
+					</ol>
+				</article>
+				<article class="content-card">
+					<h2>JSON formatting versus minification</h2>
+					<p>Formatting adds whitespace so nested data is easier to inspect and edit. Minification removes that optional whitespace to reduce size. Both representations contain the same values and structure when parsed.</p>
+				</article>
+				<article class="content-card">
+					<h2>Common JSON errors</h2>
+					<p>Invalid JSON often contains trailing commas, single quotes, comments, missing closing brackets, or property names without double quotes. Control characters and malformed escape sequences can also prevent parsing.</p>
+				</article>
+				<article class="content-card">
+					<h2>When developers use JSON formatters</h2>
+					<p>Developers format JSON while debugging API responses, reviewing configuration files, inspecting webhooks, comparing payloads, preparing test fixtures, and checking data exchanged between services.</p>
+				</article>
+				<article class="content-card">
+					<h2>Privacy and browser-based processing</h2>
+					<p>This tool uses the browser’s built-in JSON parser. Input stays on your device, making it suitable for sensitive data—though secrets should still be handled according to your organization’s security policies.</p>
+				</article>
+			</div>
+
+			<div class="space-y-6">
+				<aside class="content-card">
+					<h2>Frequently asked questions</h2>
+					<div class="mt-2 divide-y divide-slate-200">
+						{faqs.map((faq, index) => (
+							<details class="group py-4" open={index === 0}>
+								<summary class="flex cursor-pointer list-none items-start justify-between gap-3 text-sm font-semibold text-slate-800">
+									{faq.question}<span class="text-blue-600 transition group-open:rotate-45" aria-hidden="true">+</span>
+								</summary>
+								<p class="mt-2 text-sm leading-6 text-slate-600">{faq.answer}</p>
+							</details>
+						))}
+					</div>
+				</aside>
+
+				<aside class="content-card">
+					<h2>Related tools</h2>
+					<div class="mt-3 space-y-2 text-sm">
+						<a href="/tools/word-counter" class="related-link"><span>Word Counter</span><span>&rarr;</span></a>
+						<a href="/tools/character-counter" class="related-link"><span>Character Counter</span><span>&rarr;</span></a>
+						<div class="related-link text-slate-400"><span>Base64 Encoder</span><small>Coming soon</small></div>
+						<div class="related-link text-slate-400"><span>JWT Decoder</span><small>Coming soon</small></div>
+						<div class="related-link text-slate-400"><span>URL Encoder</span><small>Coming soon</small></div>
+					</div>
+				</aside>
+			</div>
+		</div>
+	</section>
+
+	<script>
+		const input = document.querySelector<HTMLTextAreaElement>('#json-input');
+		const output = document.querySelector<HTMLTextAreaElement>('#json-output');
+		const indentSelect = document.querySelector<HTMLSelectElement>('#indent-select');
+		const status = document.querySelector<HTMLElement>('#status');
+		const formatButton = document.querySelector<HTMLButtonElement>('#format-button');
+		const minifyButton = document.querySelector<HTMLButtonElement>('#minify-button');
+		const validateButton = document.querySelector<HTMLButtonElement>('#validate-button');
+		const fileInput = document.querySelector<HTMLInputElement>('#file-input');
+		const sampleButton = document.querySelector<HTMLButtonElement>('#sample-button');
+		const clearButton = document.querySelector<HTMLButtonElement>('#clear-button');
+		const swapButton = document.querySelector<HTMLButtonElement>('#swap-button');
+		const copyButton = document.querySelector<HTMLButtonElement>('#copy-button');
+		const copyLabel = document.querySelector<HTMLElement>('#copy-label');
+
+		const stats = {
+			inputCharacters: document.querySelector<HTMLElement>('#input-characters'),
+			outputCharacters: document.querySelector<HTMLElement>('#output-characters'),
+			objects: document.querySelector<HTMLElement>('#object-count'),
+			arrays: document.querySelector<HTMLElement>('#array-count'),
+			properties: document.querySelector<HTMLElement>('#property-count'),
+			depth: document.querySelector<HTMLElement>('#max-depth'),
+			lines: document.querySelector<HTMLElement>('#input-lines'),
+		};
+
+		const sample = JSON.stringify({
+			name: 'ToolPulse',
+			active: true,
+			tools: [
+				{ id: 1, name: 'Word Counter', tags: ['text', 'writing'] },
+				{ id: 2, name: 'JSON Formatter', tags: ['developer', 'json'] },
+			],
+			settings: { theme: 'light', analytics: null },
+		});
+
+		let debounceTimer: number | undefined;
+
+		function indentation(): number | string {
+			return indentSelect?.value === 'tab' ? '\t' : Number(indentSelect?.value ?? 2);
+		}
+
+		function setStatus(kind: 'success' | 'error' | 'neutral', message: string) {
+			if (!status) return;
+			status.textContent = message;
+			status.className = 'mb-4 rounded-xl border px-4 py-3 text-sm';
+			if (kind === 'success') status.classList.add('border-emerald-200', 'bg-emerald-50', 'text-emerald-800');
+			else if (kind === 'error') status.classList.add('border-red-200', 'bg-red-50', 'text-red-800');
+			else status.classList.add('border-blue-100', 'bg-blue-50', 'text-blue-800');
+		}
+
+		function errorLocation(text: string, error: unknown): string {
+			const message = error instanceof Error ? error.message : String(error);
+			const positionMatch = message.match(/position\s+(\d+)/i);
+			let position = positionMatch ? Number(positionMatch[1]) : -1;
+			if (position < 0 && /end of json/i.test(message)) position = text.length;
+			if (position < 0) return message;
+			const before = text.slice(0, position);
+			const line = before.split(/\r\n|\r|\n/u).length;
+			const lastBreak = Math.max(before.lastIndexOf('\n'), before.lastIndexOf('\r'));
+			const column = position - lastBreak;
+			return `${message} (approximately line ${line}, column ${column})`;
+		}
+
+		function analyze(value: unknown) {
+			let objects = 0;
+			let arrays = 0;
+			let properties = 0;
+			let maxDepth = 0;
+
+			function visit(item: unknown, depth: number) {
+				if (item === null || typeof item !== 'object') {
+					maxDepth = Math.max(maxDepth, depth);
+					return;
+				}
+				maxDepth = Math.max(maxDepth, depth);
+				if (Array.isArray(item)) {
+					arrays++;
+					item.forEach((child) => visit(child, depth + 1));
+				} else {
+					objects++;
+					const values = Object.values(item);
+					properties += values.length;
+					values.forEach((child) => visit(child, depth + 1));
+				}
+			}
+
+			visit(value, 1);
+			return { objects, arrays, properties, maxDepth };
+		}
+
+		function updateBasicStats() {
+			const inputText = input?.value ?? '';
+			const outputText = output?.value ?? '';
+			if (stats.inputCharacters) stats.inputCharacters.textContent = inputText.length.toLocaleString();
+			if (stats.outputCharacters) stats.outputCharacters.textContent = outputText.length.toLocaleString();
+			if (stats.lines) stats.lines.textContent = `${inputText ? inputText.split(/\r\n|\r|\n/u).length : 0} lines`;
+			const hasOutput = outputText.length > 0;
+			if (copyButton) copyButton.disabled = !hasOutput;
+			if (swapButton) swapButton.disabled = !hasOutput;
+		}
+
+		function resetParsedStats() {
+			[stats.objects, stats.arrays, stats.properties, stats.depth].forEach((element) => {
+				if (element) element.textContent = '0';
+			});
+		}
+
+		function parseInput(options: { outputMode?: 'format' | 'minify' | 'none'; quiet?: boolean } = {}) {
+			const text = input?.value ?? '';
+			if (!text.trim()) {
+				if (output) output.value = '';
+				resetParsedStats();
+				updateBasicStats();
+				if (!options.quiet) setStatus('neutral', 'Enter JSON to begin.');
+				return null;
+			}
+			try {
+				const parsed: unknown = JSON.parse(text);
+				const analysis = analyze(parsed);
+				if (stats.objects) stats.objects.textContent = analysis.objects.toLocaleString();
+				if (stats.arrays) stats.arrays.textContent = analysis.arrays.toLocaleString();
+				if (stats.properties) stats.properties.textContent = analysis.properties.toLocaleString();
+				if (stats.depth) stats.depth.textContent = analysis.maxDepth.toLocaleString();
+				if (options.outputMode === 'format' && output) output.value = JSON.stringify(parsed, null, indentation());
+				if (options.outputMode === 'minify' && output) output.value = JSON.stringify(parsed);
+				updateBasicStats();
+				setStatus('success', 'Valid JSON — parsed successfully.');
+				return parsed;
+			} catch (error) {
+				resetParsedStats();
+				if (output) output.value = '';
+				updateBasicStats();
+				setStatus('error', `Invalid JSON: ${errorLocation(text, error)}`);
+				return null;
+			}
+		}
+
+		input?.addEventListener('input', () => {
+			updateBasicStats();
+			window.clearTimeout(debounceTimer);
+			debounceTimer = window.setTimeout(() => parseInput({ outputMode: 'format', quiet: true }), 250);
+		});
+		indentSelect?.addEventListener('change', () => parseInput({ outputMode: 'format' }));
+		formatButton?.addEventListener('click', () => parseInput({ outputMode: 'format' }));
+		minifyButton?.addEventListener('click', () => parseInput({ outputMode: 'minify' }));
+		validateButton?.addEventListener('click', () => parseInput({ outputMode: 'none' }));
+		fileInput?.addEventListener('change', async () => {
+			const file = fileInput.files?.[0];
+			if (!file || !input) return;
+
+			try {
+				input.value = await file.text();
+				parseInput({ outputMode: 'format' });
+				input.focus();
+			} catch {
+				setStatus('error', 'The selected file could not be read. Please choose another JSON file.');
+			} finally {
+				fileInput.value = '';
+			}
+		});
+		sampleButton?.addEventListener('click', () => {
+			if (!input) return;
+			input.value = sample;
+			parseInput({ outputMode: 'format' });
+			input.focus();
+		});
+		clearButton?.addEventListener('click', () => {
+			if (input) input.value = '';
+			if (output) output.value = '';
+			resetParsedStats();
+			updateBasicStats();
+			setStatus('neutral', 'Input and output cleared.');
+			input?.focus();
+		});
+		swapButton?.addEventListener('click', () => {
+			if (!input || !output || !output.value) return;
+			const previousInput = input.value;
+			input.value = output.value;
+			output.value = previousInput;
+			parseInput({ outputMode: 'none' });
+			input.focus();
+		});
+		copyButton?.addEventListener('click', async () => {
+			if (!output?.value) return;
+			try {
+				await navigator.clipboard.writeText(output.value);
+			} catch {
+				output.select();
+				document.execCommand('copy');
+				output.setSelectionRange(0, 0);
+			}
+			if (copyLabel) copyLabel.textContent = 'Copied!';
+			setStatus('success', 'Formatted output copied to the clipboard.');
+			window.setTimeout(() => {
+				if (copyLabel) copyLabel.textContent = 'Copy output';
+			}, 1600);
+		});
+
+		updateBasicStats();
+	</script>
+</BaseLayout>
+
+<style>
+	:global(button:disabled) {
+		cursor: not-allowed;
+		opacity: 0.45;
+	}
+</style>
