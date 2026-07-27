@@ -1,0 +1,210 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const faqs = [
+	{
+		question: 'Does the character count include spaces?',
+		answer: 'The Total characters result includes every letter, number, punctuation mark, space, and line break. The Characters without spaces result removes all whitespace so you can compare both totals.',
+	},
+	{
+		question: 'Is my text saved or uploaded?',
+		answer: 'No. All counting happens locally in your browser. ToolPulse does not send, store, or process your text on a server.',
+	},
+	{
+		question: 'What counts as a word?',
+		answer: 'A word is any group of characters separated by whitespace. Punctuation attached to a word does not create an additional word.',
+	},
+	{
+		question: 'How are paragraphs and lines counted?',
+		answer: 'Lines are separated by a line break, including blank lines between text. Paragraphs are non-empty blocks of text separated by one or more blank lines.',
+	},
+	{
+		question: 'Is there a text length limit?',
+		answer: 'ToolPulse does not set a fixed limit. Very large documents may depend on the memory and performance available in your browser.',
+	},
+];
+---
+
+<BaseLayout
+	title="Free Character Counter Online — ToolPulse"
+	description="Count characters with and without spaces, words, sentences, paragraphs, and lines instantly with this free online character counter."
+>
+	<section class="page-container py-8 sm:py-10">
+		<nav class="mb-4 text-sm text-slate-500" aria-label="Breadcrumb">
+			<a href="/" class="hover:text-blue-600">Home</a>
+			<span class="mx-2" aria-hidden="true">/</span>
+			<span class="text-slate-700">Character Counter</span>
+		</nav>
+
+		<div class="mb-6">
+			<h1 class="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">Character Counter</h1>
+			<p class="mt-2 max-w-2xl text-slate-600">
+				Count characters, words, sentences, and more as you type. Your text stays private in your browser.
+			</p>
+		</div>
+
+		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-6" aria-label="Text statistics">
+			<div class="stat-card"><span>Total characters</span><strong id="character-count">0</strong></div>
+			<div class="stat-card"><span>Without spaces</span><strong id="no-space-count">0</strong></div>
+			<div class="stat-card"><span>Words</span><strong id="word-count">0</strong></div>
+			<div class="stat-card"><span>Sentences</span><strong id="sentence-count">0</strong></div>
+			<div class="stat-card"><span>Paragraphs</span><strong id="paragraph-count">0</strong></div>
+			<div class="stat-card"><span>Lines</span><strong id="line-count">0</strong></div>
+		</div>
+
+		<div class="mt-5 rounded-2xl border border-slate-200 bg-white shadow-sm">
+			<div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
+				<label for="text-input" class="text-sm font-semibold text-slate-700">Your text</label>
+				<div class="flex flex-wrap gap-2">
+					<button id="sample-button" type="button" class="button-secondary">Sample text</button>
+					<button id="clear-button" type="button" class="button-secondary">Clear</button>
+					<button id="copy-button" type="button" class="button-primary">
+						<svg class="size-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+							<rect x="8" y="8" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/>
+							<path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="2"/>
+						</svg>
+						<span id="copy-label">Copy</span>
+					</button>
+				</div>
+			</div>
+			<textarea
+				id="text-input"
+				class="block min-h-[360px] w-full resize-y rounded-b-2xl p-5 text-base leading-7 text-slate-800 outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-inset focus:ring-blue-100"
+				placeholder="Start typing or paste your text here..."
+				autofocus
+			></textarea>
+			<p id="action-status" class="sr-only" aria-live="polite"></p>
+		</div>
+
+		<div class="mt-5 flex flex-col gap-3 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900 sm:flex-row sm:items-center sm:justify-between">
+			<p><strong>Private by design:</strong> your text is processed entirely in your browser and is never uploaded.</p>
+			<a href="/tools/word-counter" class="shrink-0 font-semibold text-blue-700 hover:text-blue-800">Try Word Counter &rarr;</a>
+		</div>
+
+		<div class="mt-10 grid gap-6 lg:grid-cols-[2fr_1fr]">
+			<div class="space-y-6">
+				<article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+					<h2 class="text-xl font-bold text-slate-950">What is a character counter?</h2>
+					<p class="mt-3 leading-7 text-slate-600">
+						A character counter measures the length of a piece of text. It counts letters, numbers, punctuation, spaces, and line breaks, while also showing a separate total with whitespace removed. This makes it easy to check text against limits without counting manually.
+					</p>
+				</article>
+
+				<article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+					<h2 class="text-xl font-bold text-slate-950">Common uses</h2>
+					<ul class="mt-3 grid gap-3 text-sm leading-6 text-slate-600 sm:grid-cols-2">
+						<li class="rounded-xl bg-slate-50 p-3"><strong class="block text-slate-800">Social posts</strong>Stay within caption, bio, and post limits.</li>
+						<li class="rounded-xl bg-slate-50 p-3"><strong class="block text-slate-800">SEO content</strong>Check title tags and meta descriptions.</li>
+						<li class="rounded-xl bg-slate-50 p-3"><strong class="block text-slate-800">Applications</strong>Meet form and essay length requirements.</li>
+						<li class="rounded-xl bg-slate-50 p-3"><strong class="block text-slate-800">Writing and editing</strong>Review document structure at a glance.</li>
+					</ul>
+				</article>
+
+				<article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+					<h2 class="text-xl font-bold text-slate-950">How to use it</h2>
+					<ol class="mt-3 space-y-3 text-sm leading-6 text-slate-600">
+						<li><strong class="mr-2 text-blue-600">1.</strong>Type or paste content into the text area above.</li>
+						<li><strong class="mr-2 text-blue-600">2.</strong>Watch all six measurements update instantly as the text changes.</li>
+						<li><strong class="mr-2 text-blue-600">3.</strong>Use Copy to reuse the text, Clear to start again, or Sample text to test the tool.</li>
+					</ol>
+				</article>
+			</div>
+
+			<aside class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:self-start">
+				<h2 class="text-xl font-bold text-slate-950">Frequently asked questions</h2>
+				<div class="mt-3 divide-y divide-slate-200">
+					{faqs.map((faq, index) => (
+						<details class="group py-4" open={index === 0}>
+							<summary class="flex cursor-pointer list-none items-start justify-between gap-3 text-sm font-semibold text-slate-800">
+								{faq.question}
+								<span class="text-blue-600 transition group-open:rotate-45" aria-hidden="true">+</span>
+							</summary>
+							<p class="mt-2 text-sm leading-6 text-slate-600">{faq.answer}</p>
+						</details>
+					))}
+				</div>
+			</aside>
+		</div>
+	</section>
+
+	<script>
+		const input = document.querySelector<HTMLTextAreaElement>('#text-input');
+		const clearButton = document.querySelector<HTMLButtonElement>('#clear-button');
+		const copyButton = document.querySelector<HTMLButtonElement>('#copy-button');
+		const sampleButton = document.querySelector<HTMLButtonElement>('#sample-button');
+		const copyLabel = document.querySelector<HTMLElement>('#copy-label');
+		const actionStatus = document.querySelector<HTMLElement>('#action-status');
+
+		const outputs = {
+			characters: document.querySelector<HTMLElement>('#character-count'),
+			noSpaces: document.querySelector<HTMLElement>('#no-space-count'),
+			words: document.querySelector<HTMLElement>('#word-count'),
+			sentences: document.querySelector<HTMLElement>('#sentence-count'),
+			paragraphs: document.querySelector<HTMLElement>('#paragraph-count'),
+			lines: document.querySelector<HTMLElement>('#line-count'),
+		};
+
+		const sampleText = `Clear writing helps people understand ideas quickly. A character counter makes it easy to check length limits while you work.
+
+Paste your own text here, or edit this sample to see every result update instantly.`;
+
+		function updateStats() {
+			const text = input?.value ?? '';
+			const trimmed = text.trim();
+			const words = trimmed ? trimmed.split(/\s+/u).length : 0;
+			const sentences = trimmed
+				? (trimmed.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/gu) ?? []).filter((item) => item.trim()).length
+				: 0;
+			const paragraphs = trimmed ? text.split(/\n\s*\n/u).filter((item) => item.trim()).length : 0;
+			const lines = text.length ? text.split(/\r\n|\r|\n/u).length : 0;
+
+			if (outputs.characters) outputs.characters.textContent = text.length.toLocaleString();
+			if (outputs.noSpaces) outputs.noSpaces.textContent = text.replace(/\s/gu, '').length.toLocaleString();
+			if (outputs.words) outputs.words.textContent = words.toLocaleString();
+			if (outputs.sentences) outputs.sentences.textContent = sentences.toLocaleString();
+			if (outputs.paragraphs) outputs.paragraphs.textContent = paragraphs.toLocaleString();
+			if (outputs.lines) outputs.lines.textContent = lines.toLocaleString();
+		}
+
+		input?.addEventListener('input', updateStats);
+
+		clearButton?.addEventListener('click', () => {
+			if (!input) return;
+			input.value = '';
+			updateStats();
+			input.focus();
+			if (actionStatus) actionStatus.textContent = 'Text cleared.';
+		});
+
+		sampleButton?.addEventListener('click', () => {
+			if (!input) return;
+			input.value = sampleText;
+			updateStats();
+			input.focus();
+			if (actionStatus) actionStatus.textContent = 'Sample text added.';
+		});
+
+		copyButton?.addEventListener('click', async () => {
+			if (!input || !input.value) {
+				if (actionStatus) actionStatus.textContent = 'There is no text to copy.';
+				return;
+			}
+
+			try {
+				await navigator.clipboard.writeText(input.value);
+			} catch {
+				input.select();
+				document.execCommand('copy');
+				input.setSelectionRange(input.value.length, input.value.length);
+			}
+
+			if (copyLabel) copyLabel.textContent = 'Copied!';
+			if (actionStatus) actionStatus.textContent = 'Text copied to clipboard.';
+			window.setTimeout(() => {
+				if (copyLabel) copyLabel.textContent = 'Copy';
+			}, 1600);
+		});
+
+		updateStats();
+	</script>
+</BaseLayout>
