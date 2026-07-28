@@ -1,0 +1,264 @@
+{
+  "generatedAt": "2026-07-28T23:09:12+05:30",
+  "project": "ToolPulse",
+  "summary": {
+    "implementedTools": 5,
+    "registeredTools": 5,
+    "orphanedPages": 0,
+    "missingPages": 0,
+    "duplicateSlugs": 0,
+    "buildPassed": true,
+    "overallAssessment": "Controlled public beta ready; broad launch needs Unicode count correction, consistent dark mode, automated quality gates, canonical configuration, and browser verification."
+  },
+  "tools": [
+    {
+      "name": "Word Counter",
+      "slug": "word-counter",
+      "route": "/tools/word-counter",
+      "category": "Text",
+      "status": "PARTIAL",
+      "registry": true,
+      "pageExists": true,
+      "homepage": true,
+      "search": true,
+      "relatedTools": false,
+      "processing": "browser-local",
+      "score": 6.0,
+      "scores": {
+        "productValue": 8,
+        "functionality": 7,
+        "architecture": 4,
+        "ux": 7,
+        "accessibility": 7,
+        "seo": 4,
+        "maintainability": 5
+      },
+      "criticalFindings": [
+        "Character count uses JavaScript UTF-16 string length and overcounts emoji and combined graphemes.",
+        "Page-specific dark mode is missing."
+      ],
+      "verification": [
+        "Empty, one word, multiple spaces, multiple lines, punctuation, Hindi, emoji, combining sequence, and 100000-word logic cases executed.",
+        "Clipboard and responsive interactions not browser-verified."
+      ]
+    },
+    {
+      "name": "Character Counter",
+      "slug": "character-counter",
+      "route": "/tools/character-counter",
+      "category": "Text",
+      "status": "PARTIAL",
+      "registry": true,
+      "pageExists": true,
+      "homepage": true,
+      "search": true,
+      "relatedTools": true,
+      "processing": "browser-local",
+      "score": 6.4,
+      "scores": {
+        "productValue": 7,
+        "functionality": 7,
+        "architecture": 4,
+        "ux": 7,
+        "accessibility": 7,
+        "seo": 8,
+        "maintainability": 5
+      },
+      "criticalFindings": [
+        "Total characters and without spaces count UTF-16 code units, not user-perceived characters.",
+        "Without spaces actually removes all Unicode whitespace.",
+        "Page-specific dark mode is missing."
+      ],
+      "verification": [
+        "Empty, spaces, line breaks, emoji, Hindi, combining sequence, and large-input logic reviewed/executed.",
+        "Interactive controls and viewport behavior not browser-verified."
+      ]
+    },
+    {
+      "name": "JSON Formatter",
+      "slug": "json-formatter",
+      "route": "/tools/json-formatter",
+      "category": "Developer",
+      "tags": ["Developer", "JSON"],
+      "status": "COMPLETE",
+      "registry": true,
+      "pageExists": true,
+      "homepage": true,
+      "search": true,
+      "relatedTools": true,
+      "processing": "browser-local",
+      "score": 7.6,
+      "scores": {
+        "productValue": 9,
+        "functionality": 8,
+        "architecture": 5,
+        "ux": 8,
+        "accessibility": 8,
+        "seo": 9,
+        "maintainability": 6
+      },
+      "criticalFindings": [
+        "Most business logic is embedded in the Astro page.",
+        "Dark mode is incomplete.",
+        "Approximate error position depends on JavaScript engine error wording."
+      ],
+      "verification": [
+        "Valid object, array, nested, minified, Unicode, empty, and invalid JSON logic cases executed.",
+        "Clipboard, file picker, swap, and exact viewport behavior not browser-verified."
+      ]
+    },
+    {
+      "name": "JSON Builder",
+      "slug": "json-builder",
+      "route": "/tools/json-builder",
+      "category": "Developer",
+      "tags": ["Developer", "JSON"],
+      "status": "COMPLETE",
+      "registry": true,
+      "pageExists": true,
+      "homepage": true,
+      "search": true,
+      "relatedTools": true,
+      "processing": "browser-local",
+      "score": 7.7,
+      "scores": {
+        "productValue": 9,
+        "functionality": 8,
+        "architecture": 7,
+        "ux": 7,
+        "accessibility": 7,
+        "seo": 9,
+        "maintainability": 7
+      },
+      "criticalFindings": [
+        "Builder-specific dark mode is missing.",
+        "Pure model logic and DOM rendering share one large controller.",
+        "Deeply nested mobile behavior is not verified."
+      ],
+      "verification": [
+        "Typed model, validation, conversion, import safety, copy/download, and depth code paths inspected.",
+        "Interactive builder workflow was not executed in a browser."
+      ]
+    },
+    {
+      "name": "Base64 Encoder & Decoder",
+      "slug": "base64-encoder",
+      "route": "/tools/base64-encoder",
+      "category": "Developer",
+      "status": "COMPLETE",
+      "registry": true,
+      "pageExists": true,
+      "homepage": true,
+      "search": true,
+      "relatedTools": true,
+      "processing": "browser-local",
+      "score": 8.4,
+      "scores": {
+        "productValue": 9,
+        "functionality": 9,
+        "architecture": 9,
+        "ux": 8,
+        "accessibility": 8,
+        "seo": 7,
+        "maintainability": 9
+      },
+      "criticalFindings": [
+        "No production-tested file-size limit or guidance.",
+        "Tab semantics do not include arrow navigation or roving tabindex.",
+        "FAQ and WebApplication structured data are absent."
+      ],
+      "verification": [
+        "Hello World, Hindi plus emoji, Japanese, text Data URL, PNG binary, MIME detection, invalid Base64, and empty-input utilities executed.",
+        "Preview, drag/drop, clipboard, download, and object URL lifecycle not browser-verified."
+      ]
+    }
+  ],
+  "crossToolArchitecture": {
+    "strengths": [
+      "Typed central tool registry drives homepage cards and search.",
+      "Static Astro routes build without warnings.",
+      "No network or persistence code handles tool input.",
+      "Base64 has a reusable utility and component architecture."
+    ],
+    "highDuplication": [
+      "Clipboard behavior",
+      "Text statistics",
+      "Status message styling",
+      "FAQ and related-tools markup"
+    ],
+    "inconsistencies": [
+      "Dark mode coverage varies materially by tool.",
+      "Canonical paths and structured data are inconsistent.",
+      "ToolLayout and ToolHeader are only used by Base64.",
+      "Related tools range from none to comprehensive."
+    ],
+    "recommendations": [
+      "Extract and test text-stat and JSON pure utilities.",
+      "Create shared clipboard/status helpers.",
+      "Configure Astro.site and canonical paths.",
+      "Derive available related tools from the registry.",
+      "Adopt shared tool shell components opportunistically."
+    ]
+  },
+  "buildResults": [
+    {
+      "command": "npm run build",
+      "result": "PASS",
+      "errors": [],
+      "warnings": [],
+      "details": "Six static pages generated."
+    },
+    {
+      "command": "npm ls --depth=0",
+      "result": "PASS",
+      "errors": [],
+      "warnings": [],
+      "details": "Astro, Tailwind CSS, and Tailwind Vite integration only."
+    },
+    {
+      "command": "npm run lint",
+      "result": "NOT_AVAILABLE",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "command": "npm run check",
+      "result": "NOT_AVAILABLE",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "command": "npm run typecheck",
+      "result": "NOT_AVAILABLE",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "command": "npm run test",
+      "result": "NOT_AVAILABLE",
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "launchReadiness": {
+    "score": 77,
+    "maximum": 100,
+    "categories": {
+      "productCompleteness": {"score": 15, "maximum": 20},
+      "functionality": {"score": 17, "maximum": 20},
+      "uxConsistency": {"score": 11, "maximum": 15},
+      "architecture": {"score": 11, "maximum": 15},
+      "accessibility": {"score": 7, "maximum": 10},
+      "seo": {"score": 7, "maximum": 10},
+      "performanceAndPrivacy": {"score": 9, "maximum": 10}
+    },
+    "recommendation": "Controlled beta ready; address critical findings before broad public launch."
+  },
+  "limitations": [
+    "No interactive browser or assistive-technology tests were performed.",
+    "Exact responsive widths and dark-mode appearance were assessed from code only.",
+    "No lint, strict type-check, or automated test scripts are configured.",
+    "Clipboard permissions, downloads, drag/drop, dialogs, and object URL cleanup were not browser-executed.",
+    "Canonical tags cannot be verified in production because Astro.site is not configured."
+  ]
+}

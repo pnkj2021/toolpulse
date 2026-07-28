@@ -73,6 +73,9 @@ const faqs = [
 				<div class="tool-panel">
 					<h2 class="tool-panel-label">Upload a file</h2>
 					<FileUploader id="file-input" />
+					<p class="text-xs leading-5 text-slate-500 dark:text-slate-400">
+						Base64 adds roughly 33% to file size and conversion uses device memory. For very large files, performance depends on your browser and device.
+					</p>
 					<div id="file-details" class="mt-3 hidden grid grid-cols-3 gap-2 rounded-xl bg-slate-50 p-3 text-xs dark:bg-slate-800">
 						<div class="min-w-0"><span class="block text-slate-400">Name</span><strong id="file-name" class="block truncate text-slate-700 dark:text-slate-200"></strong></div>
 						<div><span class="block text-slate-400">Size</span><strong id="file-size" class="block text-slate-700 dark:text-slate-200"></strong></div>

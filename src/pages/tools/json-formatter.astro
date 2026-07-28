@@ -43,19 +43,19 @@ const faqSchema = {
 	</Fragment>
 
 	<section class="page-container py-8 sm:py-10">
-		<nav class="mb-4 text-sm text-slate-500" aria-label="Breadcrumb">
+		<nav class="mb-4 text-sm text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
 			<a href="/" class="hover:text-blue-600">Home</a>
 			<span class="mx-2" aria-hidden="true">/</span>
-			<span class="text-slate-700">JSON Formatter</span>
+			<span class="text-slate-700 dark:text-slate-300">JSON Formatter</span>
 		</nav>
 
 		<div class="mb-6">
 			<p class="eyebrow">Developer tool</p>
-			<h1 class="mt-1 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">JSON Formatter</h1>
-			<p class="mt-2 max-w-3xl text-slate-600">Format, minify, and validate JSON without sending your data anywhere.</p>
+			<h1 class="mt-1 text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">JSON Formatter</h1>
+			<p class="mt-2 max-w-3xl text-slate-600 dark:text-slate-300">Format, minify, and validate JSON without sending your data anywhere.</p>
 		</div>
 
-		<div class="mb-4 flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+		<div class="mb-4 flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900">
 			<button id="format-button" type="button" class="button-primary">Format JSON</button>
 			<button id="minify-button" type="button" class="button-secondary">Minify JSON</button>
 			<button id="validate-button" type="button" class="button-secondary">Validate JSON</button>
@@ -66,8 +66,8 @@ const faqSchema = {
 			<button id="sample-button" type="button" class="button-secondary">Load sample</button>
 			<button id="clear-button" type="button" class="button-secondary">Clear</button>
 			<div class="ml-0 flex items-center gap-2 sm:ml-auto">
-				<label for="indent-select" class="text-sm font-medium text-slate-600">Indent</label>
-				<select id="indent-select" class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+				<label for="indent-select" class="text-sm font-medium text-slate-600 dark:text-slate-300">Indent</label>
+				<select id="indent-select" class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-blue-900">
 					<option value="2" selected>2 spaces</option>
 					<option value="4">4 spaces</option>
 					<option value="tab">Tab</option>
@@ -78,17 +78,17 @@ const faqSchema = {
 		<div id="status" class="mb-4 hidden rounded-xl border px-4 py-3 text-sm" role="status" aria-live="polite"></div>
 
 		<div class="grid gap-4 lg:grid-cols-2">
-			<section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" aria-labelledby="input-heading">
-				<div class="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-					<h2 id="input-heading" class="text-sm font-semibold text-slate-800">Input JSON</h2>
+			<section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" aria-labelledby="input-heading">
+				<div class="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-slate-700">
+					<h2 id="input-heading" class="text-sm font-semibold text-slate-800 dark:text-slate-100">Input JSON</h2>
 					<span id="input-lines" class="text-xs text-slate-400">0 lines</span>
 				</div>
-				<textarea id="json-input" class="block min-h-[390px] w-full resize-y p-4 font-mono text-sm leading-6 text-slate-800 outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-inset focus:ring-blue-100" placeholder='Paste JSON here, for example: {"name":"ToolPulse"}' spellcheck="false" aria-label="Input JSON"></textarea>
+				<textarea id="json-input" class="block min-h-[390px] w-full resize-y bg-white p-4 font-mono text-sm leading-6 text-slate-800 outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-inset focus:ring-blue-100 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900" placeholder='Paste JSON here, for example: {"name":"ToolPulse"}' spellcheck="false" aria-label="Input JSON"></textarea>
 			</section>
 
-			<section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" aria-labelledby="output-heading">
-				<div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-2.5">
-					<h2 id="output-heading" class="text-sm font-semibold text-slate-800">Formatted Output</h2>
+			<section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" aria-labelledby="output-heading">
+				<div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-2.5 dark:border-slate-700">
+					<h2 id="output-heading" class="text-sm font-semibold text-slate-800 dark:text-slate-100">Formatted Output</h2>
 					<div class="flex gap-2">
 						<button id="swap-button" type="button" class="button-secondary" disabled aria-label="Swap input and output">Swap</button>
 						<button id="copy-button" type="button" class="button-primary" disabled>
@@ -96,7 +96,7 @@ const faqSchema = {
 						</button>
 					</div>
 				</div>
-				<textarea id="json-output" class="block min-h-[390px] w-full resize-y bg-slate-50 p-4 font-mono text-sm leading-6 text-slate-800 outline-none focus:ring-4 focus:ring-inset focus:ring-blue-100" placeholder="Formatted JSON will appear here..." readonly aria-label="Formatted JSON output"></textarea>
+				<textarea id="json-output" class="block min-h-[390px] w-full resize-y bg-slate-50 p-4 font-mono text-sm leading-6 text-slate-800 outline-none focus:ring-4 focus:ring-inset focus:ring-blue-100 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900" placeholder="Formatted JSON will appear here..." readonly aria-label="Formatted JSON output"></textarea>
 			</section>
 		</div>
 
@@ -109,7 +109,7 @@ const faqSchema = {
 			<div class="stat-card"><span>Max depth</span><strong id="max-depth">0</strong></div>
 		</div>
 
-		<div class="mt-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900">
+		<div class="mt-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-200">
 			<strong>Private by design:</strong> this formatter processes JSON entirely in your browser. Nothing is uploaded or stored.
 		</div>
 
@@ -148,13 +148,13 @@ const faqSchema = {
 			<div class="space-y-6">
 				<aside class="content-card">
 					<h2>Frequently asked questions</h2>
-					<div class="mt-2 divide-y divide-slate-200">
+					<div class="mt-2 divide-y divide-slate-200 dark:divide-slate-700">
 						{faqs.map((faq, index) => (
 							<details class="group py-4" open={index === 0}>
-								<summary class="flex cursor-pointer list-none items-start justify-between gap-3 text-sm font-semibold text-slate-800">
+								<summary class="flex cursor-pointer list-none items-start justify-between gap-3 text-sm font-semibold text-slate-800 dark:text-slate-100">
 									{faq.question}<span class="text-blue-600 transition group-open:rotate-45" aria-hidden="true">+</span>
 								</summary>
-								<p class="mt-2 text-sm leading-6 text-slate-600">{faq.answer}</p>
+								<p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{faq.answer}</p>
 							</details>
 						))}
 					</div>
@@ -220,9 +220,9 @@ const faqSchema = {
 			if (!status) return;
 			status.textContent = message;
 			status.className = 'mb-4 rounded-xl border px-4 py-3 text-sm';
-			if (kind === 'success') status.classList.add('border-emerald-200', 'bg-emerald-50', 'text-emerald-800');
-			else if (kind === 'error') status.classList.add('border-red-200', 'bg-red-50', 'text-red-800');
-			else status.classList.add('border-blue-100', 'bg-blue-50', 'text-blue-800');
+			if (kind === 'success') status.classList.add('border-emerald-200', 'bg-emerald-50', 'text-emerald-800', 'dark:border-emerald-900', 'dark:bg-emerald-950', 'dark:text-emerald-200');
+			else if (kind === 'error') status.classList.add('border-red-200', 'bg-red-50', 'text-red-800', 'dark:border-red-900', 'dark:bg-red-950', 'dark:text-red-200');
+			else status.classList.add('border-blue-100', 'bg-blue-50', 'text-blue-800', 'dark:border-blue-900', 'dark:bg-blue-950', 'dark:text-blue-200');
 		}
 
 		function errorLocation(text: string, error: unknown): string {

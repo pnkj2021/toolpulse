@@ -122,7 +122,7 @@ export function decodeBase64ToBytes(input: string): DecodedBase64 {
 
 export function decodeBase64ToBlob(input: string): Blob {
 	const decoded = decodeBase64(input);
-	return new Blob([decoded.bytes], { type: decoded.mimeType });
+	return new Blob([Uint8Array.from(decoded.bytes).buffer], { type: decoded.mimeType });
 }
 
 export function decodeBase64(input: string): DecodedBase64Result {
@@ -208,8 +208,9 @@ export function formatFileSize(bytes: number): string {
 	return `${value.toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
 }
 
-export function downloadBlob(content: BlobPart, mimeType: string, fileName: string): void {
-	const url = URL.createObjectURL(new Blob([content], { type: mimeType }));
+export function downloadBlob(content: BlobPart | Uint8Array, mimeType: string, fileName: string): void {
+	const blobContent = content instanceof Uint8Array ? Uint8Array.from(content).buffer : content;
+	const url = URL.createObjectURL(new Blob([blobContent], { type: mimeType }));
 	const link = document.createElement('a');
 	link.href = url;
 	link.download = fileName;

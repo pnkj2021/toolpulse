@@ -1,3 +1,5 @@
+export {};
+
 type NodeType = 'string' | 'number' | 'boolean' | 'null' | 'object' | 'array';
 
 interface BaseNode {
@@ -117,6 +119,7 @@ function valueFromNode(node: BuilderNode, path = 'root'): unknown {
 		return value;
 	}
 	if (node.type === 'array') return node.items.map((item, index) => valueFromNode(item, `${path}[${index}]`));
+	if (node.type !== 'object') throw new Error(`Unsupported value at ${path}.`);
 
 	const result: Record<string, unknown> = {};
 	const keys = new Set<string>();
@@ -189,9 +192,9 @@ function setStatus(kind: 'success' | 'error' | 'neutral', message: string): void
 	if (!status) return;
 	status.textContent = message;
 	status.className = 'rounded-xl border px-4 py-3 text-sm';
-	if (kind === 'success') status.classList.add('border-emerald-200', 'bg-emerald-50', 'text-emerald-800');
-	else if (kind === 'error') status.classList.add('border-red-200', 'bg-red-50', 'text-red-800');
-	else status.classList.add('border-blue-100', 'bg-blue-50', 'text-blue-800');
+	if (kind === 'success') status.classList.add('border-emerald-200', 'bg-emerald-50', 'text-emerald-800', 'dark:border-emerald-900', 'dark:bg-emerald-950', 'dark:text-emerald-200');
+	else if (kind === 'error') status.classList.add('border-red-200', 'bg-red-50', 'text-red-800', 'dark:border-red-900', 'dark:bg-red-950', 'dark:text-red-200');
+	else status.classList.add('border-blue-100', 'bg-blue-50', 'text-blue-800', 'dark:border-blue-900', 'dark:bg-blue-950', 'dark:text-blue-200');
 }
 
 function calculateStats(node: BuilderNode) {
@@ -282,7 +285,7 @@ function renderValueControl(node: BuilderNode): HTMLElement {
 		wrapper.append(input);
 		return wrapper;
 	}
-	wrapper.append(renderContainer(node));
+	wrapper.append(renderContainer(node as ObjectNode | ArrayNode));
 	return wrapper;
 }
 

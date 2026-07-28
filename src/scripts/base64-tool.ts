@@ -81,7 +81,7 @@ function showDecodedResult(result: DecodedBase64Result): void {
 		}
 		if (elements.downloadText) elements.downloadText.disabled = false;
 		if (result.mimeType.startsWith('image/')) {
-			imagePreviewUrl = URL.createObjectURL(new Blob([result.bytes], { type: result.mimeType }));
+			imagePreviewUrl = URL.createObjectURL(new Blob([Uint8Array.from(result.bytes).buffer], { type: result.mimeType }));
 			if (elements.decodedImage) elements.decodedImage.src = imagePreviewUrl;
 			elements.imagePreview?.classList.remove('hidden');
 		}
@@ -98,7 +98,7 @@ function showDecodedResult(result: DecodedBase64Result): void {
 			elements.downloadBinary.textContent = `Download ${extensionForMimeType(result.mimeType).toUpperCase()}`;
 		}
 		if (result.mimeType.startsWith('image/')) {
-			imagePreviewUrl = URL.createObjectURL(new Blob([result.bytes], { type: result.mimeType }));
+			imagePreviewUrl = URL.createObjectURL(new Blob([Uint8Array.from(result.bytes).buffer], { type: result.mimeType }));
 			if (elements.decodedImage) elements.decodedImage.src = imagePreviewUrl;
 			elements.imagePreview?.classList.remove('hidden');
 		}
