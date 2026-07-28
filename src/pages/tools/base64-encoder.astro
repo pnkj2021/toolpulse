@@ -1,0 +1,186 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolLayout from '../../components/ToolLayout.astro';
+import ToolHeader from '../../components/ToolHeader.astro';
+import ToolActions from '../../components/ToolActions.astro';
+import CopyButton from '../../components/CopyButton.astro';
+import DownloadButton from '../../components/DownloadButton.astro';
+import FileUploader from '../../components/FileUploader.astro';
+import BinaryResult from '../../components/BinaryResult.astro';
+import ImagePreview from '../../components/ImagePreview.astro';
+
+const faqs = [
+	{ question: 'What is Base64?', answer: 'Base64 is a text representation of binary data. It converts bytes into a limited set of readable ASCII characters that can travel safely through text-based systems.' },
+	{ question: 'Is Base64 encryption?', answer: 'No. Base64 is encoding, not encryption. Anyone can decode it, so it must never be used to protect passwords, tokens, or confidential information.' },
+	{ question: 'When should I use Base64?', answer: 'Base64 is useful when binary data must be embedded in JSON, HTML, CSS, email, or another text-only format. It increases data size, so regular file transfer is preferable when available.' },
+	{ question: 'Can Base64 store files?', answer: 'Base64 can represent the bytes of any file as text. To restore the original file accurately, retain its original name and MIME type alongside the encoded data.' },
+];
+---
+
+<BaseLayout
+	title="Base64 Encoder & Decoder | ToolPulse"
+	description="Free online Base64 Encoder and Decoder. Encode and decode text or files securely in your browser. No uploads. Fast and free."
+	canonicalPath="/tools/base64-encoder"
+>
+	<ToolLayout>
+		<span slot="breadcrumb">Base64 Encoder &amp; Decoder</span>
+		<ToolHeader
+			title="Base64 Encoder & Decoder"
+			description="Encode and decode UTF-8 text or complete files locally in your browser. Nothing is uploaded."
+		/>
+
+		<div class="mb-4 inline-flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm dark:border-slate-700 dark:bg-slate-900" role="tablist" aria-label="Base64 mode">
+			<button type="button" class="base64-tab base64-tab-active" data-base64-tab="text" role="tab" aria-selected="true" aria-controls="text-panel">Text</button>
+			<button type="button" class="base64-tab" data-base64-tab="file" role="tab" aria-selected="false" aria-controls="file-panel">File</button>
+		</div>
+
+		<div id="base64-status" class="mb-4 rounded-xl border px-4 py-3 text-sm" role="status" aria-live="polite"></div>
+
+		<section id="text-panel" data-base64-panel="text" role="tabpanel" aria-label="Text encoder and decoder">
+			<div class="grid gap-4 lg:grid-cols-2">
+				<div class="tool-panel">
+					<label for="text-input" class="tool-panel-label">Input text or Base64</label>
+					<textarea id="text-input" class="tool-textarea" placeholder="Enter text to encode or Base64 to decode..." spellcheck="false"></textarea>
+					<ToolActions>
+						<button id="encode-text" type="button" class="button-primary" disabled>Encode</button>
+						<button id="decode-text" type="button" class="button-secondary" disabled>Decode</button>
+						<button id="swap-text" type="button" class="button-secondary" disabled>Swap</button>
+					</ToolActions>
+				</div>
+				<div class="tool-panel">
+					<label for="text-output" class="tool-panel-label">Output text</label>
+					<div id="text-result">
+						<p id="decoded-text-type" class="mb-2 hidden text-xs font-medium text-slate-500 dark:text-slate-400"></p>
+						<textarea id="text-output" class="tool-textarea bg-slate-50 dark:bg-slate-950" placeholder="Your result will appear here..." readonly></textarea>
+						<div class="mt-3">
+							<ToolActions>
+								<CopyButton id="copy-text" targetId="text-output" label="Copy output" />
+								<DownloadButton id="download-decoded-text" label="Download text" />
+							</ToolActions>
+						</div>
+					</div>
+					<BinaryResult />
+					<ImagePreview />
+					<ToolActions>
+						<button id="clear-text" type="button" class="button-secondary">Clear</button>
+					</ToolActions>
+				</div>
+			</div>
+		</section>
+
+		<section id="file-panel" data-base64-panel="file" role="tabpanel" aria-label="File encoder and decoder" hidden>
+			<div class="grid gap-4 lg:grid-cols-2">
+				<div class="tool-panel">
+					<h2 class="tool-panel-label">Upload a file</h2>
+					<FileUploader id="file-input" />
+					<div id="file-details" class="mt-3 hidden grid grid-cols-3 gap-2 rounded-xl bg-slate-50 p-3 text-xs dark:bg-slate-800">
+						<div class="min-w-0"><span class="block text-slate-400">Name</span><strong id="file-name" class="block truncate text-slate-700 dark:text-slate-200"></strong></div>
+						<div><span class="block text-slate-400">Size</span><strong id="file-size" class="block text-slate-700 dark:text-slate-200"></strong></div>
+						<div class="min-w-0"><span class="block text-slate-400">Type</span><strong id="file-type" class="block truncate text-slate-700 dark:text-slate-200"></strong></div>
+					</div>
+					<ToolActions>
+						<button id="encode-file" type="button" class="button-primary" disabled>Convert file to Base64</button>
+						<button id="clear-file" type="button" class="button-secondary">Clear</button>
+					</ToolActions>
+				</div>
+				<div class="tool-panel">
+					<label for="file-base64" class="tool-panel-label">Base64 data</label>
+					<textarea id="file-base64" class="tool-textarea font-mono text-xs" placeholder="Encoded file data appears here, or paste Base64 to restore a file..." spellcheck="false"></textarea>
+					<ToolActions>
+						<button id="restore-file" type="button" class="button-primary" disabled>Restore file</button>
+						<CopyButton id="copy-file" targetId="file-base64" label="Copy Base64" />
+						<DownloadButton id="download-base64" label="Download .txt" />
+						<DownloadButton id="download-restored" label="Download restored file" />
+					</ToolActions>
+				</div>
+			</div>
+		</section>
+
+		<div class="mt-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-200">
+			<strong>Private processing:</strong> text and files stay on your device. ToolPulse never uploads or stores them.
+		</div>
+
+		<section class="mt-10">
+			<h2 class="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">Usage examples</h2>
+			<div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+				<div class="content-card"><h3 class="font-bold">Hello World</h3><p>Encode Unicode text safely for text-based systems.</p></div>
+				<div class="content-card"><h3 class="font-bold">API tokens</h3><p>Inspect Base64-encoded segments while debugging. Base64 does not secure secrets.</p></div>
+				<div class="content-card"><h3 class="font-bold">Images</h3><p>Represent image bytes for data URLs, CSS, or API payloads.</p></div>
+				<div class="content-card"><h3 class="font-bold">JSON</h3><p>Embed binary or special text data inside a JSON string value.</p></div>
+			</div>
+		</section>
+
+		<div class="mt-10 grid gap-6 lg:grid-cols-[2fr_1fr]">
+			<section class="content-card">
+				<h2>Frequently asked questions</h2>
+				<div class="mt-2 divide-y divide-slate-200 dark:divide-slate-700">
+					{faqs.map((faq, index) => (
+						<details class="group py-4" open={index === 0}>
+							<summary class="flex cursor-pointer list-none items-start justify-between gap-3 text-sm font-semibold text-slate-800 dark:text-slate-100">{faq.question}<span class="text-blue-600 transition group-open:rotate-45" aria-hidden="true">+</span></summary>
+							<p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{faq.answer}</p>
+						</details>
+					))}
+				</div>
+			</section>
+			<aside class="content-card">
+				<h2>Related developer tools</h2>
+				<div class="mt-3 space-y-2 text-sm">
+					<a href="/tools/json-formatter" class="related-link"><span>JSON Formatter</span><span>&rarr;</span></a>
+					<a href="/tools/json-builder" class="related-link"><span>JSON Builder</span><span>&rarr;</span></a>
+					<div class="related-link text-slate-400"><span>URL Encoder</span><small>Coming soon</small></div>
+					<div class="related-link text-slate-400"><span>UUID Generator</span><small>Coming soon</small></div>
+					<div class="related-link text-slate-400"><span>Hash Generator</span><small>Coming soon</small></div>
+				</div>
+			</aside>
+		</div>
+	</ToolLayout>
+
+	<script>
+		import '../../scripts/base64-tool';
+	</script>
+</BaseLayout>
+
+<style>
+	.base64-tab {
+		border-radius: 0.5rem;
+		padding: 0.5rem 1.25rem;
+		color: rgb(100 116 139);
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+	.base64-tab:focus { outline: none; box-shadow: 0 0 0 4px rgb(219 234 254); }
+	.base64-tab-active { background: rgb(37 99 235); color: white; }
+	.tool-panel {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		border: 1px solid rgb(226 232 240);
+		border-radius: 1rem;
+		background: white;
+		padding: 1rem;
+		box-shadow: 0 1px 2px rgb(15 23 42 / 0.05);
+	}
+	.tool-panel-label { color: rgb(51 65 85); font-size: 0.875rem; font-weight: 700; }
+	.tool-textarea {
+		min-height: 18rem;
+		width: 100%;
+		resize: vertical;
+		border: 1px solid rgb(203 213 225);
+		border-radius: 0.75rem;
+		padding: 1rem;
+		color: rgb(30 41 59);
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-size: 0.875rem;
+		line-height: 1.5rem;
+		outline: none;
+	}
+	.tool-textarea:focus { border-color: rgb(59 130 246); box-shadow: 0 0 0 4px rgb(219 234 254); }
+	:global(button:disabled) { cursor: not-allowed; opacity: 0.45; }
+	@media (prefers-color-scheme: dark) {
+		.tool-panel { border-color: rgb(51 65 85); background: rgb(15 23 42); }
+		.tool-panel-label { color: rgb(226 232 240); }
+		.tool-textarea { border-color: rgb(71 85 105); background: rgb(2 6 23); color: rgb(226 232 240); }
+		.base64-tab { color: rgb(148 163 184); }
+		.base64-tab-active { color: white; }
+	}
+</style>

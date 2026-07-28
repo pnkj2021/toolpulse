@@ -1,0 +1,15 @@
+---
+import DownloadButton from './DownloadButton.astro';
+---
+
+<section id="binary-result" class="hidden flex-1 rounded-xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-900 dark:bg-emerald-950" aria-labelledby="binary-result-title">
+	<h3 id="binary-result-title" class="font-bold text-emerald-900 dark:text-emerald-100">Decoded successfully</h3>
+	<dl class="mt-3 grid gap-3 text-sm sm:grid-cols-3">
+		<div><dt class="text-emerald-700 dark:text-emerald-300">Type</dt><dd id="binary-mime" class="mt-0.5 font-semibold text-emerald-950 dark:text-white"></dd></div>
+		<div><dt class="text-emerald-700 dark:text-emerald-300">Size</dt><dd id="binary-size" class="mt-0.5 font-semibold text-emerald-950 dark:text-white"></dd></div>
+		<div><dt class="text-emerald-700 dark:text-emerald-300">Extension</dt><dd id="binary-extension" class="mt-0.5 font-semibold text-emerald-950 dark:text-white"></dd></div>
+	</dl>
+	<div class="mt-4">
+		<DownloadButton id="download-decoded-binary" label="Download file" disabled={false} />
+	</div>
+</section>

@@ -1,6 +1,17 @@
-<footer class="mt-12 border-t border-slate-200 bg-white">
-	<div class="page-container flex flex-col gap-3 py-7 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-		<a href="/" class="font-semibold text-slate-700">Tool<span class="text-blue-600">Pulse</span></a>
-		<p>&copy; {new Date().getFullYear()} ToolPulse. Simple tools, ready when you are.</p>
+<footer class="mt-12 border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
+	<div class="page-container py-8">
+		<div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+			<div>
+				<a href="/" class="font-semibold text-slate-800">Tool<span class="text-blue-600">Pulse</span></a>
+				<p class="mt-1 text-sm text-slate-500">Simple tools, ready when you are.</p>
+			</div>
+			<nav aria-label="Footer navigation" class="flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-slate-600">
+				<a id="about" href="/#about" class="hover:text-blue-600">About</a>
+				<a id="privacy" href="/#privacy" class="hover:text-blue-600">Privacy</a>
+				<a href="mailto:hello@toolpulse.app" class="hover:text-blue-600">Contact</a>
+				<a href="https://github.com/" class="hover:text-blue-600" rel="noopener noreferrer">GitHub</a>
+			</nav>
+		</div>
+		<p class="mt-6 border-t border-slate-100 pt-5 text-xs text-slate-400">&copy; {new Date().getFullYear()} ToolPulse. All rights reserved.</p>
 	</div>
 </footer>

@@ -1,0 +1,14 @@
+---
+interface Props {
+	id: string;
+	targetId: string;
+	label?: string;
+}
+
+const { id, targetId, label = 'Copy' } = Astro.props;
+---
+
+<button id={id} type="button" class="button-primary" data-copy-target={targetId} disabled>
+	<svg class="size-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="2"/></svg>
+	<span data-button-label>{label}</span>
+</button>
