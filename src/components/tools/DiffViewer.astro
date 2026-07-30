@@ -1,0 +1,19 @@
+<section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" aria-labelledby="diff-view-heading">
+	<div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-700">
+		<div>
+			<h2 id="diff-view-heading" class="text-sm font-semibold text-slate-800 dark:text-slate-100">Side-by-side differences</h2>
+			<p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Each difference is labeled in addition to its color.</p>
+		</div>
+		<div class="flex flex-wrap items-center gap-2">
+			<button id="previous-difference" type="button" class="button-secondary" aria-label="Go to previous difference (Alt+Arrow Up)" aria-keyshortcuts="Alt+ArrowUp">Previous</button>
+			<span id="difference-position" class="min-w-28 text-center text-sm font-semibold text-slate-600 dark:text-slate-300" aria-live="polite">No differences</span>
+			<button id="next-difference" type="button" class="button-secondary" aria-label="Go to next difference (Alt+Arrow Down)" aria-keyshortcuts="Alt+ArrowDown">Next</button>
+			<span class="mx-1 hidden h-7 w-px bg-slate-200 lg:block dark:bg-slate-700" aria-hidden="true"></span>
+			<button id="accept-all-left" type="button" class="button-secondary">Accept all original</button>
+			<button id="accept-all-right" type="button" class="button-secondary">Accept all modified</button>
+			<button id="reset-merge" type="button" class="button-secondary">Reset merge</button>
+		</div>
+	</div>
+	<div id="diff-empty" class="px-5 py-14 text-center text-sm text-slate-500 dark:text-slate-400">Enter text in either editor to begin comparing.</div>
+	<div id="diff-blocks" class="hidden max-h-[620px] overflow-auto" tabindex="0" role="region" aria-label="Diff results"></div>
+</section>

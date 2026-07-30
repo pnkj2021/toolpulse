@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolLayout from '../../components/ToolLayout.astro';
+import ToolHeader from '../../components/ToolHeader.astro';
+import DiffEditor from '../../components/tools/DiffEditor.astro';
+import DiffToolbar from '../../components/tools/DiffToolbar.astro';
+import DiffSummary from '../../components/tools/DiffSummary.astro';
+import DiffViewer from '../../components/tools/DiffViewer.astro';
+import MergePanel from '../../components/tools/MergePanel.astro';
+
+const pageTitle = 'Diff Checker & Merge Tool | YBS';
+const pageDescription = 'Compare text, ignore whitespace, merge changes, and download the final result directly in your browser.';
+const webApplicationSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebApplication',
+	name: 'YBS Diff Checker & Merge Tool',
+	applicationCategory: 'DeveloperApplication',
+	operatingSystem: 'Any',
+	description: pageDescription,
+	...(Astro.site ? { url: new URL('/tools/diff-checker', Astro.site).href } : {}),
+	offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+	featureList: ['Side-by-side text comparison', 'Line-based diff', 'Merge conflict resolution', 'Private browser processing'],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonicalPath="/tools/diff-checker">
+		<Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(webApplicationSchema)} /></Fragment>
+	<ToolLayout>
+		<span slot="breadcrumb">Diff Checker &amp; Merge Tool</span>
+		<ToolHeader title="Diff Checker & Merge Tool" description="Compare and merge text locally with a clear, professional line-by-line view." />
+
+		<div class="space-y-5">
+			<DiffToolbar />
+			<div class="grid gap-4 lg:grid-cols-2">
+				<DiffEditor id="original-text" label="Original Text" placeholder="Paste the original text here..." />
+				<DiffEditor id="modified-text" label="Modified Text" placeholder="Paste the modified text here..." />
+			</div>
+			<DiffSummary />
+			<DiffViewer />
+			<MergePanel />
+			<div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-200">
+				<strong>Private by design:</strong> comparison and merging happen entirely in your browser. No text is uploaded or stored.
+			</div>
+		</div>
+	</ToolLayout>
+	<script src="../../scripts/diff-checker.ts"></script>
+</BaseLayout>
+
+<style>
+	:global(button:disabled) { cursor: not-allowed; opacity: 0.45; }
+	:global(.diff-block) { border-bottom: 1px solid rgb(226 232 240); }
+	:global(.diff-block:last-child) { border-bottom: 0; }
+	:global(.diff-block:focus) { outline: 3px solid rgb(147 197 253); outline-offset: -3px; }
+	:global(.diff-block-heading) { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; padding: .5rem 1rem; background: rgb(248 250 252); }
+	:global(.diff-label) { display: inline-flex; align-items: center; gap: .4rem; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: rgb(71 85 105); }
+	:global(.diff-resolution-status) { border-radius: 9999px; background: rgb(226 232 240); padding: .15rem .5rem; font-size: .65rem; letter-spacing: 0; text-transform: none; }
+	:global(.diff-resolutions) { display: flex; flex-wrap: wrap; gap: .35rem; }
+	:global(.diff-resolutions button) { border: 1px solid rgb(203 213 225); border-radius: .4rem; padding: .25rem .55rem; background: white; font-size: .75rem; font-weight: 600; color: rgb(51 65 85); }
+	:global(.diff-resolutions button[aria-pressed="true"]) { border-color: rgb(37 99 235); background: rgb(37 99 235); color: white; }
+	:global(.diff-sides) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+	:global(.diff-side:first-child) { border-right: 1px solid rgb(226 232 240); }
+	:global(.diff-line) { display: grid; min-height: 1.75rem; grid-template-columns: 3.25rem minmax(0, 1fr); font-size: .8125rem; line-height: 1.75rem; }
+	:global(.diff-line > span:first-child) { user-select: none; border-right: 1px solid rgb(226 232 240); padding: 0 .65rem; text-align: right; color: rgb(100 116 139); }
+	:global(.diff-line code) { overflow-wrap: anywhere; padding: 0 .75rem; white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: rgb(30 41 59); }
+	:global(.diff-omitted) { border-block: 1px dashed rgb(203 213 225); background: rgb(248 250 252); padding: .45rem 1rem; text-align: center; font-size: .75rem; font-weight: 600; color: rgb(100 116 139); }
+	:global(.diff-result) { border-top: 1px solid rgb(191 219 254); background: rgb(239 246 255); }
+	:global(.diff-result-title) { border-bottom: 1px solid rgb(191 219 254); padding: .4rem 1rem; font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: rgb(29 78 216); }
+	:global(.diff-added .diff-side:last-child), :global(.diff-changed .diff-side:last-child) { background: rgb(236 253 245); box-shadow: inset 3px 0 rgb(16 185 129); }
+	:global(.diff-removed .diff-side:first-child), :global(.diff-changed .diff-side:first-child) { background: rgb(254 242 242); box-shadow: inset 3px 0 rgb(239 68 68); }
+	:global(.diff-resolved-left .diff-side:first-child), :global(.diff-resolved-right .diff-side:last-child), :global(.diff-resolved-both .diff-side) { position: relative; box-shadow: inset 0 0 0 3px rgb(37 99 235); }
+	:global(.diff-resolved-left .diff-side:last-child), :global(.diff-resolved-right .diff-side:first-child) { opacity: .55; }
+	:global(.diff-line-empty) { color: rgb(148 163 184); }
+	@media (max-width: 640px) {
+		:global(.diff-sides) { grid-template-columns: 1fr; }
+		:global(.diff-side:first-child) { border-right: 0; border-bottom: 1px solid rgb(226 232 240); }
+	}
+	:global(.dark .diff-block) { border-color: rgb(51 65 85); }
+	:global(.dark .diff-block-heading) { background: rgb(15 23 42); }
+	:global(.dark .diff-label) { color: rgb(203 213 225); }
+	:global(.dark .diff-resolution-status) { background: rgb(51 65 85); }
+	:global(.dark .diff-resolutions button) { border-color: rgb(71 85 105); background: rgb(15 23 42); color: rgb(226 232 240); }
+	:global(.dark .diff-resolutions button[aria-pressed="true"]) { border-color: rgb(59 130 246); background: rgb(37 99 235); }
+	:global(.dark .diff-side:first-child), :global(.dark .diff-line > span:first-child) { border-color: rgb(51 65 85); }
+	:global(.dark .diff-line code) { color: rgb(226 232 240); }
+	:global(.dark .diff-omitted) { border-color: rgb(71 85 105); background: rgb(15 23 42); color: rgb(148 163 184); }
+	:global(.dark .diff-result) { border-color: rgb(30 64 175); background: rgb(23 37 84); }
+	:global(.dark .diff-result-title) { border-color: rgb(30 64 175); color: rgb(147 197 253); }
+	:global(.dark .diff-added .diff-side:last-child), :global(.dark .diff-changed .diff-side:last-child) { background: rgb(2 44 34); }
+	:global(.dark .diff-removed .diff-side:first-child), :global(.dark .diff-changed .diff-side:first-child) { background: rgb(69 10 10); }
+</style>

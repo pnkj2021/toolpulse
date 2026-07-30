@@ -1,0 +1,19 @@
+---
+interface Props {
+	id: string;
+	label: string;
+	placeholder: string;
+}
+const { id, label, placeholder } = Astro.props;
+---
+
+<section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" aria-labelledby={`${id}-label`}>
+	<div class="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-slate-700">
+		<h2 id={`${id}-label`} class="text-sm font-semibold text-slate-800 dark:text-slate-100">{label}</h2>
+		<span id={`${id}-count`} class="text-xs text-slate-500 dark:text-slate-400">0 lines</span>
+	</div>
+	<div class="grid h-[360px] max-h-[55vh] min-h-[260px] grid-cols-[3rem_minmax(0,1fr)] overflow-hidden">
+		<pre id={`${id}-numbers`} class="m-0 h-full select-none overflow-hidden border-r border-slate-200 bg-slate-50 px-2 py-4 text-right font-mono text-sm leading-6 text-slate-400 dark:border-slate-700 dark:bg-slate-950" aria-hidden="true">1</pre>
+		<textarea id={id} class="block h-full min-h-0 min-w-0 w-full resize-none overflow-auto whitespace-pre bg-white p-4 font-mono text-sm leading-6 text-slate-800 outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-inset focus:ring-blue-100 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900" {placeholder} spellcheck="false" wrap="off" aria-labelledby={`${id}-label`}></textarea>
+	</div>
+</section>

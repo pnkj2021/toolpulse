@@ -64,6 +64,15 @@ export const tools: readonly Tool[] = [
 		tags: ['Developer'],
 		available: true,
 	},
+	{
+		slug: 'diff-checker',
+		name: 'Diff Checker & Merge Tool',
+		description: 'Compare text line by line and merge changes privately.',
+		icon: '±',
+		category: 'Developer',
+		tags: ['Developer', 'Text'],
+		available: true,
+	},
 ];
 
 export const availableTools = tools.filter((tool) => tool.available);
