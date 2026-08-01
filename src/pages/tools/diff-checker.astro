@@ -74,17 +74,18 @@ const webApplicationSchema = {
 		:global(.diff-sides) { grid-template-columns: 1fr; }
 		:global(.diff-side:first-child) { border-right: 0; border-bottom: 1px solid rgb(226 232 240); }
 	}
-	:global(.dark .diff-block) { border-color: rgb(51 65 85); }
-	:global(.dark .diff-block-heading) { background: rgb(15 23 42); }
-	:global(.dark .diff-label) { color: rgb(203 213 225); }
-	:global(.dark .diff-resolution-status) { background: rgb(51 65 85); }
-	:global(.dark .diff-resolutions button) { border-color: rgb(71 85 105); background: rgb(15 23 42); color: rgb(226 232 240); }
-	:global(.dark .diff-resolutions button[aria-pressed="true"]) { border-color: rgb(59 130 246); background: rgb(37 99 235); }
-	:global(.dark .diff-side:first-child), :global(.dark .diff-line > span:first-child) { border-color: rgb(51 65 85); }
-	:global(.dark .diff-line code) { color: rgb(226 232 240); }
-	:global(.dark .diff-omitted) { border-color: rgb(71 85 105); background: rgb(15 23 42); color: rgb(148 163 184); }
-	:global(.dark .diff-result) { border-color: rgb(30 64 175); background: rgb(23 37 84); }
-	:global(.dark .diff-result-title) { border-color: rgb(30 64 175); color: rgb(147 197 253); }
-	:global(.dark .diff-added .diff-side:last-child), :global(.dark .diff-changed .diff-side:last-child) { background: rgb(2 44 34); }
-	:global(.dark .diff-removed .diff-side:first-child), :global(.dark .diff-changed .diff-side:first-child) { background: rgb(69 10 10); }
+	:global([data-theme="dark"] .diff-block) { border-color: rgb(39 52 73); }
+	:global([data-theme="dark"] .diff-block-heading) { background: rgb(23 32 51); }
+	:global([data-theme="dark"] .diff-label) { color: rgb(203 213 225); }
+	:global([data-theme="dark"] .diff-resolution-status) { background: rgb(39 52 73); }
+	:global([data-theme="dark"] .diff-resolutions button) { border-color: rgb(51 65 85); background: rgb(15 23 42); color: rgb(226 232 240); }
+	:global([data-theme="dark"] .diff-resolutions button[aria-pressed="true"]) { border-color: rgb(59 130 246); background: rgb(37 99 235); }
+	:global([data-theme="dark"] .diff-side:first-child), :global([data-theme="dark"] .diff-line > span:first-child) { border-color: rgb(39 52 73); }
+	:global([data-theme="dark"] .diff-line code) { color: rgb(226 232 240); }
+	:global([data-theme="dark"] .diff-omitted) { border-color: rgb(51 65 85); background: rgb(23 32 51); color: rgb(148 163 184); }
+	:global([data-theme="dark"] .diff-result) { border-color: rgb(30 64 175); background: rgb(23 37 84); }
+	:global([data-theme="dark"] .diff-result-title) { border-color: rgb(30 64 175); color: rgb(147 197 253); }
+	:global([data-theme="dark"] .diff-changed .diff-block-heading) { background: rgb(55 43 18); }
+	:global([data-theme="dark"] .diff-added .diff-side:last-child), :global([data-theme="dark"] .diff-changed .diff-side:last-child) { background: rgb(6 40 35); }
+	:global([data-theme="dark"] .diff-removed .diff-side:first-child), :global([data-theme="dark"] .diff-changed .diff-side:first-child) { background: rgb(55 20 25); }
 </style>

@@ -1,4 +1,4 @@
-# ToolPulse Tools Audit
+# YBS Tools Audit
 
 Generated: 2026-07-28T23:09:12+05:30  
 Scope: repository inspection, configured build, static integration checks, and targeted business-logic checks.  
@@ -6,7 +6,7 @@ Not performed: interactive browser, assistive-technology, real clipboard, downlo
 
 ## Executive summary
 
-ToolPulse currently contains five implemented tools. Every tool page has a unique matching registry entry, homepage card, search metadata, and successfully generated static route. There are no duplicate slugs, planned-but-missing routes, or orphaned tool pages.
+YBS currently contains five implemented tools. Every tool page has a unique matching registry entry, homepage card, search metadata, and successfully generated static route. There are no duplicate slugs, planned-but-missing routes, or orphaned tool pages.
 
 The strongest implementation is Base64 Encoder & Decoder because it has separated utilities, reusable components, typed result models, binary detection, file workflows, and object URL cleanup. The weakest is Word Counter: its core workflow works, but its algorithm and page remain inline, its “Characters” result measures UTF-16 code units, and it lacks the content, related links, canonical input, and dark-mode treatment present in newer tools.
 
@@ -39,7 +39,7 @@ The strongest implementation is Base64 Encoder & Decoder because it has separate
 - No category pages exist. Categories are homepage filters derived from registry tags and limited to categories with available tools.
 - Registry categories `Image`, `PDF`, and `Calculator` have no current tools and are therefore correctly hidden by the homepage.
 - Related-tool links to implemented routes are valid. Planned tools are non-links marked “Coming soon.”
-- Footer “GitHub” points to generic `https://github.com/`, not a ToolPulse repository. This is not broken but is not product-specific.
+- Footer “GitHub” points to generic `https://github.com/`, not a YBS repository. This is not broken but is not product-specific.
 - Old Astro starter files (`Welcome.astro`, `Layout.astro`, starter assets) are unused technical debt.
 
 ## 2. Tool reviews
@@ -499,4 +499,3 @@ Dependencies are limited to Astro, Tailwind CSS, and the Tailwind Vite integrati
 - Counter definitions are simplistic and undocumented.
 - Large JSON, deeply broad builders, and large files have no production-tested limits.
 - No category pages exist; current homepage filtering is adequate for five tools but will not scale indefinitely.
-

@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+	color-scheme: light;
+	--background: #f8fafc;
+	--surface: #ffffff;
+	--surface-secondary: #f1f5f9;
+	--border: #e2e8f0;
+	--border-strong: #cbd5e1;
+	--text-primary: #0f172a;
+	--text-secondary: #64748b;
+	--text-muted: #94a3b8;
+	--primary: #2563eb;
+	--primary-hover: #1d4ed8;
+	--input-background: #ffffff;
+}
+
+[data-theme="dark"] {
+	color-scheme: dark;
+	--background: #0b1120;
+	--surface: #111827;
+	--surface-secondary: #172033;
+	--border: #273449;
+	--border-strong: #334155;
+	--text-primary: #f8fafc;
+	--text-secondary: #cbd5e1;
+	--text-muted: #94a3b8;
+	--primary: #3b82f6;
+	--primary-hover: #60a5fa;
+	--input-background: #0f172a;
+}
+
 @theme {
 	--font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -11,6 +43,18 @@
 
 	body {
 		margin: 0;
+		background: var(--background);
+		color: var(--text-primary);
+	}
+
+	::selection {
+		background: color-mix(in srgb, var(--primary) 25%, transparent);
+	}
+
+	input,
+	textarea,
+	select {
+		color-scheme: inherit;
 	}
 
 	button,
@@ -23,6 +67,51 @@
 	button {
 		cursor: pointer;
 	}
+}
+
+@layer utilities {
+	[data-theme="dark"] .bg-white { background-color: var(--surface) !important; }
+	[data-theme="dark"] .bg-slate-50 { background-color: var(--background) !important; }
+	[data-theme="dark"] .bg-slate-100 { background-color: var(--surface-secondary) !important; }
+	[data-theme="dark"] .bg-blue-50 { background-color: rgb(23 37 84) !important; }
+	[data-theme="dark"] .text-slate-950,
+	[data-theme="dark"] .text-slate-900,
+	[data-theme="dark"] .text-slate-800 { color: var(--text-primary) !important; }
+	[data-theme="dark"] .text-slate-700,
+	[data-theme="dark"] .text-slate-600 { color: var(--text-secondary) !important; }
+	[data-theme="dark"] .text-slate-500,
+	[data-theme="dark"] .text-slate-400 { color: var(--text-muted) !important; }
+	[data-theme="dark"] .border-slate-100,
+	[data-theme="dark"] .border-slate-200 { border-color: var(--border) !important; }
+	[data-theme="dark"] .border-slate-300 { border-color: var(--border-strong) !important; }
+	[data-theme="dark"] input,
+	[data-theme="dark"] textarea,
+	[data-theme="dark"] select {
+		border-color: var(--border-strong);
+		background-color: var(--input-background);
+		color: #e2e8f0;
+	}
+	[data-theme="dark"] input::placeholder,
+	[data-theme="dark"] textarea::placeholder { color: #64748b; }
+	[data-theme="dark"] .hover\:bg-blue-50:hover,
+	[data-theme="dark"] .focus\:bg-blue-50:focus { background-color: rgb(23 37 84) !important; }
+}
+
+[data-theme="dark"] body { background: var(--background) !important; }
+
+body,
+header,
+footer,
+section,
+article,
+input,
+textarea,
+select,
+button,
+a {
+	transition-property: background-color, border-color, color, box-shadow;
+	transition-duration: 180ms;
+	transition-timing-function: ease;
 }
 
 @layer components {

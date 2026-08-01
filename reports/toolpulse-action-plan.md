@@ -1,4 +1,4 @@
-# ToolPulse Action Plan
+# YBS Action Plan
 
 Generated from the 2026-07-28 tools audit. Production code was not changed during this audit.
 
@@ -73,4 +73,3 @@ Any AI feature must distinguish local deterministic processing from remote model
 - Registry/page parity fails CI when inconsistent.
 - Browser tests cover 320, 375, 768, 1024, and 1440 px smoke layouts.
 - Base64 tests cover Unicode, Data URLs, PNG preview, PDF download metadata, invalid input, clear, and object URL cleanup.
-

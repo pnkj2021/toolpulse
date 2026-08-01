@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const pageTitle = 'Free JSON Formatter and Validator — ToolPulse';
+const pageTitle = 'Free JSON Formatter and Validator — YBS';
 const pageDescription = 'Format, minify, and validate JSON online with indentation controls, helpful errors, and JSON statistics. Your data stays in your browser.';
 
 const faqs = [
@@ -16,7 +16,7 @@ const faqs = [
 const webApplicationSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'WebApplication',
-	name: 'ToolPulse JSON Formatter',
+	name: 'YBS JSON Formatter',
 	applicationCategory: 'DeveloperApplication',
 	operatingSystem: 'Any',
 	description: pageDescription,
@@ -83,7 +83,7 @@ const faqSchema = {
 					<h2 id="input-heading" class="text-sm font-semibold text-slate-800 dark:text-slate-100">Input JSON</h2>
 					<span id="input-lines" class="text-xs text-slate-400">0 lines</span>
 				</div>
-				<textarea id="json-input" class="block min-h-[390px] w-full resize-y bg-white p-4 font-mono text-sm leading-6 text-slate-800 outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-inset focus:ring-blue-100 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900" placeholder='Paste JSON here, for example: {"name":"ToolPulse"}' spellcheck="false" aria-label="Input JSON"></textarea>
+				<textarea id="json-input" class="block min-h-[390px] w-full resize-y bg-white p-4 font-mono text-sm leading-6 text-slate-800 outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-inset focus:ring-blue-100 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900" placeholder='Paste JSON here, for example: {"name":"YBS"}' spellcheck="false" aria-label="Input JSON"></textarea>
 			</section>
 
 			<section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900" aria-labelledby="output-heading">
@@ -201,7 +201,7 @@ const faqSchema = {
 		};
 
 		const sample = JSON.stringify({
-			name: 'ToolPulse',
+			name: 'YBS',
 			active: true,
 			tools: [
 				{ id: 1, name: 'Word Counter', tags: ['text', 'writing'] },

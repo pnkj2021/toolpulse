@@ -1,0 +1,42 @@
+<button
+	type="button"
+	id="theme-toggle"
+	class="grid size-9 place-items-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-blue-700 dark:hover:bg-slate-700 dark:hover:text-blue-300 dark:focus:ring-blue-900"
+	aria-label="Switch to dark mode"
+	title="Switch to dark mode"
+	aria-pressed="false"
+>
+	<svg data-theme-icon="moon" class="size-4.5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 15.2A8 8 0 0 1 8.8 4 8 8 0 1 0 20 15.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+	<svg data-theme-icon="sun" class="hidden size-4.5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+</button>
+
+<script>
+	import { THEME_STORAGE_KEY, isTheme, type Theme } from '../config/theme';
+
+	const toggle = document.querySelector<HTMLButtonElement>('#theme-toggle');
+	const moon = toggle?.querySelector<SVGElement>('[data-theme-icon="moon"]');
+	const sun = toggle?.querySelector<SVGElement>('[data-theme-icon="sun"]');
+
+	function updateToggle(theme: Theme) {
+		const isDark = theme === 'dark';
+		const label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+		toggle?.setAttribute('aria-label', label);
+		toggle?.setAttribute('title', label);
+		toggle?.setAttribute('aria-pressed', String(isDark));
+		moon?.classList.toggle('hidden', isDark);
+		sun?.classList.toggle('hidden', !isDark);
+	}
+
+	function currentTheme(): Theme {
+		const theme = document.documentElement.dataset.theme;
+		return isTheme(theme) ? theme : 'light';
+	}
+
+	updateToggle(currentTheme());
+	toggle?.addEventListener('click', () => {
+		const theme: Theme = currentTheme() === 'dark' ? 'light' : 'dark';
+		document.documentElement.dataset.theme = theme;
+		try { localStorage.setItem(THEME_STORAGE_KEY, theme); } catch {}
+		updateToggle(theme);
+	});
+</script>

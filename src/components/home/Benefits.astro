@@ -1,0 +1,15 @@
+---
+const benefits = [
+	{ icon: '♙', title: 'No Sign Up', description: 'Start using instantly' },
+	{ icon: '◇', title: '100% Private', description: 'Everything runs locally' },
+	{ icon: '□', title: 'Always Free', description: 'No hidden costs' },
+	{ icon: '</>', title: 'Open Source', description: 'Built for everyone' },
+];
+---
+
+<section aria-labelledby="benefits-heading" class="border-b border-slate-100 bg-white">
+	<h2 id="benefits-heading" class="sr-only">Why use YBS</h2>
+	<div class="page-container grid gap-6 pb-12 sm:grid-cols-2 lg:grid-cols-4">
+		{benefits.map((benefit) => <article class="flex items-center gap-4"><span class="grid size-10 shrink-0 place-items-center text-xl font-bold text-blue-600" aria-hidden="true">{benefit.icon}</span><div><h3 class="text-sm font-bold text-slate-900">{benefit.title}</h3><p class="mt-1 text-xs text-slate-500">{benefit.description}</p></div></article>)}
+	</div>
+</section>

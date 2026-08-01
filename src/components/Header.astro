@@ -1,25 +1,27 @@
-<header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
-	<div class="page-container flex h-16 items-center justify-between">
-		<a href="/" class="flex items-center gap-2 font-bold tracking-tight text-slate-950 dark:text-white" aria-label="ToolPulse home">
-			<span class="grid size-9 place-items-center rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-200">
-				<svg class="size-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-					<path d="M3 12h4l2.2-6 4.2 12 2.1-6H21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-				</svg>
-			</span>
-			<span class="text-lg">Tool<span class="text-blue-600">Pulse</span></span>
+---
+import Logo from './Logo.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { BRAND } from '../config/brand';
+---
+
+<header class="theme-header sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl dark:border-[var(--border)] dark:bg-[#0b1120]/90">
+	<div class="page-container flex h-14 items-center justify-between sm:h-[3.75rem]">
+		<a href="/" class="font-bold" aria-label={`${BRAND.shortName} home`}>
+			<Logo showSubtitle />
 		</a>
 
 		<div class="flex items-center gap-1 sm:gap-3">
-			<nav aria-label="Main navigation" class="hidden items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-300 sm:flex">
-				<a href="/" class="rounded-lg px-3 py-2 hover:bg-slate-100 hover:text-slate-950 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:hover:bg-slate-800 dark:hover:text-white dark:focus:ring-blue-900">Home</a>
-				<a href="/#tools" class="rounded-lg px-3 py-2 hover:bg-slate-100 hover:text-slate-950 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:hover:bg-slate-800 dark:hover:text-white dark:focus:ring-blue-900">Tools</a>
+			<nav aria-label="Main navigation" class="hidden h-full items-center gap-1 text-sm font-medium text-slate-500 dark:text-slate-400 sm:flex">
+				<a href="/" aria-current="page" class="flex h-full items-center border-b-2 border-blue-600 px-3 text-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:text-blue-400">Home</a>
+				<a href="/#tools" class="rounded-lg px-3 py-2 hover:text-slate-950 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:hover:text-slate-100">Tools</a>
+				<a href="/#categories" class="rounded-lg px-3 py-2 hover:text-slate-950 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:hover:text-slate-100">Categories</a>
+				<a href="/about" class="rounded-lg px-3 py-2 hover:text-slate-950 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:hover:text-slate-100">About</a>
+				<a href="/contact" class="rounded-lg px-3 py-2 hover:text-slate-950 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:hover:text-slate-100">Contact</a>
 			</nav>
-			<a href="/#tool-search" data-search-link class="grid size-9 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white dark:focus:ring-blue-900" aria-label="Search tools">
+			<a href="/#tool-search" data-search-link class="grid size-9 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-100" aria-label="Search tools">
 				<svg class="size-4.5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
 			</a>
-			<button type="button" class="grid size-9 cursor-not-allowed place-items-center rounded-lg text-slate-400" aria-label="Theme toggle coming soon" title="Theme toggle coming soon" disabled>
-				<svg class="size-4.5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 15.2A8 8 0 0 1 8.8 4 8 8 0 1 0 20 15.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-			</button>
+			<ThemeToggle />
 		</div>
 	</div>
 </header>

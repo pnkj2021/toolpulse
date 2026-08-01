@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const pageTitle = 'Visual JSON Builder Online — ToolPulse';
+const pageTitle = 'Visual JSON Builder Online — YBS';
 const pageDescription = 'Create valid JSON visually with nested objects, arrays, data types, live preview, import, copy, and download tools. Everything runs in your browser.';
 const faqs = [
 	{ question: 'What is a JSON Builder?', answer: 'A JSON Builder is a visual editor that creates JSON syntax for you. Add properties or array items, choose their data types, and enter values while the tool generates the JSON.' },
@@ -11,12 +11,12 @@ const faqs = [
 	{ question: 'Can I import existing JSON?', answer: 'Yes. Use Import JSON, paste a valid object or array, and confirm the import. Existing builder data is replaced only after the pasted JSON parses successfully.' },
 	{ question: 'What is the difference between an object and an array?', answer: 'An object stores named key-value properties and uses braces. An array stores ordered items and uses brackets. Both can contain any JSON data type.' },
 	{ question: 'Can JSON contain duplicate keys?', answer: 'The JSON specification expects object property names to be unique. This builder warns about duplicate keys in the same object and disables generated output until they are fixed.' },
-	{ question: 'How do I download the generated JSON?', answer: 'Once the builder is valid, select Download JSON. Your browser creates a local file named toolpulse-data.json without contacting a server.' },
+	{ question: 'How do I download the generated JSON?', answer: 'Once the builder is valid, select Download JSON. Your browser creates a local file named ybs-data.json without contacting a server.' },
 ];
 const appSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'WebApplication',
-	name: 'ToolPulse Visual JSON Builder',
+	name: 'YBS Visual JSON Builder',
 	applicationCategory: 'DeveloperApplication',
 	operatingSystem: 'Any',
 	description: pageDescription,
@@ -115,7 +115,7 @@ const faqSchema = {
 				<article class="content-card"><h2>JSON data types explained</h2><p>JSON supports strings, numbers, booleans, null, objects, and arrays. Strings contain text, numbers contain finite numeric values, booleans are true or false, and null represents an intentional absence of data.</p></article>
 				<article class="content-card"><h2>How nested JSON works</h2><p>An object property or array item can itself contain another object or array. Nesting models relationships such as an order containing customer details and a list of products. Visual indentation shows each structure’s depth.</p></article>
 				<article class="content-card"><h2>Common JSON structure mistakes</h2><p>Frequent problems include empty or duplicate object keys, invalid numbers, choosing the wrong root structure, and excessive nesting. The builder detects these issues before allowing invalid JSON to be copied or downloaded.</p></article>
-				<article class="content-card"><h2>Privacy and browser-based processing</h2><p>ToolPulse builds and parses data using JavaScript in your browser. Imports are not uploaded, and downloaded files are generated locally. Continue to follow your organization’s policies when working with confidential information.</p></article>
+				<article class="content-card"><h2>Privacy and browser-based processing</h2><p>YBS builds and parses data using JavaScript in your browser. Imports are not uploaded, and downloaded files are generated locally. Continue to follow your organization’s policies when working with confidential information.</p></article>
 			</div>
 			<div class="space-y-6">
 				<aside class="content-card">
@@ -147,7 +147,7 @@ const faqSchema = {
 		<div class="p-5">
 			<h2 id="import-title" class="text-xl font-bold text-slate-950 dark:text-white">Import JSON</h2>
 			<p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Paste a JSON object or array. Current data changes only after a valid import.</p>
-			<textarea id="import-json" class="mt-4 min-h-56 w-full rounded-xl border border-slate-300 bg-white p-3 font-mono text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-blue-900" placeholder='{"name":"ToolPulse"}' aria-label="JSON to import"></textarea>
+			<textarea id="import-json" class="mt-4 min-h-56 w-full rounded-xl border border-slate-300 bg-white p-3 font-mono text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-blue-900" placeholder='{"name":"YBS"}' aria-label="JSON to import"></textarea>
 			<p id="import-error" class="mt-2 min-h-5 text-sm text-red-700 dark:text-red-300" role="alert"></p>
 			<div class="mt-4 flex justify-end gap-2">
 				<button id="cancel-import" type="button" class="button-secondary">Cancel</button>
@@ -211,21 +211,19 @@ const faqSchema = {
 	:global(.builder-danger:hover) { background: rgb(254 242 242); }
 	:global(.builder-index), :global(.builder-null) { color: rgb(100 116 139); font-family: ui-monospace, monospace; font-size: 0.8125rem; }
 	:global(.builder-empty) { padding: 0.5rem; color: rgb(148 163 184); font-size: 0.8125rem; text-align: center; }
-	@media (prefers-color-scheme: dark) {
-		.builder-toolbar-select { border-color: rgb(71 85 105); background: rgb(2 6 23); color: rgb(226 232 240); }
-		.button-danger { border-color: rgb(127 29 29); background: rgb(15 23 42); color: rgb(252 165 165); }
-		.button-danger:hover { background: rgb(69 10 10); }
-		:global(.builder-container) { border-left-color: rgb(37 99 235); background: rgb(15 23 42); }
-		:global(.builder-container .builder-container) { border-left-color: rgb(59 130 246); }
-		:global(.builder-container-heading) { color: rgb(148 163 184); }
-		:global(.builder-row) { border-color: rgb(51 65 85); background: rgb(2 6 23); }
-		:global(.builder-key), :global(.builder-type), :global(.builder-input) { border-color: rgb(71 85 105); background: rgb(15 23 42); color: rgb(226 232 240); }
-		:global(.builder-action) { border-color: rgb(71 85 105); background: rgb(15 23 42); color: rgb(203 213 225); }
-		:global(.builder-action:hover) { background: rgb(30 41 59); }
-		:global(.builder-danger) { border-color: rgb(127 29 29); color: rgb(252 165 165); }
-		:global(.builder-danger:hover) { background: rgb(69 10 10); }
-		:global(.builder-index), :global(.builder-null) { color: rgb(148 163 184); }
-	}
+	:global([data-theme="dark"]) .builder-toolbar-select { border-color: rgb(51 65 85); background: rgb(15 23 42); color: rgb(226 232 240); }
+	:global([data-theme="dark"]) .button-danger { border-color: rgb(127 29 29); background: rgb(17 24 39); color: rgb(252 165 165); }
+	:global([data-theme="dark"]) .button-danger:hover { background: rgb(69 10 10); }
+	:global([data-theme="dark"] .builder-container) { border-left-color: rgb(37 99 235); background: rgb(15 23 42); }
+	:global([data-theme="dark"] .builder-container .builder-container) { border-left-color: rgb(59 130 246); }
+	:global([data-theme="dark"] .builder-container-heading) { color: rgb(148 163 184); }
+	:global([data-theme="dark"] .builder-row) { border-color: rgb(51 65 85); background: rgb(17 24 39); }
+	:global([data-theme="dark"] .builder-key), :global([data-theme="dark"] .builder-type), :global([data-theme="dark"] .builder-input) { border-color: rgb(51 65 85); background: rgb(15 23 42); color: rgb(226 232 240); }
+	:global([data-theme="dark"] .builder-action) { border-color: rgb(51 65 85); background: rgb(15 23 42); color: rgb(203 213 225); }
+	:global([data-theme="dark"] .builder-action:hover) { background: rgb(30 41 59); }
+	:global([data-theme="dark"] .builder-danger) { border-color: rgb(127 29 29); color: rgb(252 165 165); }
+	:global([data-theme="dark"] .builder-danger:hover) { background: rgb(69 10 10); }
+	:global([data-theme="dark"] .builder-index), :global([data-theme="dark"] .builder-null) { color: rgb(148 163 184); }
 	@media (max-width: 640px) {
 		:global(.builder-row-header) { grid-template-columns: 1fr 6.5rem; }
 		:global(.builder-row-actions) { grid-column: 1 / -1; justify-content: flex-start; flex-wrap: wrap; }

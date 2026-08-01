@@ -18,7 +18,7 @@ const faqs = [
 ---
 
 <BaseLayout
-	title="Base64 Encoder & Decoder | ToolPulse"
+	title="Base64 Encoder & Decoder | YBS"
 	description="Free online Base64 Encoder and Decoder. Encode and decode text or files securely in your browser. No uploads. Fast and free."
 	canonicalPath="/tools/base64-encoder"
 >
@@ -100,7 +100,7 @@ const faqs = [
 		</section>
 
 		<div class="mt-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-200">
-			<strong>Private processing:</strong> text and files stay on your device. ToolPulse never uploads or stores them.
+			<strong>Private processing:</strong> text and files stay on your device. YBS never uploads or stores them.
 		</div>
 
 		<section class="mt-10">
@@ -179,11 +179,9 @@ const faqs = [
 	}
 	.tool-textarea:focus { border-color: rgb(59 130 246); box-shadow: 0 0 0 4px rgb(219 234 254); }
 	:global(button:disabled) { cursor: not-allowed; opacity: 0.45; }
-	@media (prefers-color-scheme: dark) {
-		.tool-panel { border-color: rgb(51 65 85); background: rgb(15 23 42); }
-		.tool-panel-label { color: rgb(226 232 240); }
-		.tool-textarea { border-color: rgb(71 85 105); background: rgb(2 6 23); color: rgb(226 232 240); }
-		.base64-tab { color: rgb(148 163 184); }
-		.base64-tab-active { color: white; }
-	}
+	:global([data-theme="dark"]) .tool-panel { border-color: rgb(39 52 73); background: rgb(17 24 39); }
+	:global([data-theme="dark"]) .tool-panel-label { color: rgb(226 232 240); }
+	:global([data-theme="dark"]) .tool-textarea { border-color: rgb(51 65 85); background: rgb(15 23 42); color: rgb(226 232 240); }
+	:global([data-theme="dark"]) .base64-tab { color: rgb(148 163 184); }
+	:global([data-theme="dark"]) .base64-tab-active { color: white; }
 </style>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { BRAND } from '../config/brand';
 
 interface Props {
 	title: string;
@@ -8,10 +9,10 @@ interface Props {
 	eyebrow?: string;
 }
 
-const { title, description, canonicalPath, eyebrow = 'ToolPulse' } = Astro.props;
+const { title, description, canonicalPath, eyebrow = BRAND.shortName } = Astro.props;
 ---
 
-<BaseLayout title={`${title} | ToolPulse`} description={description} canonicalPath={canonicalPath}>
+<BaseLayout title={`${title} | ${BRAND.shortName}`} description={description} canonicalPath={canonicalPath}>
 	<section class="page-container py-10 sm:py-14">
 		<div class="mx-auto max-w-3xl">
 			<p class="eyebrow">{eyebrow}</p>
@@ -41,8 +42,6 @@ const { title, description, canonicalPath, eyebrow = 'ToolPulse' } = Astro.props
 	.info-content :global(ul) { padding-left: 1.25rem; list-style: disc; }
 	.info-content :global(a) { color: rgb(37 99 235); font-weight: 600; }
 	.info-content :global(a:hover) { text-decoration: underline; }
-	@media (prefers-color-scheme: dark) {
-		.info-content :global(p),
-		.info-content :global(ul) { color: rgb(203 213 225); }
-	}
+	:global([data-theme="dark"]) .info-content :global(p),
+	:global([data-theme="dark"]) .info-content :global(ul) { color: rgb(203 213 225); }
 </style>

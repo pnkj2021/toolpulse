@@ -284,7 +284,7 @@ elements.restoreFile?.addEventListener('click', () => {
 elements.copyFile?.addEventListener('click', () => copyValue(elements.fileBase64?.value ?? '', elements.copyFile));
 elements.downloadBase64?.addEventListener('click', () => {
 	const value = elements.fileBase64?.value ?? '';
-	if (value) downloadBlob(value, 'text/plain;charset=utf-8', `${selectedFile?.name || 'toolpulse-file'}.base64.txt`);
+	if (value) downloadBlob(value, 'text/plain;charset=utf-8', `${selectedFile?.name || 'ybs-file'}.base64.txt`);
 });
 elements.downloadRestored?.addEventListener('click', () => {
 	if (restoredFile) downloadBlob(restoredFile.bytes, restoredFile.mimeType, restoredFile.name);

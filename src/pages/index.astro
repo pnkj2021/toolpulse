@@ -1,89 +1,36 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ToolCard from '../components/ToolCard.astro';
-import { availableTools, toolCategories, toolHref } from '../data/tools';
+import Hero from '../components/home/Hero.astro';
+import SearchBar from '../components/home/SearchBar.astro';
+import CategoryFilters from '../components/home/CategoryFilters.astro';
+import FeaturedTools from '../components/home/FeaturedTools.astro';
+import { availableTools } from '../data/tools';
+import { SEO } from '../config/brand';
 
-const categoryCounts = new Map(
-	toolCategories.map((category) => [
-		category,
-		availableTools.filter((tool) => tool.tags.includes(category)).length,
-	]),
-);
-const visibleCategories = toolCategories.filter((category) => (categoryCounts.get(category) ?? 0) > 0);
+const filters = [
+	{ name: 'Developer', icon: '</>' }, { name: 'JSON', icon: '{}' },
+	{ name: 'Text', icon: 'Aa' }, { name: 'Image', icon: '▧' },
+	{ name: 'PDF', icon: '▤' }, { name: 'Converters', icon: '⇄' },
+	{ name: 'Security', icon: '◇' },
+] as const;
+const categories = filters.map((category) => ({ ...category, count: availableTools.filter((tool) => tool.tags.some((tag) => tag.toLowerCase() === category.name.toLowerCase())).length }));
+const popularOrder = ['diff-checker', 'json-formatter', 'json-builder', 'base64-encoder', 'word-counter', 'character-counter'];
+const popularTools = [...availableTools].sort((a, b) => popularOrder.indexOf(a.slug) - popularOrder.indexOf(b.slug));
 ---
 
-<BaseLayout
-	title="ToolPulse — Free Online Tools"
-	description="Fast, private, and easy-to-use online tools for text and JSON tasks. No signup or installation required."
-	canonicalPath="/"
->
-	<section class="border-b border-slate-200 bg-white">
-		<div class="page-container py-9 text-center sm:py-11">
-			<p class="eyebrow">Simple tools. Instant results.</p>
-			<h1 class="mx-auto mt-2 max-w-3xl text-3xl font-extrabold tracking-tight text-slate-950 sm:text-5xl">Free Online Tools</h1>
-			<p class="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-				Fast, private utilities for everyday text and developer tasks—no signup, installation, or clutter.
-			</p>
-			<div id="search-area" class="relative z-20 mx-auto mt-5 max-w-xl text-left">
-				<div class="relative">
-					<svg class="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-						<circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
-						<path d="m16 16 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-					</svg>
-					<label for="tool-search" class="sr-only">Search available tools</label>
-					<input id="tool-search" type="search" placeholder="Search tools..." autocomplete="off" aria-controls="search-suggestions" aria-expanded="false" class="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-20 text-sm shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100" />
-					<button id="clear-search" type="button" class="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-100">Clear</button>
-				</div>
-				<div id="search-suggestions" class="absolute inset-x-0 top-12 mt-2 hidden overflow-hidden rounded-xl border border-slate-200 bg-white p-2 shadow-lg shadow-slate-200/60" role="listbox" aria-label="Tool search results">
-					<p class="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-400">Quick results</p>
-					{availableTools.map((tool) => (
-						<a href={toolHref(tool)} class="search-suggestion flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-blue-50 focus:bg-blue-50 focus:outline-none" data-suggestion data-search={[tool.name, tool.description, tool.category, ...tool.tags].join(' ').toLowerCase()} data-categories={tool.tags.join(' ').toLowerCase()} role="option">
-							<span class="grid size-9 shrink-0 place-items-center rounded-lg bg-blue-50 font-mono text-xs font-bold text-blue-700">{tool.icon}</span>
-							<span class="min-w-0">
-								<strong class="block text-sm text-slate-900">{tool.name}</strong>
-								<span class="block truncate text-xs text-slate-500">{tool.description}</span>
-							</span>
-							<span class="ml-auto shrink-0 text-xs font-medium text-slate-400">{tool.category}</span>
-						</a>
-					))}
-					<p id="no-suggestions" class="hidden px-3 py-5 text-center text-sm text-slate-500">No matching tools.</p>
+<BaseLayout title={SEO.defaultTitle} description={SEO.defaultDescription} canonicalPath="/">
+	<div class="bg-white">
+		<Hero />
+		<section class="border-b border-slate-100 bg-white py-3 dark:bg-[#0b1120] sm:py-4" aria-label="Find a tool">
+			<div class="page-container">
+				<div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-2.5 shadow-sm dark:border-[#273449] dark:bg-[#0f172a] dark:shadow-[0_16px_40px_rgba(0,0,0,.16)] sm:p-3">
+					<SearchBar tools={availableTools} />
+					<CategoryFilters categories={categories} total={availableTools.length} />
 				</div>
 			</div>
-			<div id="categories" class="mx-auto mt-4 flex max-w-3xl scroll-mt-20 flex-wrap justify-center gap-2" aria-label="Filter tools by category">
-				<button type="button" class="category-chip category-chip-active" data-category="" aria-pressed="true">All <span>{availableTools.length}</span></button>
-				{visibleCategories.map((category) => (
-					<button type="button" class="category-chip" data-category={category.toLowerCase()} aria-pressed="false">
-						{category} <span>{categoryCounts.get(category)}</span>
-					</button>
-				))}
-			</div>
-		</div>
-	</section>
-
-	<section id="tools" class="page-container scroll-mt-20 py-8 sm:py-10">
-		<div class="section-heading">
-			<div>
-				<p class="eyebrow">Ready to use</p>
-				<h2>Available tools</h2>
-			</div>
-			<p><span id="visible-count">{availableTools.length}</span> free tools that run directly in your browser.</p>
-		</div>
-		<div id="tool-grid" class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-			{availableTools.map((tool) => <ToolCard tool={tool} />)}
-		</div>
-		<div id="no-results" class="mt-8 hidden rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-			<p class="font-semibold text-slate-700">No tools found</p>
-			<p class="mt-1 text-sm text-slate-500">Try a different search or category.</p>
-		</div>
-	</section>
-
-	<section class="page-container py-10">
-		<div class="grid gap-6 rounded-3xl bg-slate-900 px-6 py-8 text-white sm:grid-cols-3 sm:px-8">
-			<div><strong class="text-sm">Instant</strong><p class="mt-1 text-sm leading-6 text-slate-300">Useful results without accounts or setup.</p></div>
-			<div><strong class="text-sm">Private</strong><p class="mt-1 text-sm leading-6 text-slate-300">Your content is processed in your browser.</p></div>
-			<div><strong class="text-sm">Accessible</strong><p class="mt-1 text-sm leading-6 text-slate-300">Responsive tools built for keyboard and touch.</p></div>
-		</div>
-	</section>
+		</section>
+		<FeaturedTools tools={popularTools} />
+	</div>
 
 	<script>
 		const search = document.querySelector<HTMLInputElement>('#tool-search');
@@ -93,104 +40,42 @@ const visibleCategories = toolCategories.filter((category) => (categoryCounts.ge
 		const suggestionsPanel = document.querySelector<HTMLElement>('#search-suggestions');
 		const noSuggestions = document.querySelector<HTMLElement>('#no-suggestions');
 		const clearSearch = document.querySelector<HTMLButtonElement>('#clear-search');
+		const shortcutHint = document.querySelector<HTMLElement>('#search-shortcut');
 		const searchArea = document.querySelector<HTMLElement>('#search-area');
 		const searchLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-search-link]')];
 		const emptyState = document.querySelector<HTMLElement>('#no-results');
-		const visibleCount = document.querySelector<HTMLElement>('#visible-count');
+		const visibleCount = document.querySelector<HTMLElement>('#search-result-count');
 		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		let activeCategory = '';
 
-		function queryMatches(value: string, query: string) {
-			return query.split(/\s+/u).filter(Boolean).every((token) => value.includes(token));
-		}
-
+		const queryMatches = (value: string, query: string) => query.split(/\s+/u).filter(Boolean).every((token) => value.includes(token));
 		function setActiveCategory(category: string) {
 			activeCategory = category;
-			categoryButtons.forEach((item) => {
-				const selected = (item.dataset.category ?? '') === category;
-				item.classList.toggle('category-chip-active', selected);
-				item.setAttribute('aria-pressed', String(selected));
-			});
+			categoryButtons.forEach((item) => { const selected = (item.dataset.category ?? '') === category; item.classList.toggle('home-category-active', selected); item.setAttribute('aria-pressed', String(selected)); });
 		}
-
 		function filterTools(showSuggestions = false) {
 			const query = search?.value.trim().toLowerCase() ?? '';
 			let matches = 0;
-			cards.forEach((card) => {
-				const matchesSearch = queryMatches(card.dataset.search ?? '', query);
-				const matchesCategory = !activeCategory || (card.dataset.categories ?? '').split(' ').includes(activeCategory);
-				const visible = matchesSearch && matchesCategory;
-				card.classList.toggle('hidden', !visible);
-				if (visible) matches++;
-			});
+			cards.forEach((card) => { const visible = queryMatches(card.dataset.search ?? '', query) && (!activeCategory || (card.dataset.categories ?? '').split(' ').includes(activeCategory)); card.classList.toggle('hidden', !visible); if (visible) matches++; });
 			let suggestionMatches = 0;
-			suggestions.forEach((suggestion) => {
-				const matchesSearch = queryMatches(suggestion.dataset.search ?? '', query);
-				const matchesCategory = !activeCategory || (suggestion.dataset.categories ?? '').split(' ').includes(activeCategory);
-				const visible = matchesSearch && matchesCategory;
-				suggestion.classList.toggle('hidden', !visible);
-				if (visible) suggestionMatches++;
-			});
+			suggestions.forEach((suggestion) => { const visible = queryMatches(suggestion.dataset.search ?? '', query) && (!activeCategory || (suggestion.dataset.categories ?? '').split(' ').includes(activeCategory)); suggestion.classList.toggle('hidden', !visible); if (visible) suggestionMatches++; });
 			noSuggestions?.classList.toggle('hidden', suggestionMatches > 0);
 			suggestionsPanel?.classList.toggle('hidden', !showSuggestions);
 			search?.setAttribute('aria-expanded', String(showSuggestions));
-			clearSearch?.classList.toggle('hidden', !query);
+			if (clearSearch) clearSearch.hidden = !query;
+			shortcutHint?.classList.toggle('invisible', Boolean(query));
 			emptyState?.classList.toggle('hidden', matches > 0);
-			if (visibleCount) visibleCount.textContent = String(matches);
+			if (visibleCount) visibleCount.textContent = matches === 1 ? '1 tool found' : `${matches} tools found`;
 		}
-
-		function openSearch() {
-			search?.focus();
-			search?.select();
-			filterTools(true);
-			document.querySelector('#search-area')?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
-		}
-
+		function openSearch() { search?.focus(); search?.select(); filterTools(true); searchArea?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' }); }
 		search?.addEventListener('focus', () => filterTools(true));
 		search?.addEventListener('input', () => filterTools(true));
-		search?.addEventListener('keydown', (event) => {
-			if (event.key === 'Escape') {
-				if (search.value) {
-					search.value = '';
-					filterTools(true);
-				} else {
-					suggestionsPanel?.classList.add('hidden');
-					search.setAttribute('aria-expanded', 'false');
-					search.blur();
-				}
-			}
-		});
-		clearSearch?.addEventListener('click', () => {
-			if (search) search.value = '';
-			filterTools(true);
-			search?.focus();
-		});
-		searchLinks.forEach((link) => {
-			link.addEventListener('click', (event) => {
-				event.preventDefault();
-				openSearch();
-			});
-		});
-		document.addEventListener('keydown', (event) => {
-			const target = event.target as HTMLElement;
-			if (event.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) {
-				event.preventDefault();
-				openSearch();
-			}
-		});
-		document.addEventListener('click', (event) => {
-			if (!searchArea?.contains(event.target as Node) && !(event.target as Element).closest?.('[data-search-link]')) {
-				suggestionsPanel?.classList.add('hidden');
-				search?.setAttribute('aria-expanded', 'false');
-			}
-		});
-		categoryButtons.forEach((button) => {
-			button.addEventListener('click', () => {
-				setActiveCategory(button.dataset.category ?? '');
-				filterTools(false);
-				document.querySelector('#tools')?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
-			});
-		});
+		search?.addEventListener('keydown', (event) => { if (event.key !== 'Escape') return; if (search.value) { search.value = ''; filterTools(true); } else { suggestionsPanel?.classList.add('hidden'); search.setAttribute('aria-expanded', 'false'); search.blur(); } });
+		clearSearch?.addEventListener('click', () => { if (search) search.value = ''; filterTools(true); search?.focus(); });
+		searchLinks.forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); openSearch(); }));
+		document.addEventListener('keydown', (event) => { const target = event.target as HTMLElement; if (event.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) && !target.isContentEditable) { event.preventDefault(); openSearch(); } });
+		document.addEventListener('click', (event) => { if (!searchArea?.contains(event.target as Node) && !(event.target as Element).closest?.('[data-search-link]')) { suggestionsPanel?.classList.add('hidden'); search?.setAttribute('aria-expanded', 'false'); } });
+		categoryButtons.forEach((button) => button.addEventListener('click', () => { setActiveCategory(button.dataset.category ?? ''); filterTools(false); document.querySelector('#tools')?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' }); }));
 		if (window.location.hash === '#tool-search') window.requestAnimationFrame(openSearch);
 	</script>
 </BaseLayout>

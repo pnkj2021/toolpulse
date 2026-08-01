@@ -1,0 +1,28 @@
+---
+interface Category { name: string; icon: string; count: number }
+interface Props { categories: readonly Category[]; total: number }
+const { categories, total } = Astro.props;
+---
+
+<div id="categories" class="category-scroll mx-auto mt-2.5 flex max-w-6xl scroll-mt-24 flex-nowrap justify-start gap-2 overflow-x-auto pb-0.5 sm:flex-wrap sm:justify-center sm:overflow-visible" aria-label="Filter tools by category">
+	<button type="button" class="home-category home-category-active" data-category="" aria-pressed="true"><span aria-hidden="true">✦</span> All <small>{total}</small></button>
+	{categories.map((category) => <button type="button" class="home-category" data-category={category.name.toLowerCase()} aria-pressed="false"><span aria-hidden="true">{category.icon}</span> {category.name}<small>{category.count}</small></button>)}
+</div>
+
+<style>
+	.category-scroll { scrollbar-width: none; }
+	.category-scroll::-webkit-scrollbar { display: none; }
+	.home-category { display: inline-flex; flex: 0 0 auto; align-items: center; gap: .5rem; border: 1px solid rgb(226 232 240); border-radius: 9999px; background: white; padding: .48rem .85rem; color: rgb(71 85 105); font-size: .75rem; font-weight: 700; box-shadow: 0 1px 2px rgb(15 23 42 / .04); transition: .2s ease; }
+	.home-category:hover { border-color: rgb(125 211 252); color: rgb(37 99 235); transform: translateY(-1px); }
+	.home-category:focus-visible { outline: 3px solid rgb(191 219 254); outline-offset: 2px; }
+	.home-category small { border-radius: 999px; background: rgb(241 245 249); padding: .1rem .38rem; color: rgb(100 116 139); font-size: .62rem; }
+	.home-category-active { border-color: rgb(37 99 235); background: rgb(37 99 235); color: white; box-shadow: 0 8px 20px rgb(37 99 235 / .16); }
+	.home-category-active:hover { border-color: rgb(29 78 216); background: rgb(29 78 216); color: white; }
+	.home-category-active small { background: rgb(255 255 255 / .2); color: white; }
+	:global([data-theme="dark"]) .home-category { border-color: rgb(39 52 73); background: rgb(17 24 39); color: rgb(203 213 225); box-shadow: none; }
+	:global([data-theme="dark"]) .home-category:hover { border-color: rgb(59 130 246); background: rgb(23 32 51); color: rgb(147 197 253); transform: translateY(-1px); }
+	:global([data-theme="dark"]) .home-category small { background: rgb(23 32 51); color: rgb(148 163 184); }
+	:global([data-theme="dark"]) .home-category-active,
+	:global([data-theme="dark"]) .home-category-active:hover { border-color: rgb(59 130 246); background: rgb(59 130 246); color: white; }
+	:global([data-theme="dark"]) .home-category-active small { background: rgb(255 255 255 / .2); color: white; }
+</style>

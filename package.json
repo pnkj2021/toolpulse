@@ -1,5 +1,6 @@
 {
-  "name": "toolpulse",
+  "name": "ybs",
+  "description": "YBS — Your Browser Suite: fast, privacy-first tools that run in your browser.",
   "type": "module",
   "version": "0.0.1",
   "engines": {

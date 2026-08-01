@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { BRAND, SEO } from '../config/brand';
 import '../styles/global.css';
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
 
 const {
 	title,
-	description = 'Free, fast, and simple online tools for everyday tasks.',
+	description = SEO.defaultDescription,
 	canonicalPath,
 	ogType = 'website',
 } = Astro.props;
@@ -20,27 +21,57 @@ const {
 const canonicalUrl = canonicalPath && Astro.site
 	? new URL(canonicalPath, Astro.site).href
 	: undefined;
+const socialImageUrl = Astro.site ? new URL(SEO.openGraphImage, Astro.site).href : SEO.openGraphImage;
+const structuredData = {
+	'@context': 'https://schema.org',
+	'@type': 'WebSite',
+	name: BRAND.shortName,
+	alternateName: BRAND.fullName,
+	url: Astro.site?.href ?? BRAND.url,
+	description,
+};
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 	<head>
+		<script is:inline>
+			(() => {
+				let theme = 'light';
+				try {
+					const saved = localStorage.getItem('ybs-theme');
+					if (saved === 'dark' || saved === 'light') theme = saved;
+				} catch {}
+				document.documentElement.dataset.theme = theme;
+			})();
+		</script>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="description" content={description} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content={ogType} />
-		<meta property="og:site_name" content="ToolPulse" />
+		<meta property="og:site_name" content={BRAND.shortName} />
+		<meta property="og:image" content={socialImageUrl} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content={SEO.twitterCard} />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={socialImageUrl} />
 		{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
 		{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 		<meta name="generator" content={Astro.generator} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<meta name="theme-color" content={BRAND.primaryColor} />
 		<title>{title}</title>
+		<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 		<slot name="head" />
 	</head>
-	<body class="flex min-h-screen flex-col bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+	<body class="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
 		<Header />
 		<main class="flex-1">
 			<slot />

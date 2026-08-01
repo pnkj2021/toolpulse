@@ -481,7 +481,7 @@ clearButton?.addEventListener('click', () => {
 
 sampleButton?.addEventListener('click', () => {
 	const sample = {
-		name: 'ToolPulse',
+		name: 'YBS',
 		category: 'Developer Tools',
 		active: true,
 		tools: [
@@ -511,7 +511,7 @@ downloadButton?.addEventListener('click', () => {
 	const url = URL.createObjectURL(new Blob([lastJson], { type: 'application/json' }));
 	const link = document.createElement('a');
 	link.href = url;
-	link.download = 'toolpulse-data.json';
+	link.download = 'ybs-data.json';
 	document.body.append(link);
 	link.click();
 	link.remove();

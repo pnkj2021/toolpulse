@@ -1,0 +1,27 @@
+---
+interface Props {
+	slug: string;
+	size?: 'sm' | 'card' | 'md' | 'lg';
+}
+
+const { slug, size = 'md' } = Astro.props;
+const sizes = { sm: 'size-9 rounded-lg', card: 'size-11 rounded-xl', md: 'size-12 rounded-xl', lg: 'size-14 rounded-2xl' };
+const styles: Record<string, string> = {
+	'json-formatter': 'from-violet-500 to-purple-600 shadow-violet-500/25',
+	'json-builder': 'from-orange-400 to-orange-600 shadow-orange-500/25',
+	'base64-encoder': 'from-emerald-400 to-teal-600 shadow-emerald-500/25',
+	'word-counter': 'from-blue-500 to-blue-700 shadow-blue-500/25',
+	'character-counter': 'from-cyan-400 to-sky-600 shadow-cyan-500/25',
+	'diff-checker': 'from-rose-400 to-pink-600 shadow-rose-500/25',
+};
+const tileStyle = styles[slug] ?? 'from-slate-500 to-slate-700 shadow-slate-500/25';
+---
+
+<span class:list={['grid shrink-0 place-items-center bg-gradient-to-br text-white shadow-lg', sizes[size], tileStyle]} aria-hidden="true">
+	{slug === 'json-formatter' && <svg class="size-6" viewBox="0 0 24 24" fill="none"><path d="M9 4H7a2 2 0 0 0-2 2v3a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h2M15 4h2a2 2 0 0 1 2 2v3a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>}
+	{slug === 'json-builder' && <svg class="size-6" viewBox="0 0 24 24" fill="none"><path d="m14 5 5 5M13 6l-8 8-1 5 5-1 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 19h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>}
+	{slug === 'base64-encoder' && <span class="font-mono text-base font-black tracking-tight">64</span>}
+	{slug === 'word-counter' && <svg class="size-6" viewBox="0 0 24 24" fill="none"><path d="M5 5h14M12 5v14M8 19h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>}
+	{slug === 'character-counter' && <svg class="size-6" viewBox="0 0 24 24" fill="none"><path d="M10 4 7 20M17 4l-3 16M4 9h16M3 15h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>}
+	{slug === 'diff-checker' && <svg class="size-6" viewBox="0 0 24 24" fill="none"><path d="M8 4v16M5 7l3-3 3 3M16 20V4M13 17l3 3 3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>}
+</span>
