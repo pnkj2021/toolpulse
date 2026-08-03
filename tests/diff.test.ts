@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { compareText, defaultDiffOptions, summarizeDiff, type DiffOptions } from '../src/utils/diff.ts';
-import { mergeBlocks } from '../src/utils/merge.ts';
+import { compareInline, compareText, defaultDiffOptions, summarizeDiff, type DiffOptions } from '../src/utils/diff.ts';
+import { copyBlockToSide, mergeBlocks, resolveAll } from '../src/utils/merge.ts';
 
 const options = (override: Partial<DiffOptions> = {}): DiffOptions => ({ ...defaultDiffOptions, ...override });
 const changed = (left: string, right: string, override: Partial<DiffOptions> = {}) =>
@@ -67,4 +67,28 @@ test('preserves a final newline in merged output', () => {
 	assert.ok(difference);
 	assert.equal(mergeBlocks(blocks, { [difference.id]: 'left' }), 'same\nold\n');
 	assert.equal(mergeBlocks(blocks, { [difference.id]: 'right' }), 'same\nnew\n');
+});
+
+test('highlights only the changed characters inside a replacement line', () => {
+	const inline = compareInline('const name = "ToolPulse";', 'const name = "YBS";');
+	assert.deepEqual(inline.left.find((part) => part.type === 'removed')?.text, 'ToolPulse');
+	assert.deepEqual(inline.right.find((part) => part.type === 'added')?.text, 'YBS');
+});
+
+test('copies one original block to modified without changing other modified blocks', () => {
+	const blocks = compareText('a\nleft one\nc\nleft two\ne', 'a\nright one\nc\nright two\ne', options());
+	const differences = blocks.filter((block) => block.type !== 'equal');
+	assert.equal(copyBlockToSide(blocks, differences[0]!.id, 'left-to-right'), 'a\nleft one\nc\nright two\ne');
+});
+
+test('copies one modified block to original without changing other original blocks', () => {
+	const blocks = compareText('a\nleft one\nc\nleft two\ne', 'a\nright one\nc\nright two\ne', options());
+	const differences = blocks.filter((block) => block.type !== 'equal');
+	assert.equal(copyBlockToSide(blocks, differences[0]!.id, 'right-to-left'), 'a\nright one\nc\nleft two\ne');
+});
+
+test('bulk resolutions select all original or all modified text', () => {
+	const blocks = compareText('old one\nold two', 'new one\nnew two', options());
+	assert.equal(mergeBlocks(blocks, resolveAll(blocks, 'left')), 'old one\nold two');
+	assert.equal(mergeBlocks(blocks, resolveAll(blocks, 'right')), 'new one\nnew two');
 });

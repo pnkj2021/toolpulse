@@ -14,6 +14,6 @@ const { id, label, placeholder } = Astro.props;
 	</div>
 	<div class="grid h-[360px] max-h-[55vh] min-h-[260px] grid-cols-[3rem_minmax(0,1fr)] overflow-hidden">
 		<pre id={`${id}-numbers`} class="m-0 h-full select-none overflow-hidden border-r border-slate-200 bg-slate-50 px-2 py-4 text-right font-mono text-sm leading-6 text-slate-400 dark:border-slate-700 dark:bg-slate-950" aria-hidden="true">1</pre>
-		<textarea id={id} class="block h-full min-h-0 min-w-0 w-full resize-none overflow-auto whitespace-pre bg-white p-4 font-mono text-sm leading-6 text-slate-800 outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-inset focus:ring-blue-100 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900" {placeholder} spellcheck="false" wrap="off" aria-labelledby={`${id}-label`}></textarea>
+		<textarea id={id} class="diff-editor block h-full min-h-0 min-w-0 w-full resize-none overflow-auto whitespace-pre bg-white p-4 font-mono text-sm leading-6 text-slate-800 outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-inset focus:ring-blue-100 dark:bg-[#111827] dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900" {placeholder} spellcheck="false" wrap="off" aria-labelledby={`${id}-label`}></textarea>
 	</div>
 </section>

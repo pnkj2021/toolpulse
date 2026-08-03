@@ -1,7 +1,8 @@
-<section class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5" aria-label="Comparison summary">
-	<div class="stat-card"><span>Added lines</span><strong id="summary-added">0</strong></div>
-	<div class="stat-card"><span>Removed lines</span><strong id="summary-removed">0</strong></div>
-	<div class="stat-card"><span>Changed blocks</span><strong id="summary-changed">0</strong></div>
-	<div class="stat-card"><span>Unchanged lines</span><strong id="summary-unchanged">0</strong></div>
-	<div class="stat-card"><span>Similarity</span><strong id="summary-similarity">100%</strong></div>
+<section class="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs dark:border-[#273449] dark:bg-[#111827]" aria-label="Comparison summary">
+	<strong class="text-slate-700 dark:text-slate-200"><span id="summary-changed">0</span> differences</strong>
+	<span class="font-semibold text-emerald-700 dark:text-emerald-400">+ <span id="summary-added">0</span> lines</span>
+	<span class="font-semibold text-red-700 dark:text-red-400">− <span id="summary-removed">0</span> lines</span>
+	<span class="font-semibold text-amber-700 dark:text-amber-400">~ <span id="summary-modified">0</span> modified</span>
+	<span class="ml-auto text-slate-500 dark:text-slate-400"><span id="summary-similarity">100%</span> similar</span>
+	<span id="summary-unchanged" class="sr-only">0</span>
 </section>

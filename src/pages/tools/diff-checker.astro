@@ -6,7 +6,6 @@ import DiffEditor from '../../components/tools/DiffEditor.astro';
 import DiffToolbar from '../../components/tools/DiffToolbar.astro';
 import DiffSummary from '../../components/tools/DiffSummary.astro';
 import DiffViewer from '../../components/tools/DiffViewer.astro';
-import MergePanel from '../../components/tools/MergePanel.astro';
 
 const pageTitle = 'Diff Checker & Merge Tool | YBS';
 const pageDescription = 'Compare text, ignore whitespace, merge changes, and download the final result directly in your browser.';
@@ -27,17 +26,16 @@ const webApplicationSchema = {
 		<Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(webApplicationSchema)} /></Fragment>
 	<ToolLayout>
 		<span slot="breadcrumb">Diff Checker &amp; Merge Tool</span>
-		<ToolHeader title="Diff Checker & Merge Tool" description="Compare and merge text locally with a clear, professional line-by-line view." />
+		<ToolHeader title="Diff Checker & Merge Tool" description="Paste, compare, and merge code directly in your browser." />
 
 		<div class="space-y-5">
 			<DiffToolbar />
-			<div class="grid gap-4 lg:grid-cols-2">
-				<DiffEditor id="original-text" label="Original Text" placeholder="Paste the original text here..." />
-				<DiffEditor id="modified-text" label="Modified Text" placeholder="Paste the modified text here..." />
+			<div class="grid gap-4 md:grid-cols-2">
+				<DiffEditor id="original-text" label="Original" placeholder="Paste original code here..." />
+				<DiffEditor id="modified-text" label="Modified" placeholder="Paste modified code here..." />
 			</div>
 			<DiffSummary />
 			<DiffViewer />
-			<MergePanel />
 			<div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-200">
 				<strong>Private by design:</strong> comparison and merging happen entirely in your browser. No text is uploaded or stored.
 			</div>
@@ -70,6 +68,11 @@ const webApplicationSchema = {
 	:global(.diff-resolved-left .diff-side:first-child), :global(.diff-resolved-right .diff-side:last-child), :global(.diff-resolved-both .diff-side) { position: relative; box-shadow: inset 0 0 0 3px rgb(37 99 235); }
 	:global(.diff-resolved-left .diff-side:last-child), :global(.diff-resolved-right .diff-side:first-child) { opacity: .55; }
 	:global(.diff-line-empty) { color: rgb(148 163 184); }
+	:global(.diff-placeholder) { font-style: italic; opacity: .7; }
+	:global(.diff-inline) { border-radius: .2rem; padding: .05rem .08rem; color: inherit; }
+	:global(.diff-inline-removed) { background: rgb(254 202 202); text-decoration: line-through; text-decoration-thickness: 1px; }
+	:global(.diff-inline-added) { background: rgb(187 247 208); }
+	:global(.diff-current) { position: relative; box-shadow: inset 0 0 0 2px rgb(59 130 246); }
 	@media (max-width: 640px) {
 		:global(.diff-sides) { grid-template-columns: 1fr; }
 		:global(.diff-side:first-child) { border-right: 0; border-bottom: 1px solid rgb(226 232 240); }
@@ -88,4 +91,6 @@ const webApplicationSchema = {
 	:global([data-theme="dark"] .diff-changed .diff-block-heading) { background: rgb(55 43 18); }
 	:global([data-theme="dark"] .diff-added .diff-side:last-child), :global([data-theme="dark"] .diff-changed .diff-side:last-child) { background: rgb(6 40 35); }
 	:global([data-theme="dark"] .diff-removed .diff-side:first-child), :global([data-theme="dark"] .diff-changed .diff-side:first-child) { background: rgb(55 20 25); }
+	:global([data-theme="dark"] .diff-inline-removed) { background: rgb(127 29 29 / .75); }
+	:global([data-theme="dark"] .diff-inline-added) { background: rgb(20 83 45 / .8); }
 </style>

@@ -19,3 +19,18 @@ export function resolveAll(blocks: DiffBlock[], resolution: Resolution): Resolut
 		blocks.filter((block) => block.type !== 'equal').map((block) => [block.id, resolution]),
 	);
 }
+
+export function copyBlockToSide(
+	blocks: DiffBlock[],
+	blockId: string,
+	direction: 'left-to-right' | 'right-to-left',
+): string {
+	const targetDefault: Resolution = direction === 'left-to-right' ? 'right' : 'left';
+	const copiedSource: Resolution = direction === 'left-to-right' ? 'left' : 'right';
+	const resolutions = Object.fromEntries(
+		blocks
+			.filter((block) => block.type !== 'equal')
+			.map((block) => [block.id, block.id === blockId ? copiedSource : targetDefault]),
+	) as ResolutionMap;
+	return mergeBlocks(blocks, resolutions);
+}

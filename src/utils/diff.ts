@@ -8,6 +8,11 @@ export type DiffOptions = {
 export type Resolution = 'left' | 'right' | 'both';
 export type DiffBlockType = 'equal' | 'added' | 'removed' | 'changed';
 
+export type InlineDiff = {
+	type: 'equal' | 'added' | 'removed';
+	text: string;
+};
+
 export type DiffBlock = {
 	id: string;
 	type: DiffBlockType;
@@ -285,5 +290,25 @@ export function summarizeDiff(blocks: DiffBlock[]): DiffSummary {
 		changedBlocks,
 		unchangedLines,
 		similarity: total === 0 ? 100 : Math.round((unchangedLines / total) * 100),
+	};
+}
+
+/** A lightweight character diff for paired replacement lines. */
+export function compareInline(left: string, right: string): { left: InlineDiff[]; right: InlineDiff[] } {
+	let prefix = 0;
+	while (prefix < left.length && prefix < right.length && left[prefix] === right[prefix]) prefix++;
+	let suffix = 0;
+	while (
+		suffix < left.length - prefix &&
+		suffix < right.length - prefix &&
+		left[left.length - suffix - 1] === right[right.length - suffix - 1]
+	) suffix++;
+	const before = left.slice(0, prefix);
+	const leftChanged = left.slice(prefix, left.length - suffix);
+	const rightChanged = right.slice(prefix, right.length - suffix);
+	const after = suffix ? left.slice(left.length - suffix) : '';
+	return {
+		left: [before && { type: 'equal' as const, text: before }, leftChanged && { type: 'removed' as const, text: leftChanged }, after && { type: 'equal' as const, text: after }].filter(Boolean) as InlineDiff[],
+		right: [before && { type: 'equal' as const, text: before }, rightChanged && { type: 'added' as const, text: rightChanged }, after && { type: 'equal' as const, text: after }].filter(Boolean) as InlineDiff[],
 	};
 }

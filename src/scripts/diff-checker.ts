@@ -1,5 +1,5 @@
-import { compareText, defaultDiffOptions, summarizeDiff, type DiffBlock, type DiffOptions, type Resolution } from '../utils/diff';
-import { mergeBlocks, resolveAll, type ResolutionMap } from '../utils/merge';
+import { compareInline, compareText, defaultDiffOptions, summarizeDiff, type DiffBlock, type DiffOptions } from '../utils/diff';
+import { copyBlockToSide, mergeBlocks, type ResolutionMap } from '../utils/merge';
 
 const get = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector);
 const leftInput = get<HTMLTextAreaElement>('#original-text');
@@ -14,6 +14,7 @@ let blocks: DiffBlock[] = [];
 let resolutions: ResolutionMap = {};
 let currentDifference = 0;
 let debounceTimer: number | undefined;
+let syncingScroll = false;
 
 function escapeHtml(value: string): string {
 	return value.replace(/[&<>"']/gu, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character] ?? character);
@@ -28,8 +29,8 @@ function options(): DiffOptions {
 	};
 }
 
-function numberedLines(lines: string[], start: number | null, side: 'left' | 'right', maxVisible = 500): string {
-	if (!lines.length) return '<div class="diff-line diff-line-empty"><span aria-hidden="true">—</span><code>No line</code></div>';
+function numberedLines(lines: string[], start: number | null, side: 'left' | 'right', maxVisible = 500, pairedLines: string[] = []): string {
+	if (!lines.length) return Array.from({ length: Math.max(1, pairedLines.length) }, () => '<div class="diff-line diff-line-empty"><span aria-hidden="true">—</span><code><span class="diff-placeholder">No line</span></code></div>').join('');
 	const visibleIndexes = lines.length <= maxVisible
 		? lines.map((_, index) => index)
 		: [
@@ -43,8 +44,11 @@ function numberedLines(lines: string[], start: number | null, side: 'left' | 'ri
 			: '';
 		const line = lines[lineIndex];
 		const number = start === null ? '—' : start + lineIndex;
-		return `${omitted}<div class="diff-line"><span aria-hidden="true">${number}</span><code>${escapeHtml(line) || '&nbsp;'}</code><span class="sr-only">${side === 'left' ? 'Original' : 'Modified'} line ${number}</span></div>`;
-	}).join('');
+		const paired = pairedLines[lineIndex];
+		const inline = paired !== undefined && paired !== line ? compareInline(side === 'left' ? line : paired, side === 'left' ? paired : line)[side] : null;
+		const content = inline?.map((part) => part.type === 'equal' ? escapeHtml(part.text) : `<mark class="diff-inline diff-inline-${part.type}">${escapeHtml(part.text)}</mark>`).join('') ?? escapeHtml(line);
+		return `${omitted}<div class="diff-line"><span aria-hidden="true">${number}</span><code>${content || '&nbsp;'}</code><span class="sr-only">${side === 'left' ? 'Original' : 'Modified'} line ${number}</span></div>`;
+	}).join('') + Array.from({ length: Math.max(0, pairedLines.length - lines.length) }, () => '<div class="diff-line diff-line-empty"><span aria-hidden="true">—</span><code><span class="diff-placeholder">No line</span></code></div>').join('');
 }
 
 function blockLabel(block: DiffBlock): string {
@@ -86,17 +90,15 @@ function renderBlocks() {
 		return `<article id="${block.id}" class="diff-block diff-${block.type}${resolution ? ` diff-resolved-${resolution}` : ''}" data-difference="${changed ? 'true' : 'false'}" ${changed ? 'tabindex="-1"' : ''} aria-label="${blockLabel(block)} block">
 			<div class="diff-block-heading">
 				<span class="diff-label"><span aria-hidden="true">${block.type === 'added' ? '+' : block.type === 'removed' ? '−' : block.type === 'changed' ? '±' : '='}</span>${blockLabel(block)}${changed ? ` <span class="diff-resolution-status" data-resolution-status="${block.id}">${resolution ? `Using ${resolution === 'left' ? 'original' : resolution === 'right' ? 'modified' : 'both'}` : 'Unresolved — using original'}</span>` : ''}</span>
-				${changed ? `<div class="diff-resolutions" role="group" aria-label="Resolve ${blockLabel(block).toLowerCase()} block">
-					<button type="button" data-resolve="left" data-block="${block.id}" aria-pressed="${resolution === 'left'}">Accept original</button>
-					<button type="button" data-resolve="right" data-block="${block.id}" aria-pressed="${resolution === 'right'}">Accept modified</button>
-					<button type="button" data-resolve="both" data-block="${block.id}" aria-pressed="${resolution === 'both'}">Accept both</button>
+				${changed ? `<div class="diff-resolutions" role="group" aria-label="Merge ${blockLabel(block).toLowerCase()} block">
+					<button type="button" data-copy="left-to-right" data-block="${block.id}" aria-label="Copy original to modified">Original <span aria-hidden="true">→</span> Modified</button>
+					<button type="button" data-copy="right-to-left" data-block="${block.id}" aria-label="Copy modified to original">Original <span aria-hidden="true">←</span> Modified</button>
 				</div>` : ''}
 			</div>
 			<div class="diff-sides">
-				<div class="diff-side" aria-label="Original text">${numberedLines(block.leftLines, block.leftStartLine, 'left', block.type === 'equal' ? 12 : 500)}</div>
-				<div class="diff-side" aria-label="Modified text">${numberedLines(block.rightLines, block.rightStartLine, 'right', block.type === 'equal' ? 12 : 500)}</div>
+				<div class="diff-side" aria-label="Original text">${numberedLines(block.leftLines, block.leftStartLine, 'left', block.type === 'equal' ? 100 : 500, block.rightLines)}</div>
+				<div class="diff-side" aria-label="Modified text">${numberedLines(block.rightLines, block.rightStartLine, 'right', block.type === 'equal' ? 100 : 500, block.leftLines)}</div>
 			</div>
-			${changed ? `<div class="diff-result" data-merged-preview="${block.id}" aria-label="Merged preview">${mergedPreview(block)}</div>` : ''}
 		</article>`;
 	}).join('');
 }
@@ -147,6 +149,7 @@ function updateSummary() {
 		'#summary-added': summary.addedLines.toLocaleString(),
 		'#summary-removed': summary.removedLines.toLocaleString(),
 		'#summary-changed': summary.changedBlocks.toLocaleString(),
+		'#summary-modified': blocks.filter((block) => block.type === 'changed').length.toLocaleString(),
 		'#summary-unchanged': summary.unchangedLines.toLocaleString(),
 		'#summary-similarity': `${summary.similarity}%`,
 	};
@@ -180,6 +183,8 @@ function updateNavigation(scroll = false) {
 	});
 	currentDifference = Math.min(Math.max(currentDifference, 0), changed.length - 1);
 	if (positionElement) positionElement.textContent = `Difference ${currentDifference + 1} of ${changed.length}`;
+	blocksElement?.querySelectorAll('.diff-current').forEach((element) => element.classList.remove('diff-current'));
+	document.getElementById(changed[currentDifference].id)?.classList.add('diff-current');
 	if (previous) previous.disabled = false;
 	if (next) next.disabled = false;
 	if (scroll) {
@@ -217,23 +222,48 @@ function updateEditorChrome(input: HTMLTextAreaElement | null, prefix: string) {
 	updateEditorChrome(input, input.id);
 	scheduleCompare();
 }));
-[leftInput, rightInput].forEach((input) => input?.addEventListener('scroll', () => {
+[leftInput, rightInput].forEach((input, index) => input?.addEventListener('scroll', () => {
 	const numbers = get<HTMLElement>(`#${input.id}-numbers`);
 	if (numbers) numbers.scrollTop = input.scrollTop;
+	if (syncingScroll) return;
+	const other = index === 0 ? rightInput : leftInput;
+	if (!other) return;
+	syncingScroll = true;
+	const available = input.scrollHeight - input.clientHeight;
+	const otherAvailable = other.scrollHeight - other.clientHeight;
+	other.scrollTop = available > 0 ? input.scrollTop / available * otherAvailable : 0;
+	requestAnimationFrame(() => { syncingScroll = false; });
 }));
 ['#ignore-whitespace', '#ignore-case', '#ignore-blank-lines', '#ignore-line-endings'].forEach((selector) =>
 	get<HTMLInputElement>(selector)?.addEventListener('change', compare),
 );
+get<HTMLInputElement>('#word-wrap')?.addEventListener('change', (event) => {
+	const wrapped = (event.currentTarget as HTMLInputElement).checked;
+	[leftInput, rightInput].forEach((input) => {
+		if (!input) return;
+		input.wrap = wrapped ? 'soft' : 'off';
+		input.classList.toggle('whitespace-pre-wrap', wrapped);
+		input.classList.toggle('whitespace-pre', !wrapped);
+	});
+});
 
 blocksElement?.addEventListener('click', (event) => {
-	const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-resolve]');
-	if (!button) return;
+	const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-copy]');
+	if (!button || !leftInput || !rightInput) return;
+	const pageScrollTop = window.scrollY;
+	const leftScrollTop = leftInput.scrollTop;
+	const rightScrollTop = rightInput.scrollTop;
 	const blockId = button.dataset.block ?? '';
-	resolutions[blockId] = button.dataset.resolve as Resolution;
-	updateResolutionButtons(blockId);
-	updateMerged();
+	const direction = button.dataset.copy as 'left-to-right' | 'right-to-left';
+	const target = direction === 'left-to-right' ? rightInput : leftInput;
+	target.value = copyBlockToSide(blocks, blockId, direction);
+	updateEditorChrome(target, target.id);
+	compare();
+	leftInput.scrollTop = leftScrollTop;
+	rightInput.scrollTop = rightScrollTop;
+	window.scrollTo({ top: pageScrollTop, behavior: 'auto' });
 	const resolvedBlock = blocks.find((block) => block.id === blockId);
-	if (liveStatus && resolvedBlock) liveStatus.textContent = `${blockLabel(resolvedBlock)} block resolved with ${button.textContent?.trim().toLowerCase()}.`;
+	if (liveStatus && resolvedBlock) liveStatus.textContent = `${blockLabel(resolvedBlock)} block copied ${direction === 'left-to-right' ? 'from original to modified' : 'from modified to original'}.`;
 });
 
 get<HTMLButtonElement>('#previous-difference')?.addEventListener('click', () => {
@@ -249,14 +279,16 @@ get<HTMLButtonElement>('#next-difference')?.addEventListener('click', () => {
 	updateNavigation(true);
 });
 
-function setAll(resolution: Resolution) {
-	resolutions = resolveAll(blocks, resolution);
-	updateResolutionButtons();
-	updateMerged();
-	if (liveStatus) liveStatus.textContent = `All differences now use ${resolution === 'left' ? 'original' : 'modified'} text.`;
-}
-get<HTMLButtonElement>('#accept-all-left')?.addEventListener('click', () => setAll('left'));
-get<HTMLButtonElement>('#accept-all-right')?.addEventListener('click', () => setAll('right'));
+get<HTMLButtonElement>('#accept-all-left')?.addEventListener('click', () => {
+	if (!leftInput || !rightInput) return;
+	rightInput.value = leftInput.value; updateEditorChrome(rightInput, rightInput.id); compare(); rightInput.focus();
+	if (liveStatus) liveStatus.textContent = 'All original text copied to modified.';
+});
+get<HTMLButtonElement>('#accept-all-right')?.addEventListener('click', () => {
+	if (!leftInput || !rightInput) return;
+	leftInput.value = rightInput.value; updateEditorChrome(leftInput, leftInput.id); compare(); leftInput.focus();
+	if (liveStatus) liveStatus.textContent = 'All modified text copied to original.';
+});
 get<HTMLButtonElement>('#reset-merge')?.addEventListener('click', () => {
 	resolutions = {};
 	updateResolutionButtons();
@@ -295,6 +327,22 @@ get<HTMLButtonElement>('#clear-merged')?.addEventListener('click', () => {
 	if (download) download.disabled = true;
 	if (liveStatus) liveStatus.textContent = 'Merged result cleared. Original inputs were not changed.';
 });
+
+async function copyPane(input: HTMLTextAreaElement | null, label: string) {
+	if (!input) return;
+	try { await navigator.clipboard.writeText(input.value); }
+	catch { input.select(); document.execCommand('copy'); input.setSelectionRange(0, 0); }
+	if (liveStatus) liveStatus.textContent = `${label} copied to the clipboard.`;
+}
+function downloadPane(input: HTMLTextAreaElement | null, filename: string) {
+	if (!input) return;
+	const url = URL.createObjectURL(new Blob([input.value], { type: 'text/plain;charset=utf-8' }));
+	const link = document.createElement('a'); link.href = url; link.download = filename; link.click(); URL.revokeObjectURL(url);
+}
+get<HTMLButtonElement>('#copy-left')?.addEventListener('click', () => void copyPane(leftInput, 'Original'));
+get<HTMLButtonElement>('#copy-right')?.addEventListener('click', () => void copyPane(rightInput, 'Modified'));
+get<HTMLButtonElement>('#download-left')?.addEventListener('click', () => downloadPane(leftInput, 'original.txt'));
+get<HTMLButtonElement>('#download-right')?.addEventListener('click', () => downloadPane(rightInput, 'modified.txt'));
 
 document.addEventListener('keydown', (event) => {
 	if (!event.altKey || (event.key !== 'ArrowDown' && event.key !== 'ArrowUp')) return;
