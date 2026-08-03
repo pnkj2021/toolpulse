@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolLayout from '../../components/ToolLayout.astro';
+import ToolHeader from '../../components/ToolHeader.astro';
+
+const title = 'JWT Decoder & Inspector - Decode JWT Online | YBS';
+const description = 'Decode JWT tokens locally in your browser. Inspect headers, payloads, claims, expiration times, and token status without uploading your token.';
+const schema = {
+	'@context': 'https://schema.org', '@type': 'WebApplication', name: 'YBS JWT Decoder & Inspector',
+	applicationCategory: 'DeveloperApplication', operatingSystem: 'Any', description,
+	...(Astro.site ? { url: new URL('/tools/jwt-decoder', Astro.site).href } : {}),
+	offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+	featureList: ['Local JWT decoding', 'Header and payload inspection', 'Standard claims inspector', 'Expiration status'],
+};
+const faqs = [
+	['What is a JWT?', 'A JSON Web Token is a compact, dot-separated format commonly used to carry claims between systems. It normally contains a header, payload, and signature.'],
+	['How does JWT decoding work?', 'The header and payload are Base64URL-decoded and parsed as JSON entirely inside your browser. The signature is displayed as present or missing but is not verified.'],
+	['What are JWT claims?', 'Claims are values in the payload. Standard claims include issuer, subject, audience, expiration, not-before time, issued-at time, and JWT ID.'],
+	['What does the exp claim mean?', 'The numeric exp claim is a Unix timestamp after which the token should no longer be accepted. YBS displays it in UTC and compares it with your device clock.'],
+	['Is it safe to decode a JWT online?', 'YBS performs decoding locally and never transmits or stores the token. Tokens can still contain sensitive information, so only use tools whose privacy behavior you trust.'],
+	['Does decoding verify a JWT signature?', 'No. Decoding requires no signing key and does not prove authenticity. Signature verification must be performed by the system that knows the expected algorithm and trusted key.'],
+];
+---
+
+<BaseLayout title={title} description={description} canonicalPath="/tools/jwt-decoder">
+	<Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} /></Fragment>
+	<ToolLayout>
+		<span slot="breadcrumb">JWT Decoder &amp; Inspector</span>
+		<ToolHeader title="JWT Decoder & Inspector" description="Decode and inspect JWT contents locally. No uploads, storage, or signing keys." />
+
+		<div class="space-y-4">
+			<section class="content-card p-4" aria-labelledby="jwt-input-heading">
+				<div class="flex flex-wrap items-center justify-between gap-3">
+					<label id="jwt-input-heading" for="jwt-input" class="text-sm font-bold text-slate-900 dark:text-slate-100">JWT Token</label>
+					<div class="flex gap-2">
+						<button id="paste-jwt" type="button" class="button-secondary">Paste</button>
+						<button id="copy-token" type="button" class="button-secondary">Copy full token</button>
+						<button id="clear-jwt" type="button" class="button-secondary">Clear</button>
+					</div>
+				</div>
+				<textarea id="jwt-input" class="mt-3 min-h-36 w-full resize-y rounded-xl border border-slate-300 bg-slate-50 p-4 font-mono text-sm leading-6 text-slate-900 outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" placeholder="Paste your JWT here..." spellcheck="false" autocomplete="off"></textarea>
+				<p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Decoded locally — your token never leaves your browser. Your JWT stays on this device.</p>
+			</section>
+
+			<div id="jwt-error" class="hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200" role="alert"></div>
+			<section id="jwt-overview" class="hidden grid gap-3 lg:grid-cols-[1.4fr_1fr]" aria-label="Token overview">
+				<div class="content-card p-4">
+					<h2 class="text-sm font-bold">Token structure</h2>
+					<div class="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
+						<span id="structure-header" class="jwt-structure">Header</span><span id="structure-payload" class="jwt-structure">Payload</span><span id="structure-signature" class="jwt-structure">Signature</span>
+					</div>
+					<div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+						<div><span class="jwt-meta-label">Algorithm</span><strong id="jwt-algorithm" class="jwt-meta-value">—</strong></div>
+						<div><span class="jwt-meta-label">Token type</span><strong id="jwt-type" class="jwt-meta-value">—</strong></div>
+						<div><span class="jwt-meta-label">Issued</span><strong id="jwt-issued" class="jwt-meta-value">—</strong></div>
+						<div><span class="jwt-meta-label">Expires</span><strong id="jwt-expires" class="jwt-meta-value">—</strong></div>
+					</div>
+				</div>
+				<div class="content-card p-4">
+					<span class="jwt-meta-label">Token status</span>
+					<div id="jwt-status" class="mt-2 inline-flex rounded-full border px-3 py-1 text-sm font-black tracking-wide">UNKNOWN</div>
+					<p id="jwt-status-detail" class="mt-2 text-sm text-slate-600 dark:text-slate-300">No numeric expiration claim.</p>
+					<p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Status is based on decoded timestamps and your device clock, not signature verification.</p>
+				</div>
+			</section>
+
+			<section id="jwt-results" class="hidden grid gap-4 lg:grid-cols-2" aria-label="Decoded JWT">
+				<div class="jwt-json-panel"><div class="jwt-panel-heading"><div><h2>Header</h2><p id="header-summary"></p></div><button id="copy-header" type="button" class="button-secondary">Copy header</button></div><pre id="jwt-header-json" tabindex="0"></pre></div>
+				<div class="jwt-json-panel"><div class="jwt-panel-heading"><div><h2>Payload</h2><p>Decoded JSON claims</p></div><button id="copy-payload" type="button" class="button-secondary">Copy payload</button></div><pre id="jwt-payload-json" tabindex="0"></pre></div>
+			</section>
+
+			<section id="jwt-claims-section" class="hidden content-card p-4" aria-labelledby="claims-heading">
+				<h2 id="claims-heading" class="text-lg font-bold">Claims</h2>
+				<div id="jwt-claims" class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
+			</section>
+
+			<div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950 dark:border-amber-900 dark:bg-amber-950/60 dark:text-amber-100">
+				<strong>Decoded ≠ Verified.</strong> JWT contents can be decoded without the signing key. Decoding a token does not verify its signature or prove that the token is authentic.
+			</div>
+			<p id="jwt-live-status" class="sr-only" aria-live="polite"></p>
+		</div>
+
+		<section class="mt-10" aria-labelledby="jwt-learn-heading">
+			<h2 id="jwt-learn-heading" class="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">Understanding JWT decoding</h2>
+			<div class="mt-4 grid gap-4 md:grid-cols-2">
+				{faqs.map(([question, answer]) => <article class="content-card"><h3 class="font-bold text-slate-900 dark:text-white">{question}</h3><p>{answer}</p></article>)}
+			</div>
+		</section>
+		<aside class="mt-6 content-card"><h2>Related tools</h2><div class="mt-3 grid gap-2 sm:grid-cols-2"><a href="/tools/json-formatter" class="related-link"><span>JSON Formatter</span><span>&rarr;</span></a><a href="/tools/base64-encoder" class="related-link"><span>Base64 Encoder &amp; Decoder</span><span>&rarr;</span></a></div></aside>
+	</ToolLayout>
+	<script>
+		import '../../scripts/jwt-decoder';
+	</script>
+</BaseLayout>
+
+<style>
+	.jwt-structure { border: 1px solid var(--border); border-radius: 999px; background: var(--surface-secondary); padding: .35rem .65rem; color: var(--text-secondary); }
+	.jwt-structure-valid { border-color: rgb(16 185 129 / .5); color: rgb(5 150 105); }
+	.jwt-structure-missing { border-color: rgb(245 158 11 / .55); color: rgb(180 83 9); }
+	.jwt-meta-label { display: block; color: var(--text-muted); font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+	.jwt-meta-value { display: block; margin-top: .25rem; overflow-wrap: anywhere; color: var(--text-primary); font-size: .875rem; }
+	.jwt-json-panel { overflow: hidden; border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); box-shadow: 0 1px 2px rgb(15 23 42 / .05); }
+	.jwt-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--border); padding: .75rem 1rem; }
+	.jwt-panel-heading h2 { font-size: .875rem; font-weight: 700; }
+	.jwt-panel-heading p { margin-top: .15rem; color: var(--text-muted); font-size: .7rem; }
+	.jwt-json-panel pre { min-height: 15rem; max-height: 30rem; overflow: auto; background: var(--input-background); padding: 1rem; color: var(--text-primary); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .8rem; line-height: 1.5rem; white-space: pre; }
+	.jwt-claim { border: 1px solid var(--border); border-radius: .75rem; background: var(--surface-secondary); padding: .75rem; overflow-wrap: anywhere; }
+	.jwt-claim dt { color: var(--text-muted); font-size: .7rem; font-weight: 700; text-transform: uppercase; }
+	.jwt-claim dd { margin-top: .25rem; color: var(--text-primary); font-size: .8rem; }
+	:global([data-theme="dark"]) .jwt-structure-valid { color: rgb(52 211 153); }
+	:global([data-theme="dark"]) .jwt-structure-missing { color: rgb(251 191 36); }
+</style>

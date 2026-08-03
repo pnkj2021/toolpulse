@@ -4,7 +4,7 @@
  * Keep homepage and future directory pages data-driven by adding new tools here
  * instead of editing individual page templates.
  */
-export const toolCategories = ['Text', 'Developer', 'JSON', 'Image', 'PDF', 'Calculator'] as const;
+export const toolCategories = ['Text', 'Developer', 'JSON', 'Security', 'Image', 'PDF', 'Calculator'] as const;
 
 export type ToolCategory = (typeof toolCategories)[number];
 
@@ -71,6 +71,15 @@ export const tools: readonly Tool[] = [
 		icon: '±',
 		category: 'Developer',
 		tags: ['Developer', 'Text'],
+		available: true,
+	},
+	{
+		slug: 'jwt-decoder',
+		name: 'JWT Decoder & Inspector',
+		description: 'Decode JWT headers, payloads, claims, and expiration locally.',
+		icon: 'JWT',
+		category: 'Developer',
+		tags: ['Developer', 'JSON', 'Security'],
 		available: true,
 	},
 ];

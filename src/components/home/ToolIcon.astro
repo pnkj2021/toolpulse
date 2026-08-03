@@ -13,6 +13,7 @@ const styles: Record<string, string> = {
 	'word-counter': 'from-blue-500 to-blue-700 shadow-blue-500/25',
 	'character-counter': 'from-cyan-400 to-sky-600 shadow-cyan-500/25',
 	'diff-checker': 'from-rose-400 to-pink-600 shadow-rose-500/25',
+	'jwt-decoder': 'from-indigo-500 to-blue-600 shadow-blue-500/25',
 };
 const tileStyle = styles[slug] ?? 'from-slate-500 to-slate-700 shadow-slate-500/25';
 ---
@@ -24,4 +25,5 @@ const tileStyle = styles[slug] ?? 'from-slate-500 to-slate-700 shadow-slate-500/
 	{slug === 'word-counter' && <svg class="size-6" viewBox="0 0 24 24" fill="none"><path d="M5 5h14M12 5v14M8 19h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>}
 	{slug === 'character-counter' && <svg class="size-6" viewBox="0 0 24 24" fill="none"><path d="M10 4 7 20M17 4l-3 16M4 9h16M3 15h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>}
 	{slug === 'diff-checker' && <svg class="size-6" viewBox="0 0 24 24" fill="none"><path d="M8 4v16M5 7l3-3 3 3M16 20V4M13 17l3 3 3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>}
+	{slug === 'jwt-decoder' && <span class="font-mono text-[0.65rem] font-black tracking-tight">JWT</span>}
 </span>
