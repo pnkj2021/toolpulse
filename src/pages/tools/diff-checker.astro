@@ -7,26 +7,60 @@ import DiffToolbar from '../../components/tools/DiffToolbar.astro';
 import DiffSummary from '../../components/tools/DiffSummary.astro';
 import DiffViewer from '../../components/tools/DiffViewer.astro';
 
-const pageTitle = 'Diff Checker & Merge Tool | YBS';
-const pageDescription = 'Compare text, ignore whitespace, merge changes, and download the final result directly in your browser.';
+const pageTitle = 'Diff Checker - Compare Text & Code Online | YBS';
+const pageDescription = 'Compare text or code side by side, find line-by-line differences, and merge changes with YBS Diff Checker. Free, private, and browser-based.';
 const webApplicationSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'WebApplication',
-	name: 'YBS Diff Checker & Merge Tool',
+	name: 'YBS Diff Checker',
 	applicationCategory: 'DeveloperApplication',
 	operatingSystem: 'Any',
 	description: pageDescription,
 	...(Astro.site ? { url: new URL('/tools/diff-checker', Astro.site).href } : {}),
 	offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-	featureList: ['Side-by-side text comparison', 'Line-based diff', 'Merge conflict resolution', 'Private browser processing'],
+	featureList: ['Side-by-side text and code comparison', 'Line-based and inline differences', 'Per-block merge controls', 'Private browser processing'],
+};
+const faqItems = [
+	{
+		question: 'What is a diff checker?',
+		answer: 'A diff checker compares two versions of text and identifies content that was added, removed, or changed.',
+	},
+	{
+		question: 'Can I compare source code with this tool?',
+		answer: 'Yes. The editors accept plain text, including source code, JSON, SQL, configuration files, and documentation.',
+	},
+	{
+		question: 'Can I merge differences?',
+		answer: 'Yes. For each changed block, you can copy the original version to the modified editor or copy the modified version back to the original editor.',
+	},
+	{
+		question: 'Does YBS upload my text or code?',
+		answer: 'No. The comparison runs in your browser, and the Diff Checker does not send your editor content to a YBS server.',
+	},
+	{
+		question: 'Can I ignore whitespace differences?',
+		answer: 'Yes. You can ignore whitespace, case, blank lines, or line-ending differences independently before reviewing the results.',
+	},
+] as const;
+const faqSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faqItems.map((item) => ({
+		'@type': 'Question',
+		name: item.question,
+		acceptedAnswer: { '@type': 'Answer', text: item.answer },
+	})),
 };
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonicalPath="/tools/diff-checker">
-		<Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(webApplicationSchema)} /></Fragment>
+	<Fragment slot="head">
+		<script is:inline type="application/ld+json" set:html={JSON.stringify(webApplicationSchema)} />
+		<script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+	</Fragment>
 	<ToolLayout>
 		<span slot="breadcrumb">Diff Checker &amp; Merge Tool</span>
-		<ToolHeader title="Diff Checker & Merge Tool" description="Paste, compare, and merge code directly in your browser." />
+		<ToolHeader title="Online Diff Checker" description="Compare text or code side by side, inspect differences line by line, and copy changes between versions." />
 
 		<div class="space-y-5">
 			<DiffToolbar />
@@ -39,6 +73,66 @@ const webApplicationSchema = {
 			<div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-200">
 				<strong>Private by design:</strong> comparison and merging happen entirely in your browser. No text is uploaded or stored.
 			</div>
+		</div>
+
+		<div class="mt-10 space-y-6">
+			<section class="content-card" aria-labelledby="compare-text-code-heading">
+				<h2 id="compare-text-code-heading">Compare Text and Code Online</h2>
+				<p class="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">Use the two editors to review revisions without switching between files or manually scanning every line. The comparison groups matching content and clearly labels additions, removals, and modified blocks, with character-level highlighting inside paired changed lines. It works with any plain-text content, so you can inspect source-code revisions, JSON and other configuration files, SQL queries, documentation drafts, or ordinary text files. Comparison options let you disregard whitespace, letter case, blank lines, or line-ending styles when those differences are not relevant. You can move through each result with the Previous and Next controls, then copy individual changed blocks or an entire version between the Original and Modified editors.</p>
+			</section>
+
+			<section class="content-card" aria-labelledby="how-to-use-heading">
+				<h2 id="how-to-use-heading">How to Use the Diff Checker</h2>
+				<ol class="mt-3 list-decimal space-y-2 pl-5 text-sm leading-6 text-slate-600 dark:text-slate-300">
+					<li>Paste the earlier version into <strong>Original</strong>.</li>
+					<li>Paste the updated version into <strong>Modified</strong>.</li>
+					<li>Select any comparison options you need; results update automatically.</li>
+					<li>Review the labeled blocks and character-level highlights.</li>
+					<li>Copy individual blocks or accept all content from either version when you want to merge changes.</li>
+				</ol>
+			</section>
+
+			<section class="content-card" aria-labelledby="difference-meaning-heading">
+				<h2 id="difference-meaning-heading">What the Differences Mean</h2>
+				<p class="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300"><strong>Added</strong> blocks appear only in the Modified version, while <strong>Removed</strong> blocks appear only in Original. <strong>Modified</strong> blocks pair replaced lines from both versions and mark the changed characters within them. Every block has a text label in addition to visual highlighting, and line numbers help you locate the same change in the source file.</p>
+			</section>
+
+			<section class="content-card" aria-labelledby="common-uses-heading">
+				<h2 id="common-uses-heading">Common Uses</h2>
+				<ul class="mt-3 grid gap-2 text-sm text-slate-600 sm:grid-cols-2 dark:text-slate-300">
+					<li class="rounded-lg border border-slate-200 p-3 dark:border-slate-700"><strong class="block text-slate-900 dark:text-white">Code changes</strong>Review revisions to functions, templates, or scripts.</li>
+					<li class="rounded-lg border border-slate-200 p-3 dark:border-slate-700"><strong class="block text-slate-900 dark:text-white">JSON and configuration</strong>Spot changed keys, values, and environment settings.</li>
+					<li class="rounded-lg border border-slate-200 p-3 dark:border-slate-700"><strong class="block text-slate-900 dark:text-white">SQL comparison</strong>Compare queries, migrations, and schema definitions.</li>
+					<li class="rounded-lg border border-slate-200 p-3 dark:border-slate-700"><strong class="block text-slate-900 dark:text-white">Documentation and text</strong>Review edits to articles, notes, and plain-text files.</li>
+				</ul>
+			</section>
+
+			<section class="content-card" aria-labelledby="private-diff-heading">
+				<h2 id="private-diff-heading">Private Browser-Based Diff Checker</h2>
+				<p class="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">Comparison, highlighting, copying, and downloads are handled by code running in your browser. The Diff Checker does not upload the contents of either editor to a YBS application server. Normal requests for the website itself may still create standard hosting and security logs, as described in the <a href="/privacy" class="font-semibold text-blue-600 hover:underline dark:text-blue-400">privacy policy</a>.</p>
+			</section>
+
+			<section class="content-card" aria-labelledby="faq-heading">
+				<h2 id="faq-heading">Diff Checker FAQ</h2>
+				<div class="mt-3 divide-y divide-slate-200 dark:divide-slate-700">
+					{faqItems.map((item) => (
+						<article class="py-4 first:pt-0 last:pb-0">
+							<h3 class="font-bold text-slate-900 dark:text-white">{item.question}</h3>
+							<p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">{item.answer}</p>
+						</article>
+					))}
+				</div>
+			</section>
+
+			<section class="content-card" aria-labelledby="related-tools-heading">
+				<h2 id="related-tools-heading">Related Tools</h2>
+				<div class="mt-3 grid gap-2 sm:grid-cols-2">
+					<a href="/tools/json-formatter" class="related-link"><span>JSON Formatter</span><span aria-hidden="true">&rarr;</span></a>
+					<a href="/tools/json-builder" class="related-link"><span>JSON Builder</span><span aria-hidden="true">&rarr;</span></a>
+					<a href="/tools/base64-encoder" class="related-link"><span>Base64 Encoder &amp; Decoder</span><span aria-hidden="true">&rarr;</span></a>
+					<a href="/tools/jwt-decoder" class="related-link"><span>JWT Decoder</span><span aria-hidden="true">&rarr;</span></a>
+				</div>
+			</section>
 		</div>
 	</ToolLayout>
 	<script src="../../scripts/diff-checker.ts"></script>
