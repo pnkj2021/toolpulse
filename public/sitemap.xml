@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://ybs.tools/</loc></url>
-  <url><loc>https://ybs.tools/about</loc></url>
-  <url><loc>https://ybs.tools/contact</loc></url>
-  <url><loc>https://ybs.tools/privacy</loc></url>
-  <url><loc>https://ybs.tools/terms</loc></url>
-  <url><loc>https://ybs.tools/tools/base64-encoder</loc></url>
-  <url><loc>https://ybs.tools/tools/character-counter</loc></url>
-  <url><loc>https://ybs.tools/tools/diff-checker</loc></url>
-  <url><loc>https://ybs.tools/tools/json-builder</loc></url>
-  <url><loc>https://ybs.tools/tools/json-formatter</loc></url>
-  <url><loc>https://ybs.tools/tools/word-counter</loc></url>
+  <url><loc>https://ybstools.com/</loc></url>
+  <url><loc>https://ybstools.com/about</loc></url>
+  <url><loc>https://ybstools.com/contact</loc></url>
+  <url><loc>https://ybstools.com/privacy</loc></url>
+  <url><loc>https://ybstools.com/terms</loc></url>
+  <url><loc>https://ybstools.com/tools/base64-encoder</loc></url>
+  <url><loc>https://ybstools.com/tools/character-counter</loc></url>
+  <url><loc>https://ybstools.com/tools/diff-checker</loc></url>
+  <url><loc>https://ybstools.com/tools/json-builder</loc></url>
+  <url><loc>https://ybstools.com/tools/json-formatter</loc></url>
+  <url><loc>https://ybstools.com/tools/jwt-decoder</loc></url>
+  <url><loc>https://ybstools.com/tools/word-counter</loc></url>
 </urlset>

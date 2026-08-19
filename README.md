@@ -13,4 +13,4 @@ npm run dev
 
 Use `npm run build` for a production build, `npm run check` for Astro and TypeScript validation, and `npm test` for the test suite.
 
-Set `SITE_URL` to the deployed origin. The default is `https://ybs.tools`.
+Set `SITE_URL` to the deployed origin. The default is `https://ybstools.com`.
