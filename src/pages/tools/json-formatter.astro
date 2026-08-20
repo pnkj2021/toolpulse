@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const pageTitle = 'Free JSON Formatter and Validator — YBS';
+const pageTitle = 'JSON Formatter & Validator Online | YBS';
 const pageDescription = 'Format, minify, and validate JSON online with indentation controls, helpful errors, and JSON statistics. Your data stays in your browser.';
 
 const faqs = [
@@ -16,7 +16,7 @@ const faqs = [
 const webApplicationSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'WebApplication',
-	name: 'YBS JSON Formatter',
+	name: 'YBS JSON Formatter & Validator',
 	applicationCategory: 'DeveloperApplication',
 	operatingSystem: 'Any',
 	description: pageDescription,
@@ -51,8 +51,8 @@ const faqSchema = {
 
 		<div class="mb-6">
 			<p class="eyebrow">Developer tool</p>
-			<h1 class="mt-1 text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">JSON Formatter</h1>
-			<p class="mt-2 max-w-3xl text-slate-600 dark:text-slate-300">Format, minify, and validate JSON without sending your data anywhere.</p>
+			<h1 class="mt-1 text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">Online JSON Formatter &amp; Validator</h1>
+			<p class="mt-2 max-w-3xl text-slate-600 dark:text-slate-300">Format, validate, pretty-print, or minify JSON without sending your editor content to YBS.</p>
 		</div>
 
 		<div class="mb-4 flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900">
@@ -117,14 +117,15 @@ const faqSchema = {
 			<div class="space-y-6">
 				<article class="content-card">
 					<h2>What is a JSON Formatter?</h2>
-					<p>A JSON formatter turns compact or uneven JSON into a consistent, readable structure using indentation and line breaks. It also confirms that the input follows standard JSON syntax before producing output.</p>
+					<p>A JSON formatter, sometimes called a JSON beautifier, turns compact or uneven JSON into a readable structure using consistent indentation and line breaks. This tool parses the input first, so it also verifies standard JSON syntax before producing pretty-printed output.</p>
 				</article>
 				<article class="content-card">
-					<h2>How to format JSON</h2>
+					<h2>How to format and validate JSON</h2>
 					<ol>
-						<li><strong>1.</strong> Paste or type JSON into the Input JSON panel.</li>
-						<li><strong>2.</strong> Choose two spaces, four spaces, or tabs for indentation.</li>
-						<li><strong>3.</strong> Select Format JSON, then copy the readable result from the output panel.</li>
+						<li><strong>1.</strong> Paste, type, or upload a JSON file in the Input JSON panel.</li>
+						<li><strong>2.</strong> Choose two spaces, four spaces, or tabs, then select Format JSON for readable output.</li>
+						<li><strong>3.</strong> Use Validate JSON to check syntax without changing the input, or Minify JSON to remove optional whitespace.</li>
+						<li><strong>4.</strong> Correct any reported line and column error, then copy or swap the generated output.</li>
 					</ol>
 				</article>
 				<article class="content-card">
@@ -133,7 +134,7 @@ const faqSchema = {
 				</article>
 				<article class="content-card">
 					<h2>Common JSON errors</h2>
-					<p>Invalid JSON often contains trailing commas, single quotes, comments, missing closing brackets, or property names without double quotes. Control characters and malformed escape sequences can also prevent parsing.</p>
+					<p>Invalid JSON often contains trailing commas, single-quoted strings, comments, missing closing brackets, or property names without double quotes. The validation message reports the parser error and, when available, an approximate line and column so you can locate the problem.</p>
 				</article>
 				<article class="content-card">
 					<h2>When developers use JSON formatters</h2>
@@ -141,7 +142,7 @@ const faqSchema = {
 				</article>
 				<article class="content-card">
 					<h2>Privacy and browser-based processing</h2>
-					<p>This tool uses the browser’s built-in JSON parser. Input stays on your device, making it suitable for sensitive data—though secrets should still be handled according to your organization’s security policies.</p>
+					<p>This tool uses your browser’s built-in JSON parser and does not upload editor content to a YBS application server. Continue to follow your organization’s policies when handling credentials, personal data, or other sensitive information.</p>
 				</article>
 			</div>
 
@@ -164,11 +165,9 @@ const faqSchema = {
 					<h2>Related tools</h2>
 					<div class="mt-3 space-y-2 text-sm">
 						<a href="/tools/json-builder/" class="related-link"><span>JSON Builder</span><span>&rarr;</span></a>
-						<a href="/tools/word-counter/" class="related-link"><span>Word Counter</span><span>&rarr;</span></a>
-						<a href="/tools/character-counter/" class="related-link"><span>Character Counter</span><span>&rarr;</span></a>
-						<a href="/tools/base64-encoder/" class="related-link"><span>Base64 Encoder</span><span>&rarr;</span></a>
-						<div class="related-link text-slate-400"><span>JWT Decoder</span><small>Coming soon</small></div>
-						<div class="related-link text-slate-400"><span>URL Encoder</span><small>Coming soon</small></div>
+						<a href="/tools/jwt-decoder/" class="related-link"><span>JWT Decoder</span><span>&rarr;</span></a>
+						<a href="/tools/base64-encoder/" class="related-link"><span>Base64 Encoder &amp; Decoder</span><span>&rarr;</span></a>
+						<a href="/tools/diff-checker/" class="related-link"><span>Diff Checker</span><span>&rarr;</span></a>
 					</div>
 				</aside>
 			</div>
