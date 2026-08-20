@@ -87,5 +87,5 @@ export const tools: readonly Tool[] = [
 export const availableTools = tools.filter((tool) => tool.available);
 
 export function toolHref(tool: Tool): string {
-	return `/tools/${tool.slug}`;
+	return `/tools/${tool.slug}/`;
 }

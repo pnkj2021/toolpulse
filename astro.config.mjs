@@ -9,6 +9,7 @@ const site = process.env.SITE_URL ?? 'https://ybstools.com';
 // https://astro.build/config
 export default defineConfig({
   site,
+  trailingSlash: 'always',
   vite: {
     plugins: [tailwindcss()]
   }

@@ -20,7 +20,7 @@ const webApplicationSchema = {
 	applicationCategory: 'DeveloperApplication',
 	operatingSystem: 'Any',
 	description: pageDescription,
-	...(Astro.site ? { url: new URL('/tools/json-formatter', Astro.site).href } : {}),
+	...(Astro.site ? { url: new URL('/tools/json-formatter/', Astro.site).href } : {}),
 	offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
 	featureList: ['Format JSON', 'Minify JSON', 'Validate JSON', 'JSON statistics', 'Browser-based processing'],
 };
@@ -36,7 +36,7 @@ const faqSchema = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonicalPath="/tools/json-formatter">
+<BaseLayout title={pageTitle} description={pageDescription} canonicalPath="/tools/json-formatter/">
 	<Fragment slot="head">
 		<script type="application/ld+json" set:html={JSON.stringify(webApplicationSchema)} />
 		<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
@@ -163,10 +163,10 @@ const faqSchema = {
 				<aside class="content-card">
 					<h2>Related tools</h2>
 					<div class="mt-3 space-y-2 text-sm">
-						<a href="/tools/json-builder" class="related-link"><span>JSON Builder</span><span>&rarr;</span></a>
-						<a href="/tools/word-counter" class="related-link"><span>Word Counter</span><span>&rarr;</span></a>
-						<a href="/tools/character-counter" class="related-link"><span>Character Counter</span><span>&rarr;</span></a>
-						<a href="/tools/base64-encoder" class="related-link"><span>Base64 Encoder</span><span>&rarr;</span></a>
+						<a href="/tools/json-builder/" class="related-link"><span>JSON Builder</span><span>&rarr;</span></a>
+						<a href="/tools/word-counter/" class="related-link"><span>Word Counter</span><span>&rarr;</span></a>
+						<a href="/tools/character-counter/" class="related-link"><span>Character Counter</span><span>&rarr;</span></a>
+						<a href="/tools/base64-encoder/" class="related-link"><span>Base64 Encoder</span><span>&rarr;</span></a>
 						<div class="related-link text-slate-400"><span>JWT Decoder</span><small>Coming soon</small></div>
 						<div class="related-link text-slate-400"><span>URL Encoder</span><small>Coming soon</small></div>
 					</div>

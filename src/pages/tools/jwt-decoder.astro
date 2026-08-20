@@ -8,7 +8,7 @@ const description = 'Decode JWT tokens locally in your browser. Inspect headers,
 const schema = {
 	'@context': 'https://schema.org', '@type': 'WebApplication', name: 'YBS JWT Decoder & Inspector',
 	applicationCategory: 'DeveloperApplication', operatingSystem: 'Any', description,
-	...(Astro.site ? { url: new URL('/tools/jwt-decoder', Astro.site).href } : {}),
+	...(Astro.site ? { url: new URL('/tools/jwt-decoder/', Astro.site).href } : {}),
 	offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
 	featureList: ['Local JWT decoding', 'Header and payload inspection', 'Standard claims inspector', 'Expiration status'],
 };
@@ -22,7 +22,7 @@ const faqs = [
 ];
 ---
 
-<BaseLayout title={title} description={description} canonicalPath="/tools/jwt-decoder">
+<BaseLayout title={title} description={description} canonicalPath="/tools/jwt-decoder/">
 	<Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} /></Fragment>
 	<ToolLayout>
 		<span slot="breadcrumb">JWT Decoder &amp; Inspector</span>
@@ -86,7 +86,7 @@ const faqs = [
 				{faqs.map(([question, answer]) => <article class="content-card"><h3 class="font-bold text-slate-900 dark:text-white">{question}</h3><p>{answer}</p></article>)}
 			</div>
 		</section>
-		<aside class="mt-6 content-card"><h2>Related tools</h2><div class="mt-3 grid gap-2 sm:grid-cols-2"><a href="/tools/json-formatter" class="related-link"><span>JSON Formatter</span><span>&rarr;</span></a><a href="/tools/base64-encoder" class="related-link"><span>Base64 Encoder &amp; Decoder</span><span>&rarr;</span></a></div></aside>
+		<aside class="mt-6 content-card"><h2>Related tools</h2><div class="mt-3 grid gap-2 sm:grid-cols-2"><a href="/tools/json-formatter/" class="related-link"><span>JSON Formatter</span><span>&rarr;</span></a><a href="/tools/base64-encoder/" class="related-link"><span>Base64 Encoder &amp; Decoder</span><span>&rarr;</span></a></div></aside>
 	</ToolLayout>
 	<script>
 		import '../../scripts/jwt-decoder';
