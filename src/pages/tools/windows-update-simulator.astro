@@ -1,0 +1,135 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'Windows Update Simulator - Fake Update Screen Online | YBS';
+const pageDescription = 'Create a harmless Windows-style update simulation in your browser with customizable progress, timing, fullscreen mode, and messages.';
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebApplication',
+	name: 'YBS Windows Update Simulator',
+	url: 'https://ybstools.com/tools/windows-update-simulator/',
+	applicationCategory: 'EntertainmentApplication',
+	operatingSystem: 'Any',
+	description: pageDescription,
+	offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+	featureList: ['Visual update simulation', 'Automatic and manual progress', 'Optional fullscreen mode', 'Custom messages', 'Browser-local operation'],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonicalPath="/tools/windows-update-simulator/">
+	<script slot="head" type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<section class="page-container py-8 sm:py-10">
+		<nav class="mb-4 text-sm text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
+			<a href="/" class="hover:text-blue-600">Home</a><span class="mx-2" aria-hidden="true">/</span><span class="text-slate-700 dark:text-slate-300">Windows Update Simulator</span>
+		</nav>
+
+		<header class="mb-6">
+			<p class="eyebrow">Fun browser tool</p>
+			<h1 class="mt-1 text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">Windows Update Simulator</h1>
+			<p class="mt-2 max-w-3xl leading-7 text-slate-600 dark:text-slate-300">Create a customizable Windows-style update screen for presentations, recordings, visual demos, or harmless jokes with consent.</p>
+		</header>
+
+		<div class="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100" role="note">
+			<strong>Visual simulation only:</strong> this tool does not perform or control Windows updates, modify your computer, or prevent you from leaving the page.
+		</div>
+
+		<form id="simulator-form" class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-6">
+			<div class="grid gap-6 lg:grid-cols-2">
+				<fieldset>
+					<legend class="text-sm font-bold text-slate-900 dark:text-white">Update style</legend>
+					<div class="mt-3 grid grid-cols-2 gap-3">
+						<label class="sim-choice"><input type="radio" name="style" value="11" checked /> <span>Windows 11 style</span></label>
+						<label class="sim-choice"><input type="radio" name="style" value="10" /> <span>Windows 10 style</span></label>
+					</div>
+				</fieldset>
+
+				<label class="sim-field" for="start-percentage"><span>Starting percentage</span><input id="start-percentage" name="start" type="number" min="0" max="99" value="0" inputmode="numeric" /><small>Choose a value from 0 to 99%.</small></label>
+
+				<fieldset>
+					<legend class="text-sm font-bold text-slate-900 dark:text-white">Progress mode</legend>
+					<div class="mt-3 grid grid-cols-2 gap-3">
+						<label class="sim-choice"><input type="radio" name="mode" value="automatic" checked /> <span>Automatic</span></label>
+						<label class="sim-choice"><input type="radio" name="mode" value="manual" /> <span>Manual</span></label>
+					</div>
+				</fieldset>
+
+				<div id="duration-fields" class="grid gap-3 sm:grid-cols-2">
+					<label class="sim-field" for="duration"><span>Duration</span><select id="duration" name="duration"><option value="30">30 seconds</option><option value="60" selected>1 minute</option><option value="180">3 minutes</option><option value="300">5 minutes</option><option value="600">10 minutes</option><option value="custom">Custom</option></select></label>
+					<label id="custom-duration-field" class="sim-field hidden" for="custom-duration"><span>Custom minutes</span><input id="custom-duration" name="customDuration" type="number" min="0.1" max="60" step="0.1" value="1" /></label>
+				</div>
+
+				<label class="sim-field" for="primary-message"><span>Main message</span><input id="primary-message" name="primaryMessage" maxlength="100" value="Working on updates" /></label>
+				<label class="sim-field" for="secondary-message"><span>Secondary message</span><input id="secondary-message" name="secondaryMessage" maxlength="140" value="Please keep your computer on." /></label>
+			</div>
+
+			<fieldset class="mt-6 border-t border-slate-200 pt-5 dark:border-slate-700">
+				<legend class="sr-only">Simulation options</legend>
+				<div class="grid gap-3 sm:grid-cols-3">
+					<label class="sim-toggle"><input id="loop-progress" name="loop" type="checkbox" /><span><strong>Loop progress</strong><small>Restart after 100%.</small></span></label>
+					<label class="sim-toggle"><input id="restart-sequence" name="restart" type="checkbox" /><span><strong>Show restart sequence</strong><small>Display a visual restart.</small></span></label>
+					<label class="sim-toggle"><input id="screen-saver" name="screenSaver" type="checkbox" /><span><strong>Screen saver mode</strong><small>Hide an idle cursor and shift content.</small></span></label>
+				</div>
+			</fieldset>
+
+			<div class="mt-6 flex flex-wrap items-center gap-4">
+				<button class="button-primary px-5 py-3" type="submit">Start Simulation</button>
+				<p id="configuration-status" class="text-sm text-slate-500 dark:text-slate-400" role="status" aria-live="polite"></p>
+			</div>
+		</form>
+
+		<div class="mt-10 grid gap-6 lg:grid-cols-[2fr_1fr]">
+			<div class="space-y-6">
+				<article class="content-card"><h2>What is a Windows Update Simulator?</h2><p>It is a visual browser simulation that resembles a generic operating-system update screen. It is designed for screen recordings, presentations, browser demonstrations, and consensual jokes—not for updating or controlling a device.</p></article>
+				<article class="content-card"><h2>How to use it</h2><ol><li><strong>1.</strong> Choose a visual style and starting percentage.</li><li><strong>2.</strong> Select automatic timing or manual keyboard control, then customize the messages and optional effects.</li><li><strong>3.</strong> Select Start Simulation. If fullscreen is unavailable, the simulator continues in the browser window.</li><li><strong>4.</strong> Press Escape or use Exit Simulation whenever you want to stop.</li></ol></article>
+				<article class="content-card"><h2>Is this a real Windows update?</h2><p>No. The simulator does not interact with Windows Update, install software, alter system settings, lock the computer, or claim that the operating system is updating.</p></article>
+				<article class="content-card"><h2>Common uses</h2><p>Use it for screen recordings, presentations, visual demos, testing fullscreen browser behavior, a screen-saver-style display, or harmless jokes where everyone involved has consented.</p></article>
+			</div>
+			<aside class="content-card self-start"><h2>Privacy and disclaimer</h2><p>Configuration and progress remain in this browser tab. Custom messages are not uploaded or saved to local storage.</p><p>YBS is not affiliated with or endorsed by Microsoft. Windows is a trademark of Microsoft Corporation.</p></aside>
+		</div>
+	</section>
+
+	<section id="simulation" class="simulation hidden" aria-labelledby="simulation-title" aria-describedby="simulation-description">
+		<div id="simulation-content" class="simulation-content">
+			<div id="simulation-spinner" class="simulation-spinner" aria-hidden="true"></div>
+			<h2 id="simulation-title">Working on updates</h2>
+			<p id="simulation-progress" class="simulation-progress">0% complete</p>
+			<p id="simulation-description" class="simulation-description">Please keep your computer on.</p>
+			<p id="restart-note" class="simulation-note">Your computer may restart a few times.</p>
+			<p id="manual-help" class="simulation-help hidden">Use Right Arrow or Space to increase; Left Arrow to decrease.</p>
+		</div>
+		<p id="fullscreen-status" class="simulation-fullscreen-status hidden" role="status">Fullscreen was not allowed. The simulation is running in this browser window.</p>
+		<p class="simulation-footer">Press Esc to exit</p>
+	</section>
+
+	<script src="../../scripts/windows-update-simulator.ts"></script>
+</BaseLayout>
+
+<style>
+	.sim-field { display: grid; gap: .45rem; }
+	.sim-field > span, .sim-choice span, .sim-toggle strong { font-size: .875rem; font-weight: 700; color: rgb(15 23 42); }
+	.sim-field small, .sim-toggle small { display: block; color: rgb(100 116 139); font-size: .75rem; }
+	.sim-field input, .sim-field select { width: 100%; border: 1px solid rgb(203 213 225); border-radius: .65rem; background: white; padding: .65rem .8rem; color: rgb(15 23 42); outline: none; }
+	.sim-field input:focus-visible, .sim-field select:focus-visible { border-color: rgb(37 99 235); box-shadow: 0 0 0 4px rgb(219 234 254); }
+	.sim-choice, .sim-toggle { display: flex; align-items: flex-start; gap: .7rem; border: 1px solid rgb(226 232 240); border-radius: .75rem; padding: .85rem; cursor: pointer; }
+	.sim-choice:has(input:checked), .sim-toggle:has(input:checked) { border-color: rgb(37 99 235); background: rgb(239 246 255); }
+	.sim-choice input, .sim-toggle input { margin-top: .15rem; accent-color: rgb(37 99 235); }
+	:global([data-theme="dark"]) .sim-field > span, :global([data-theme="dark"]) .sim-choice span, :global([data-theme="dark"]) .sim-toggle strong { color: white; }
+	:global([data-theme="dark"]) .sim-choice, :global([data-theme="dark"]) .sim-toggle { border-color: rgb(51 65 85); }
+	:global([data-theme="dark"]) .sim-choice:has(input:checked), :global([data-theme="dark"]) .sim-toggle:has(input:checked) { border-color: rgb(59 130 246); background: rgb(23 37 84); }
+	.simulation { position: fixed; inset: 0; z-index: 100; overflow: hidden; background: radial-gradient(circle at 50% 42%, #18202b 0%, #090b0f 58%, #030405 100%); color: white; font-family: "Segoe UI", ui-sans-serif, system-ui, sans-serif; }
+	.simulation[data-style="10"] { background: #0067b8; }
+	.simulation-content { position: absolute; left: 50%; top: 50%; width: min(90vw, 48rem); transform: translate(-50%, -50%); text-align: center; transition: transform 2s ease; }
+	.simulation[data-style="10"] .simulation-content { top: 46%; }
+	.simulation-content h2 { font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 400; letter-spacing: .005em; }
+	.simulation-progress { margin-top: .7rem; font-size: clamp(1.35rem, 3vw, 2rem); font-weight: 400; letter-spacing: 0; }
+	.simulation-description { margin-top: 1.35rem; font-size: clamp(.95rem, 1.8vw, 1.1rem); }
+	.simulation-note, .simulation-help { margin-top: .8rem; color: rgb(226 232 240); font-size: .82rem; }
+	.simulation-spinner { width: 2.25rem; height: 2.25rem; margin: 0 auto 1.65rem; border: 2px dotted rgb(255 255 255 / .95); border-radius: 999px; animation: sim-spin 1.5s linear infinite; }
+	.simulation-footer { position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); font-size: .8rem; color: rgb(219 234 254); }
+	.simulation-fullscreen-status { position: absolute; bottom: 3.25rem; left: 50%; width: max-content; max-width: 90vw; transform: translateX(-50%); border-radius: .5rem; background: rgb(0 0 0 / .25); padding: .5rem .75rem; font-size: .75rem; }
+	.simulation.cursor-hidden { cursor: none; }
+	.simulation.restart-black { background: #000; }
+	@keyframes sim-spin { to { transform: rotate(360deg); } }
+	@media (prefers-reduced-motion: reduce) { .simulation-spinner { animation: none; border-color: white; } .simulation-content { transition: none; } }
+</style>

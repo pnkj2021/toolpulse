@@ -4,7 +4,7 @@
  * Keep homepage and future directory pages data-driven by adding new tools here
  * instead of editing individual page templates.
  */
-export const toolCategories = ['Text', 'Developer', 'JSON', 'Security', 'Image', 'PDF', 'Calculator'] as const;
+export const toolCategories = ['Text', 'Developer', 'JSON', 'Security', 'Image', 'PDF', 'Calculator', 'Fun'] as const;
 
 export type ToolCategory = (typeof toolCategories)[number];
 
@@ -80,6 +80,15 @@ export const tools: readonly Tool[] = [
 		icon: 'JWT',
 		category: 'Developer',
 		tags: ['Developer', 'JSON', 'Security'],
+		available: true,
+	},
+	{
+		slug: 'windows-update-simulator',
+		name: 'Windows Update Simulator',
+		description: 'Create a harmless fullscreen update simulation with customizable progress, timing, and messages.',
+		icon: '%',
+		category: 'Fun',
+		tags: ['Fun'],
 		available: true,
 	},
 ];
