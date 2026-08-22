@@ -139,11 +139,13 @@ a {
 		@apply flex min-w-0 items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm sm:block dark:border-slate-700 dark:bg-slate-900;
 	}
 
-	.stat-card span {
+	.stat-card span,
+	.stat-card dt {
 		@apply block truncate text-xs font-medium text-slate-500 dark:text-slate-400;
 	}
 
-	.stat-card strong {
+	.stat-card strong,
+	.stat-card dd {
 		@apply mt-0 block truncate text-xl font-bold text-slate-950 dark:text-white sm:mt-1;
 	}
 

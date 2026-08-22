@@ -3,6 +3,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const faqs = [
 	{
+		question: 'What is a character counter?',
+		answer: 'A character counter measures text length as you type or paste, helping you check limits for forms, messages, metadata, and other writing.',
+	},
+	{
 		question: 'Does the character count include spaces?',
 		answer: 'The Total characters result includes every letter, number, punctuation mark, space, and line break. The Characters without spaces result removes all whitespace so you can compare both totals.',
 	},
@@ -19,17 +23,46 @@ const faqs = [
 		answer: 'Lines are separated by a line break, including blank lines between text. Paragraphs are non-empty blocks of text separated by one or more blank lines.',
 	},
 	{
-		question: 'Is there a text length limit?',
-		answer: 'YBS does not set a fixed limit. Very large documents may depend on the memory and performance available in your browser.',
+		question: 'Does the counter work with emoji?',
+		answer: 'Yes. Browsers with Intl.Segmenter count emoji and combined Unicode characters as user-perceived characters. Older browsers use a code-point fallback, which may count a complex emoji as more than one character.',
+	},
+	{
+		question: 'Does the counter update automatically?',
+		answer: 'Yes. Character, word, sentence, paragraph, and line totals update immediately whenever you type, paste, or edit the text.',
 	},
 ];
+
+const pageUrl = 'https://ybstools.com/tools/character-counter/';
+const pageDescription = 'Count characters, words, sentences, paragraphs, and lines instantly, with or without whitespace. Free, private, and processed in your browser.';
+const structuredData = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'WebApplication',
+			name: 'YBS Character Counter',
+			url: pageUrl,
+			applicationCategory: 'UtilitiesApplication',
+			operatingSystem: 'Any',
+			description: pageDescription,
+		},
+		{
+			'@type': 'FAQPage',
+			mainEntity: faqs.map((faq) => ({
+				'@type': 'Question',
+				name: faq.question,
+				acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+			})),
+		},
+	],
+};
 ---
 
 <BaseLayout
-	title="Free Character Counter Online — YBS"
-	description="Count characters with and without spaces, words, sentences, paragraphs, and lines instantly with this free online character counter."
+	title="Character Counter - Count Characters Online | YBS"
+	description={pageDescription}
 	canonicalPath="/tools/character-counter/"
 >
+	<script slot="head" type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 	<section class="page-container py-8 sm:py-10">
 		<nav class="mb-4 text-sm text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
 			<a href="/" class="hover:text-blue-600">Home</a>
@@ -38,20 +71,20 @@ const faqs = [
 		</nav>
 
 		<div class="mb-6">
-			<h1 class="text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">Character Counter</h1>
+			<h1 class="text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">Online Character Counter</h1>
 			<p class="mt-2 max-w-2xl text-slate-600 dark:text-slate-300">
-				Count characters, words, sentences, and more as you type. Your text stays private in your browser.
+				Count characters with or without whitespace, plus words, sentences, paragraphs, and lines as you type. Your text stays in your browser.
 			</p>
 		</div>
 
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-6" aria-label="Text statistics">
-			<div class="stat-card"><span>Characters incl. whitespace</span><strong id="character-count">0</strong></div>
-			<div class="stat-card"><span>Characters excl. whitespace</span><strong id="no-space-count">0</strong></div>
-			<div class="stat-card"><span>Words</span><strong id="word-count">0</strong></div>
-			<div class="stat-card"><span>Sentences</span><strong id="sentence-count">0</strong></div>
-			<div class="stat-card"><span>Paragraphs</span><strong id="paragraph-count">0</strong></div>
-			<div class="stat-card"><span>Lines</span><strong id="line-count">0</strong></div>
-		</div>
+		<dl class="grid gap-4 sm:grid-cols-2 lg:grid-cols-6" aria-label="Text statistics">
+			<div class="stat-card"><dt>Characters with whitespace</dt><dd id="character-count">0</dd></div>
+			<div class="stat-card"><dt>Characters without whitespace</dt><dd id="no-space-count">0</dd></div>
+			<div class="stat-card"><dt>Words</dt><dd id="word-count">0</dd></div>
+			<div class="stat-card"><dt>Sentences</dt><dd id="sentence-count">0</dd></div>
+			<div class="stat-card"><dt>Paragraphs</dt><dd id="paragraph-count">0</dd></div>
+			<div class="stat-card"><dt>Lines</dt><dd id="line-count">0</dd></div>
+		</dl>
 
 		<div class="mt-5 rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
 			<div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3 dark:border-slate-700">
@@ -85,14 +118,28 @@ const faqs = [
 		<div class="mt-10 grid gap-6 lg:grid-cols-[2fr_1fr]">
 			<div class="space-y-6">
 				<article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-					<h2 class="text-xl font-bold text-slate-950 dark:text-white">What is a character counter?</h2>
+					<h2 class="text-xl font-bold text-slate-950 dark:text-white">Count characters online</h2>
 					<p class="mt-3 leading-7 text-slate-600 dark:text-slate-300">
-						A character counter measures user-perceived characters such as letters, emoji, numbers, and punctuation. It shows one total including whitespace and another excluding Unicode whitespace, making it easy to check text against limits without counting manually.
+						Use the live totals to check social posts, form fields, writing assignments, messages, SEO titles and descriptions, or text used in an application. The counter also summarizes words, sentences, paragraphs, and lines without interrupting your work.
 					</p>
 				</article>
 
 				<article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-					<h2 class="text-xl font-bold text-slate-950 dark:text-white">Common uses</h2>
+					<h2 class="text-xl font-bold text-slate-950 dark:text-white">Characters with and without whitespace</h2>
+					<p class="mt-3 leading-7 text-slate-600 dark:text-slate-300">
+						Characters with whitespace includes letters, numbers, punctuation, spaces, tabs, and line breaks. Characters without whitespace removes all Unicode whitespace—not only ordinary spaces—before showing the total.
+					</p>
+				</article>
+
+				<article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+					<h2 class="text-xl font-bold text-slate-950 dark:text-white">Unicode, emoji, and special characters</h2>
+					<p class="mt-3 leading-7 text-slate-600 dark:text-slate-300">
+						Modern browsers count grapheme clusters, so a combined character or emoji sequence is normally treated as one visible character. In an older browser without <code>Intl.Segmenter</code>, the fallback counts Unicode code points and may split a complex emoji into multiple characters.
+					</p>
+				</article>
+
+				<article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+					<h2 class="text-xl font-bold text-slate-950 dark:text-white">Common uses for a character counter</h2>
 					<ul class="mt-3 grid gap-3 text-sm leading-6 text-slate-600 dark:text-slate-300 sm:grid-cols-2">
 						<li class="rounded-xl bg-slate-50 p-3 dark:bg-slate-800"><strong class="block text-slate-800 dark:text-slate-100">Social posts</strong>Stay within caption, bio, and post limits.</li>
 						<li class="rounded-xl bg-slate-50 p-3 dark:bg-slate-800"><strong class="block text-slate-800 dark:text-slate-100">SEO content</strong>Check title tags and meta descriptions.</li>
@@ -102,12 +149,21 @@ const faqs = [
 				</article>
 
 				<article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-					<h2 class="text-xl font-bold text-slate-950 dark:text-white">How to use it</h2>
+					<h2 class="text-xl font-bold text-slate-950 dark:text-white">How to use the character counter</h2>
 					<ol class="mt-3 space-y-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
 						<li><strong class="mr-2 text-blue-600">1.</strong>Type or paste content into the text area above.</li>
 						<li><strong class="mr-2 text-blue-600">2.</strong>Watch all six measurements update instantly as the text changes.</li>
 						<li><strong class="mr-2 text-blue-600">3.</strong>Use Copy to reuse the text, Clear to start again, or Sample text to test the tool.</li>
 					</ol>
+				</article>
+
+				<article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+					<h2 class="text-xl font-bold text-slate-950 dark:text-white">Related text tools</h2>
+					<p class="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
+						<a href="/tools/word-counter/" class="text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200">Word Counter</a>
+						<a href="/tools/diff-checker/" class="text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200">Diff Checker</a>
+						<a href="/tools/json-formatter/" class="text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200">JSON Formatter</a>
+					</p>
 				</article>
 			</div>
 
