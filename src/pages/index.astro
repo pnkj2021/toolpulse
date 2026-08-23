@@ -15,7 +15,7 @@ const filters = [
 	{ name: 'Fun', icon: '✦' },
 ] as const;
 const categories = filters.map((category) => ({ ...category, count: availableTools.filter((tool) => tool.tags.some((tag) => tag.toLowerCase() === category.name.toLowerCase())).length }));
-const popularOrder = ['diff-checker', 'json-formatter', 'json-builder', 'base64-encoder', 'word-counter', 'character-counter', 'windows-update-simulator'];
+const popularOrder = ['diff-checker', 'json-formatter', 'json-builder', 'base64-encoder', 'word-counter', 'character-counter', 'windows-update-simulator', 'typing-challenge'];
 const popularTools = [...availableTools].sort((a, b) => popularOrder.indexOf(a.slug) - popularOrder.indexOf(b.slug));
 ---
 

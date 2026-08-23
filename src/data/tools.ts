@@ -91,6 +91,15 @@ export const tools: readonly Tool[] = [
 		tags: ['Fun'],
 		available: true,
 	},
+	{
+		slug: 'typing-challenge',
+		name: 'Typing Challenge',
+		description: 'Practice words and code while measuring WPM, accuracy, and mistakes.',
+		icon: '>_',
+		category: 'Fun',
+		tags: ['Fun', 'Developer'],
+		available: true,
+	},
 ];
 
 export const availableTools = tools.filter((tool) => tool.available);
