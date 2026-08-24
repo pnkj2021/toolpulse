@@ -57,8 +57,8 @@ export const tools: readonly Tool[] = [
 	},
 	{
 		slug: 'yaml-viewer',
-		name: 'YAML Viewer & OpenAPI Explorer',
-		description: 'Validate YAML and inspect OpenAPI or Swagger endpoints.',
+		name: 'YAML Viewer & API Explorer',
+		description: 'View, validate, and explore YAML, including API endpoints, schemas, parameters, and responses.',
 		icon: 'YML',
 		category: 'Developer',
 		tags: ['Developer'],
