@@ -56,6 +56,15 @@ export const tools: readonly Tool[] = [
 		available: true,
 	},
 	{
+		slug: 'yaml-viewer',
+		name: 'YAML Viewer & OpenAPI Explorer',
+		description: 'Validate YAML and inspect OpenAPI or Swagger endpoints.',
+		icon: 'YML',
+		category: 'Developer',
+		tags: ['Developer'],
+		available: true,
+	},
+	{
 		slug: 'base64-encoder',
 		name: 'Base64 Encoder & Decoder',
 		description: 'Encode and decode text or files securely in your browser.',
