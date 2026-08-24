@@ -65,6 +65,15 @@ export const tools: readonly Tool[] = [
 		available: true,
 	},
 	{
+		slug: 'regex-tester',
+		name: 'Regex Tester',
+		description: 'Test regular expressions, highlight matches, inspect capture groups, and preview replacements.',
+		icon: '.*',
+		category: 'Developer',
+		tags: ['Developer', 'Text'],
+		available: true,
+	},
+	{
 		slug: 'base64-encoder',
 		name: 'Base64 Encoder & Decoder',
 		description: 'Encode and decode text or files securely in your browser.',
