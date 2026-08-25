@@ -101,6 +101,15 @@ export const tools: readonly Tool[] = [
 		available: true,
 	},
 	{
+		slug: 'unix-timestamp-converter',
+		name: 'Unix Timestamp Converter',
+		description: 'Convert Unix timestamps to readable dates and convert dates back to epoch time.',
+		icon: 'UTC',
+		category: 'Developer',
+		tags: ['Developer'],
+		available: true,
+	},
+	{
 		slug: 'windows-update-simulator',
 		name: 'Windows Update Simulator',
 		description: 'Create a harmless fullscreen update simulation with customizable progress, timing, and messages.',

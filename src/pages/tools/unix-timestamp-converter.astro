@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolLayout from '../../components/ToolLayout.astro';
+import ToolHeader from '../../components/ToolHeader.astro';
+
+const title = 'Unix Timestamp Converter - Epoch Time Converter | YBS';
+const description = 'Convert Unix timestamps to readable dates and convert dates back to Unix time directly in your browser.';
+const canonicalPath = '/tools/unix-timestamp-converter/';
+const faqs = [
+	['What is the current Unix timestamp?', 'It is the number of whole seconds elapsed since January 1, 1970 at 00:00:00 UTC. The value above uses your device clock and updates once per second.'],
+	['What is Unix epoch time?', 'Unix epoch time measures elapsed time from January 1, 1970 at 00:00:00 UTC.'],
+	['Is a Unix timestamp in seconds or milliseconds?', 'Unix timestamps commonly use seconds, while JavaScript dates commonly use milliseconds. This converter detects typical values and lets you override the unit.'],
+	['How do I convert Unix time to a date?', 'Enter an integer timestamp. The converter immediately displays local time, UTC, ISO 8601, seconds, milliseconds, and relative time.'],
+	['How do I get a Unix timestamp in JavaScript?', 'Use Math.floor(Date.now() / 1000) for whole Unix seconds or Date.now() for Unix milliseconds.'],
+	['What is timestamp 0?', 'Timestamp 0 is the Unix epoch: 1970-01-01T00:00:00.000Z.'],
+	['Can Unix timestamps be negative?', 'Yes. Negative timestamps represent dates before the Unix epoch and are supported within JavaScript’s Date range.'],
+	['Does YBS upload my timestamp?', 'No. All date and timestamp conversions happen in your browser, with no conversion request sent to a server.'],
+];
+const schema = { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'YBS Unix Timestamp Converter', applicationCategory: 'DeveloperApplication', operatingSystem: 'Any', url: 'https://ybstools.com/tools/unix-timestamp-converter/', description, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } };
+const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(([question, answer]) => ({ '@type': 'Question', name: question, acceptedAnswer: { '@type': 'Answer', text: answer } })) };
+---
+
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath}>
+	<Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} /><script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} /></Fragment>
+	<ToolLayout>
+		<span slot="breadcrumb">Unix Timestamp Converter</span>
+		<ToolHeader title="Unix Timestamp Converter" description={description} />
+
+		<section class="current-panel" aria-labelledby="current-heading">
+			<div><h2 id="current-heading">Current Unix Timestamp</h2><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Seconds since January 1, 1970 UTC</p></div>
+			<output id="current-timestamp" class="current-value">0000000000</output>
+			<button type="button" class="button-secondary" data-copy-value="current-timestamp" aria-label="Copy current Unix timestamp">Copy</button>
+		</section>
+
+		<div class="mt-4 grid gap-4 lg:grid-cols-2">
+			<section class="converter-panel" aria-labelledby="timestamp-heading">
+				<h2 id="timestamp-heading">Unix Timestamp <span aria-hidden="true">→</span> Date</h2>
+				<label for="timestamp-input" class="field-label">Unix timestamp</label>
+				<input id="timestamp-input" class="field-input font-mono" inputmode="numeric" value="0" autocomplete="off" spellcheck="false" aria-describedby="detected-unit timestamp-error" />
+				<div class="mt-3" role="group" aria-label="Timestamp unit">
+					<div class="unit-selector"><button type="button" data-unit="auto" class="unit-active" aria-pressed="true">Auto</button><button type="button" data-unit="seconds" aria-pressed="false">Seconds</button><button type="button" data-unit="milliseconds" aria-pressed="false">Milliseconds</button></div>
+					<p id="detected-unit" class="mt-2 text-xs font-semibold text-slate-600 dark:text-slate-300">Detected: Seconds</p>
+				</div>
+				<p id="timestamp-error" class="error-message hidden" role="alert"></p>
+				<div id="timestamp-results" class="result-list">
+					<div><dt>Local Time</dt><dd id="result-local"></dd></div><div><dt>UTC</dt><dd id="result-utc"></dd></div>
+					<div><dt>ISO 8601</dt><dd id="result-iso" class="mono-value"></dd></div><div><dt>Relative</dt><dd id="result-relative"></dd></div>
+					<div><dt>Unix Seconds</dt><dd id="result-seconds" class="mono-value"></dd></div><div><dt>Unix Milliseconds</dt><dd id="result-milliseconds" class="mono-value"></dd></div>
+					<div class="flex flex-wrap gap-2"><button type="button" class="button-secondary" data-copy="timestamp-result" data-copy-value="result-iso" aria-label="Copy ISO 8601 value">Copy ISO</button><button type="button" class="button-secondary" data-copy="timestamp-result" data-copy-value="result-seconds" aria-label="Copy Unix seconds">Copy seconds</button><button type="button" class="button-secondary" data-copy="timestamp-result" data-copy-value="result-milliseconds" aria-label="Copy Unix milliseconds">Copy milliseconds</button></div>
+				</div>
+			</section>
+
+			<section class="converter-panel" aria-labelledby="date-heading">
+				<div class="flex flex-wrap items-center justify-between gap-2"><h2 id="date-heading">Date <span aria-hidden="true">→</span> Unix Timestamp</h2><div class="flex gap-2"><button id="use-current-time" type="button" class="button-secondary">Use current time</button><button id="clear-date" type="button" class="button-secondary">Clear</button></div></div>
+				<div class="mt-4 grid gap-3 sm:grid-cols-2"><div><label for="date-input" class="field-label">Date</label><input id="date-input" class="field-input" type="date" aria-describedby="date-error" /></div><div><label for="time-input" class="field-label">Time</label><input id="time-input" class="field-input" type="time" step="1" aria-describedby="date-error" /></div></div>
+				<label for="timezone-input" class="field-label mt-3">Timezone interpretation</label><select id="timezone-input" class="field-input"><option value="local">Local</option><option value="utc">UTC</option></select>
+				<p id="date-error" class="error-message hidden" role="alert"></p>
+				<div id="date-results" class="result-list"><div><dt>Unix Seconds</dt><dd id="date-seconds" class="mono-value"></dd></div><div><dt>Unix Milliseconds</dt><dd id="date-milliseconds" class="mono-value"></dd></div><div><dt>ISO 8601</dt><dd id="date-iso" class="mono-value"></dd></div><div class="flex flex-wrap gap-2"><button type="button" class="button-secondary" data-copy="date-result" data-copy-value="date-seconds" aria-label="Copy converted Unix seconds">Copy seconds</button><button type="button" class="button-secondary" data-copy="date-result" data-copy-value="date-milliseconds" aria-label="Copy converted Unix milliseconds">Copy milliseconds</button></div></div>
+			</section>
+		</div>
+		<p class="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">All date and timestamp conversions happen in your browser.</p><p id="copy-status" class="sr-only" aria-live="polite"></p>
+
+		<div class="mt-10 grid gap-6 lg:grid-cols-[2fr_1fr]">
+			<div class="space-y-6">
+				<article class="content-card"><h2>What is a Unix Timestamp?</h2><p>A Unix timestamp represents elapsed time since the Unix epoch: January 1, 1970 at 00:00:00 UTC. Many systems count seconds; browser JavaScript dates count milliseconds.</p></article>
+				<article class="content-card"><h2>How to Convert a Unix Timestamp</h2><ol><li><strong>1.</strong> Paste an integer timestamp.</li><li><strong>2.</strong> Check the detected seconds or milliseconds unit, or choose it manually.</li><li><strong>3.</strong> Read or copy the local, UTC, ISO, and Unix values.</li></ol></article>
+				<article class="content-card"><h2>Unix Seconds vs Milliseconds</h2><p>Unix seconds example: <code>1700000000</code>. JavaScript milliseconds example: <code>1700000000000</code>. They describe the same instant at different precision scales.</p></article>
+				<article class="content-card"><h2>UTC vs Local Time</h2><p>UTC is a universal reference without a local offset. Local time uses the timezone configured on your device. For date input, choose which interpretation you intend.</p></article>
+				<article class="content-card"><h2>Unix Timestamps in JavaScript</h2><p><code>Math.floor(Date.now() / 1000)</code> returns whole Unix seconds. <code>Date.now()</code> returns Unix milliseconds.</p></article>
+				<article class="content-card"><h2>Privacy</h2><p>All date and timestamp conversions happen in your browser. The converter uses native <code>Date</code> and <code>Intl</code> APIs and does not send conversion data over the network.</p></article>
+			</div>
+			<div class="space-y-6"><aside class="content-card"><h2>Frequently asked questions</h2><div class="mt-2 divide-y divide-slate-200 dark:divide-slate-700">{faqs.map(([question, answer]) => <details class="py-4"><summary class="cursor-pointer text-sm font-semibold">{question}</summary><p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{answer}</p></details>)}</div></aside><aside class="content-card"><h2>Related tools</h2><div class="mt-3 space-y-2 text-sm"><a class="related-link" href="/tools/jwt-decoder/"><span>JWT Decoder</span><span aria-hidden="true">→</span></a><a class="related-link" href="/tools/json-formatter/"><span>JSON Formatter</span><span aria-hidden="true">→</span></a><a class="related-link" href="/tools/regex-tester/"><span>Regex Tester</span><span aria-hidden="true">→</span></a><a class="related-link" href="/tools/yaml-viewer/"><span>YAML Viewer &amp; API Explorer</span><span aria-hidden="true">→</span></a></div></aside></div>
+		</div>
+	</ToolLayout>
+	<script>import '../../scripts/unix-timestamp-converter';</script>
+</BaseLayout>
+
+<style>
+	.current-panel { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 1rem; border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); padding: 1rem; box-shadow: 0 1px 2px rgb(15 23 42 / .05); }
+	.current-panel h2, .converter-panel h2 { color: var(--text-primary); font-weight: 800; }
+	.current-value { min-width: 12ch; overflow-wrap: anywhere; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: clamp(1.25rem, 4vw, 1.75rem); font-weight: 800; font-variant-numeric: tabular-nums; }
+	.converter-panel { min-width: 0; border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); padding: 1rem; }
+	.field-label { display: block; margin-top: 1rem; color: var(--text-secondary); font-size: .8rem; font-weight: 700; }
+	.field-input { margin-top: .4rem; width: 100%; min-width: 0; border: 1px solid var(--border); border-radius: .75rem; background: var(--input-background); padding: .7rem .8rem; color: var(--text-primary); outline: none; }
+	.field-input:focus { border-color: rgb(59 130 246); box-shadow: 0 0 0 4px rgb(59 130 246 / .15); }
+	.unit-selector { display: inline-flex; max-width: 100%; overflow: hidden; border: 1px solid var(--border); border-radius: .65rem; }
+	.unit-selector button { padding: .45rem .7rem; color: var(--text-secondary); font-size: .75rem; font-weight: 700; }
+	.unit-selector button + button { border-left: 1px solid var(--border); }
+	.unit-selector .unit-active { background: rgb(37 99 235); color: white; }
+	.result-list { margin-top: 1rem; border-top: 1px solid var(--border); }
+	.result-list > div { min-width: 0; padding-top: .75rem; }
+	.result-list dt { color: var(--text-muted); font-size: .68rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+	.result-list dd { margin-top: .2rem; overflow-wrap: anywhere; color: var(--text-primary); font-size: .9rem; }
+	.mono-value, code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+	.error-message { margin-top: .75rem; border-radius: .65rem; background: rgb(254 226 226); padding: .65rem .75rem; color: rgb(153 27 27); font-size: .8rem; }
+	:global([data-theme="dark"]) .error-message { background: rgb(69 10 10); color: rgb(254 202 202); }
+	@media (max-width: 639px) { .current-panel { grid-template-columns: 1fr auto; } .current-value { grid-column: 1 / -1; grid-row: 2; } .current-panel button { grid-column: 2; grid-row: 1; } }
+</style>
