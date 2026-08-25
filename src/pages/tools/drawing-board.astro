@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const title = 'Temporary Drawing Board Online - Free Whiteboard | YBS';
+const description = 'Sketch ideas, diagrams, arrows, shapes, and notes on a temporary online drawing board. Nothing is uploaded or automatically saved.';
+const faqs = [
+	['Is the YBS Drawing Board free?', 'Yes. The basic drawing board is free to use in your browser.'],
+	['Does YBS save my drawings?', 'No. Drawings are held in memory only and are not automatically saved. Export a PNG before closing or reloading the tab if you want to keep your work.'],
+	['Are my drawings uploaded?', 'No. Drawing, editing, and PNG generation happen locally in your browser.'],
+	['Can I export my drawing?', 'Yes. Export PNG creates a local image cropped around your drawing with a small margin.'],
+	['Can I draw arrows and shapes?', 'Yes. V1 includes lines, arrows, rectangles, ellipses, freehand pen strokes, and text.'],
+	['Does it work on mobile?', 'The board uses Pointer Events for basic mouse, pen, and touch support. The toolbar scrolls horizontally on narrow screens.'],
+	['What happens if I close the tab?', 'The drawing is lost unless you export it first. Your browser may show its standard unsaved-changes warning when the board contains unexported work.'],
+	['Do I need an account?', 'No account or login is required.'],
+];
+const schema = { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'YBS Temporary Drawing Board', applicationCategory: 'ProductivityApplication', operatingSystem: 'Any', url: 'https://ybstools.com/tools/drawing-board/', description, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } };
+const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(([question, answer]) => ({ '@type': 'Question', name: question, acceptedAnswer: { '@type': 'Answer', text: answer } })) };
+const tools = [['select', 'Select', 'V'], ['pen', 'Pen', 'P'], ['eraser', 'Eraser', 'E'], ['pan', 'Pan', 'Space']];
+const shapes = [['line', 'Line', 'L'], ['arrow', 'Arrow', ''], ['rectangle', 'Rectangle', 'R'], ['ellipse', 'Ellipse', ''], ['text', 'Text', 'T']];
+---
+<BaseLayout title={title} description={description} canonicalPath="/tools/drawing-board/">
+	<Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} /><script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} /></Fragment>
+	<section class="mx-auto max-w-[1800px] overflow-x-hidden px-3 py-4 sm:px-5">
+		<header class="mb-3 flex flex-wrap items-end justify-between gap-2">
+			<div class="min-w-0"><p class="eyebrow">Temporary • Local</p><h1 class="text-2xl font-extrabold tracking-tight sm:text-3xl">Temporary Drawing Board</h1><p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Sketch ideas, diagrams, and notes instantly in your browser. Nothing is uploaded or automatically saved.</p></div>
+			<p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Export before leaving to keep your drawing.</p>
+		</header>
+		<div id="drawing-shell" class="board-shell">
+			<div class="board-toolbar" aria-label="Drawing controls">
+				<div class="tool-group" aria-label="Tools">{tools.map(([tool, label, shortcut]) => <button type="button" data-tool={tool} aria-pressed="false" title={`${label}${shortcut ? ` (${shortcut})` : ''}`}><span class="tool-symbol" aria-hidden="true">{tool === 'select' ? '↖' : tool === 'pen' ? '✎' : tool === 'eraser' ? '◇' : '✋'}</span><span>{label}</span></button>)}</div>
+				<div class="tool-group" aria-label="Shapes">{shapes.map(([tool, label, shortcut]) => <button type="button" data-tool={tool} aria-pressed="false" title={`${label}${shortcut ? ` (${shortcut})` : ''}`}><span class="tool-symbol" aria-hidden="true">{tool === 'line' ? '╱' : tool === 'arrow' ? '→' : tool === 'rectangle' ? '□' : tool === 'ellipse' ? '○' : 'T'}</span><span>{label}</span></button>)}</div>
+				<div class="style-group" aria-label="Drawing style"><span class="sr-only" id="color-label">Stroke color</span><div class="palette" aria-labelledby="color-label">{['#111827','#6b7280','#dc2626','#ea580c','#15803d','#2563eb','#7e22ce'].map((value) => <button type="button" data-color={value} style={`--swatch:${value}`} aria-label={`Use color ${value}`} title={`Color ${value}`}></button>)}</div><label class="compact-label">Custom <input id="board-color" type="color" value="#111827" /></label><label class="compact-label">Stroke <select id="stroke-size"><option value="2">Thin</option><option value="4" selected>Medium</option><option value="8">Thick</option></select></label></div>
+				<div class="tool-group board-actions" aria-label="History and board actions"><button id="undo-board" type="button" title="Undo (Ctrl+Z)" disabled>Undo</button><button id="redo-board" type="button" title="Redo (Ctrl+Shift+Z)" disabled>Redo</button><button id="delete-object" type="button" title="Delete selected object" disabled>Delete</button><button id="clear-board" type="button" disabled>Clear</button><button id="export-board" type="button" class="export-action" disabled>Export PNG</button><button id="fullscreen-board" type="button">Fullscreen</button><button type="button" popovertarget="shortcut-help">Shortcuts</button></div>
+			</div>
+			<div id="board-workspace" class="board-workspace"><canvas id="drawing-canvas" data-tool="pen" aria-label="Temporary drawing canvas. Use the toolbar and keyboard shortcuts to draw and edit objects."></canvas><div id="board-empty" class="empty-guidance" aria-hidden="true"><strong>Start drawing</strong><span>Pen • Shapes • Arrows • Text</span></div></div>
+			<div class="zoom-toolbar" aria-label="Canvas zoom"><button id="zoom-out" type="button" aria-label="Zoom out">−</button><output id="zoom-level">100%</output><button id="zoom-in" type="button" aria-label="Zoom in">+</button><button id="reset-view" type="button">Reset view</button></div>
+			<p id="board-status" class="sr-only" aria-live="polite"></p>
+			<div id="shortcut-help" popover class="shortcut-popover"><div class="flex items-center justify-between gap-4"><h2>Keyboard shortcuts</h2><button type="button" popovertarget="shortcut-help" popovertargetaction="hide" aria-label="Close keyboard shortcuts">×</button></div><dl><div><dt>V / P / E</dt><dd>Select / Pen / Eraser</dd></div><div><dt>L / R / T</dt><dd>Line / Rectangle / Text</dd></div><div><dt>Ctrl/⌘ Z</dt><dd>Undo</dd></div><div><dt>Ctrl/⌘ Shift Z</dt><dd>Redo</dd></div><div><dt>Delete</dt><dd>Delete selection</dd></div><div><dt>Space + drag</dt><dd>Pan</dd></div><div><dt>+ / −</dt><dd>Zoom</dd></div></dl></div>
+			<dialog id="clear-dialog" class="clear-dialog"><h2>Clear the entire board?</h2><p>Your temporary drawing will be removed. You can undo this action while this tab remains open.</p><div><button id="cancel-clear" type="button" class="button-secondary">Cancel</button><button id="confirm-clear" type="button" class="danger-action">Clear board</button></div></dialog>
+		</div>
+		<p class="mt-3 text-center text-sm text-slate-500 dark:text-slate-400"><strong>Temporary and private.</strong> Your drawing stays in this browser tab. Nothing is uploaded or automatically saved.</p>
+		<div class="mt-10 grid gap-6 lg:grid-cols-[2fr_1fr]"><div class="grid gap-5 sm:grid-cols-2"><article class="content-card"><h2>What is a Temporary Drawing Board?</h2><p>A lightweight whiteboard for quickly sketching an idea without creating a project or account.</p></article><article class="content-card"><h2>Sketch Ideas Without Creating an Account</h2><p>Open the board and draw immediately. No login, cloud workspace, or setup is required.</p></article><article class="content-card"><h2>Draw Simple Diagrams</h2><p>Combine boxes, arrows, lines, ellipses, freehand strokes, and text for quick flows and technical notes.</p></article><article class="content-card"><h2>Temporary by Design</h2><p>Objects are held only in page memory. Export anything you want to keep before closing or reloading this tab.</p></article><article class="content-card sm:col-span-2"><h2>Private Browser-Based Drawing</h2><p>Drawing, editing, history, and PNG export run locally. No drawing content, text, or coordinates are uploaded.</p></article></div><div class="space-y-6"><aside class="content-card"><h2>Frequently asked questions</h2><div class="mt-2 divide-y divide-slate-200 dark:divide-slate-700">{faqs.map(([question, answer]) => <details class="py-3"><summary class="cursor-pointer text-sm font-semibold">{question}</summary><p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{answer}</p></details>)}</div></aside><aside class="content-card"><h2>Related tools</h2><div class="mt-3 space-y-2 text-sm"><a class="related-link" href="/tools/yaml-viewer/"><span>YAML Viewer &amp; API Explorer</span><span>→</span></a><a class="related-link" href="/tools/diff-checker/"><span>Diff Checker</span><span>→</span></a><a class="related-link" href="/tools/typing-challenge/"><span>Typing Challenge</span><span>→</span></a></div></aside></div></div>
+	</section>
+	<script>import '../../scripts/drawing-board';</script>
+</BaseLayout>
+<style>
+	:global(body) { overflow-x: hidden; }
+	.board-shell { overflow: hidden; border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); box-shadow: 0 8px 30px rgb(15 23 42 / .1); }
+	.board-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: .45rem; overflow-x: hidden; border-bottom: 1px solid var(--border); padding: .55rem; }
+	.tool-group, .style-group { display: flex; flex: none; align-items: center; flex-wrap: wrap; gap: .3rem; padding-right: .45rem; border-right: 1px solid var(--border); }
+	.board-toolbar button, .zoom-toolbar button { min-height: 2.6rem; border: 1px solid transparent; border-radius: .6rem; padding: .4rem .55rem; color: var(--text-secondary); font-size: .72rem; font-weight: 700; white-space: nowrap; }
+	.board-toolbar button:hover:not(:disabled), .zoom-toolbar button:hover { background: var(--surface-secondary); color: var(--text-primary); }
+	.board-toolbar button:focus-visible, .zoom-toolbar button:focus-visible { outline: 3px solid rgb(59 130 246 / .4); outline-offset: 1px; }
+	.board-toolbar button:disabled { opacity: .4; }
+	.board-toolbar .tool-active { border-color: rgb(37 99 235); background: rgb(239 246 255); color: rgb(29 78 216); }
+	:global([data-theme="dark"]) .board-toolbar .tool-active { background: rgb(30 58 138 / .45); color: rgb(147 197 253); }
+	.tool-symbol { display: block; font-size: 1rem; line-height: 1; }
+	.palette { display: flex; gap: .2rem; }
+	.palette button { min-height: 2rem; width: 2rem; padding: 0; border: 2px solid var(--surface); border-radius: 999px; background: var(--swatch); box-shadow: 0 0 0 1px var(--border); }
+	.compact-label { display: flex; align-items: center; gap: .3rem; color: var(--text-muted); font-size: .68rem; font-weight: 700; white-space: nowrap; }
+	.compact-label input { width: 2.2rem; height: 2rem; padding: .1rem; } .compact-label select { border: 1px solid var(--border); border-radius: .5rem; background: var(--input-background); padding: .4rem; color: var(--text-primary); }
+	.board-actions { margin-left: 0; border-right: 0; } .board-toolbar .export-action { background: rgb(37 99 235); color: white; } .board-toolbar .export-action:hover:not(:disabled) { background: rgb(29 78 216); color: white; }
+	.board-workspace { position: relative; height: clamp(30rem, 67vh, 58rem); overflow: hidden; background-color: white; background-image: radial-gradient(#d1d5db 1px, transparent 1px); background-size: 20px 20px; }
+	#drawing-canvas { display: block; width: 100%; height: 100%; touch-action: none; } #drawing-canvas[data-tool="pen"], #drawing-canvas[data-tool="line"], #drawing-canvas[data-tool="arrow"], #drawing-canvas[data-tool="rectangle"], #drawing-canvas[data-tool="ellipse"] { cursor: crosshair; } #drawing-canvas[data-tool="text"] { cursor: text; } #drawing-canvas[data-tool="pan"] { cursor: grab; } #drawing-canvas.is-panning { cursor: grabbing; }
+	:global(.board-text-editor) { position: absolute; z-index: 5; min-width: 10rem; max-width: min(24rem, calc(100% - 1rem)); transform: translateY(-80%); border: 2px solid #2563eb; border-radius: .45rem; background: white; padding: .3rem .45rem; font-family: system-ui, sans-serif; line-height: 1.2; outline: 3px solid rgb(37 99 235 / .2); }
+	.empty-guidance { pointer-events: none; position: absolute; inset: 50% auto auto 50%; display: grid; transform: translate(-50%, -50%); text-align: center; color: #9ca3af; } .empty-guidance strong { font-size: 1.1rem; } .empty-guidance span { margin-top: .25rem; font-size: .75rem; }
+	.zoom-toolbar { display: flex; align-items: center; justify-content: center; gap: .35rem; border-top: 1px solid var(--border); padding: .35rem; } .zoom-toolbar output { min-width: 3.5rem; text-align: center; font-family: ui-monospace, monospace; font-size: .75rem; font-weight: 700; }
+	.shortcut-popover, .clear-dialog { width: min(24rem, calc(100vw - 2rem)); border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); padding: 1rem; color: var(--text-primary); box-shadow: 0 20px 50px rgb(15 23 42 / .25); } .shortcut-popover { inset: auto 1rem 1rem auto; } .shortcut-popover h2, .clear-dialog h2 { font-weight: 800; } .shortcut-popover dl { margin-top: .75rem; } .shortcut-popover dl div { display: flex; justify-content: space-between; gap: 1rem; padding: .3rem 0; font-size: .78rem; } .shortcut-popover dt { font-family: ui-monospace, monospace; font-weight: 700; } .clear-dialog::backdrop { background: rgb(15 23 42 / .55); } .clear-dialog p { margin-top: .5rem; color: var(--text-secondary); font-size: .875rem; } .clear-dialog > div { display: flex; justify-content: flex-end; gap: .5rem; margin-top: 1rem; } .danger-action { border-radius: .6rem; background: rgb(220 38 38); padding: .55rem .8rem; color: white; font-weight: 700; }
+	@media (max-width: 768px) {
+		.board-toolbar { align-items: stretch; flex-wrap: wrap; overflow-x: hidden; }
+		.tool-group, .style-group { width: 100%; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid var(--border); padding: 0 0 .4rem; }
+		.tool-group:not(.board-actions) > button { flex: 1 1 0; }
+		.board-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-left: 0; border-bottom: 0; padding-bottom: 0; }
+		.board-actions > button { width: 100%; min-width: 0; padding-inline: .25rem; }
+		.board-actions > button:last-child { grid-column: 1 / -1; }
+		.board-toolbar button { min-height: 2.75rem; }
+		.board-workspace { height: 62vh; min-height: 28rem; }
+	}
+	:global(#drawing-shell:fullscreen) { display: flex; flex-direction: column; width: 100vw; height: 100vh; border: 0; border-radius: 0; background: var(--surface); } :global(#drawing-shell:fullscreen) .board-workspace { flex: 1; height: auto; }
+</style>

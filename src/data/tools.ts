@@ -4,7 +4,7 @@
  * Keep homepage and future directory pages data-driven by adding new tools here
  * instead of editing individual page templates.
  */
-export const toolCategories = ['Text', 'Developer', 'JSON', 'Security', 'Image', 'PDF', 'Calculator', 'Fun'] as const;
+export const toolCategories = ['Text', 'Developer', 'JSON', 'Security', 'Image', 'PDF', 'Calculator', 'Productivity', 'Fun'] as const;
 
 export type ToolCategory = (typeof toolCategories)[number];
 
@@ -125,6 +125,15 @@ export const tools: readonly Tool[] = [
 		icon: '>_',
 		category: 'Fun',
 		tags: ['Fun', 'Developer'],
+		available: true,
+	},
+	{
+		slug: 'drawing-board',
+		name: 'Drawing Board',
+		description: 'Sketch diagrams, arrows, shapes, text, and ideas on a temporary browser-based whiteboard.',
+		icon: 'Draw',
+		category: 'Productivity',
+		tags: ['Productivity'],
 		available: true,
 	},
 ];
