@@ -110,6 +110,15 @@ export const tools: readonly Tool[] = [
 		available: true,
 	},
 	{
+		slug: 'cron-expression-tester',
+		name: 'Cron Expression Tester',
+		description: 'Test Unix cron expressions, understand each field, and preview upcoming run times.',
+		icon: 'Cron',
+		category: 'Developer',
+		tags: ['Developer'],
+		available: true,
+	},
+	{
 		slug: 'windows-update-simulator',
 		name: 'Windows Update Simulator',
 		description: 'Create a harmless fullscreen update simulation with customizable progress, timing, and messages.',
