@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolLayout from '../../components/ToolLayout.astro';
+import ToolHeader from '../../components/ToolHeader.astro';
+
+const title = 'QR Code Generator - Free Online QR Maker | YBS';
+const description = 'Create free QR codes for URLs, text, Wi-Fi, email, phone, SMS and contact details directly in your browser. Download as PNG or SVG.';
+const canonicalPath = '/tools/qr-code-generator/';
+const schema = { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'YBS QR Code Generator', applicationCategory: 'UtilitiesApplication', operatingSystem: 'Any', url: 'https://ybstools.com/tools/qr-code-generator/', description, browserRequirements: 'Requires JavaScript and a modern browser', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } };
+const types = [['url', 'URL'], ['text', 'Text'], ['wifi', 'Wi-Fi'], ['email', 'Email'], ['phone', 'Phone'], ['sms', 'SMS'], ['vcard', 'vCard']] as const;
+---
+
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath}>
+	<Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} /></Fragment>
+	<ToolLayout>
+		<span slot="breadcrumb">QR Code Generator</span>
+		<ToolHeader title="Free QR Code Generator" description="Create QR codes directly in your browser." />
+
+		<div class="qr-workspace">
+			<section class="qr-panel qr-content-panel" aria-labelledby="qr-content-heading">
+				<h2 id="qr-content-heading">QR content</h2>
+				<div class="type-tabs" role="tablist" aria-label="QR code type">
+					{types.map(([type, label], index) => <button type="button" role="tab" id={`tab-${type}`} aria-controls={`panel-${type}`} aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1} data-qr-type={type}>{label}</button>)}
+				</div>
+
+				<div id="panel-url" class="field-panel" role="tabpanel" aria-labelledby="tab-url" data-fields="url"><label for="qr-url">URL</label><input id="qr-url" name="url" type="url" inputmode="url" autocomplete="url" placeholder="https://example.com/" /></div>
+				<div id="panel-text" class="field-panel hidden" role="tabpanel" aria-labelledby="tab-text" data-fields="text"><label for="qr-text">Text</label><textarea id="qr-text" name="text" rows="5" maxlength="2000" placeholder="Enter text"></textarea></div>
+				<div id="panel-wifi" class="field-panel hidden" role="tabpanel" aria-labelledby="tab-wifi" data-fields="wifi">
+					<div class="field-grid"><div><label for="wifi-ssid">Network name / SSID</label><input id="wifi-ssid" name="ssid" autocomplete="off" /></div><div><label for="wifi-security">Security</label><select id="wifi-security" name="security"><option value="WPA">WPA/WPA2</option><option value="WEP">WEP</option><option value="nopass">None</option></select></div></div>
+					<div id="wifi-password-field"><label for="wifi-password">Password</label><input id="wifi-password" name="password" type="password" autocomplete="new-password" /></div>
+					<label class="check-label"><input name="hidden" type="checkbox" /> Hidden network</label>
+				</div>
+				<div id="panel-email" class="field-panel hidden" role="tabpanel" aria-labelledby="tab-email" data-fields="email"><label for="email-address">Email address</label><input id="email-address" name="email" type="email" autocomplete="email" /><label for="email-subject">Subject <span>(optional)</span></label><input id="email-subject" name="subject" /><label for="email-message">Message <span>(optional)</span></label><textarea id="email-message" name="message" rows="3"></textarea></div>
+				<div id="panel-phone" class="field-panel hidden" role="tabpanel" aria-labelledby="tab-phone" data-fields="phone"><label for="phone-number">Phone number</label><input id="phone-number" name="phone" type="tel" inputmode="tel" autocomplete="tel" /></div>
+				<div id="panel-sms" class="field-panel hidden" role="tabpanel" aria-labelledby="tab-sms" data-fields="sms"><label for="sms-number">Phone number</label><input id="sms-number" name="phone" type="tel" inputmode="tel" autocomplete="tel" /><label for="sms-message">Message</label><textarea id="sms-message" name="message" rows="3"></textarea></div>
+				<div id="panel-vcard" class="field-panel hidden" role="tabpanel" aria-labelledby="tab-vcard" data-fields="vcard"><div class="field-grid"><div><label for="vcard-first">First name</label><input id="vcard-first" name="firstName" autocomplete="given-name" /></div><div><label for="vcard-last">Last name</label><input id="vcard-last" name="lastName" autocomplete="family-name" /></div></div><label for="vcard-org">Organization <span>(optional)</span></label><input id="vcard-org" name="organization" autocomplete="organization" /><div class="field-grid"><div><label for="vcard-phone">Phone <span>(optional)</span></label><input id="vcard-phone" name="phone" type="tel" autocomplete="tel" /></div><div><label for="vcard-email">Email <span>(optional)</span></label><input id="vcard-email" name="email" type="email" autocomplete="email" /></div></div><label for="vcard-website">Website <span>(optional)</span></label><input id="vcard-website" name="website" type="url" inputmode="url" placeholder="https://example.com/" /></div>
+			</section>
+
+			<section class="qr-panel qr-preview-panel" aria-labelledby="qr-preview-heading">
+				<h2 id="qr-preview-heading">Preview</h2>
+				<div id="qr-empty" class="qr-empty"><span aria-hidden="true">▦</span><strong>Your QR code will appear here</strong><p>Enter valid content to begin.</p></div>
+				<div id="qr-preview" class="qr-preview hidden" aria-label="Generated QR code preview"></div>
+				<p id="qr-error" class="error-message hidden" role="alert"></p>
+				<p id="qr-status" class="status-message" aria-live="polite"></p>
+				<div class="action-grid"><button id="download-png" type="button" class="button-primary" disabled>Download PNG</button><button id="download-svg" type="button" class="button-secondary" disabled>Download SVG</button><button id="copy-qr" type="button" class="button-secondary" disabled>Copy QR image</button></div>
+				<p class="privacy-note">Your QR content stays in this browser. It is not uploaded or saved.</p>
+			</section>
+
+			<section class="qr-panel qr-settings-panel" aria-labelledby="qr-appearance-heading">
+				<h2 id="qr-appearance-heading">Appearance</h2>
+				<div class="settings-grid"><label>Foreground color<input id="qr-foreground" type="color" value="#0f172a" /></label><label>Background color<input id="qr-background" type="color" value="#ffffff" /></label><label>Error correction<select id="qr-correction"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="quartile">Quartile</option><option value="high">High</option></select></label><label>Output size<select id="qr-size"><option value="256">256 × 256</option><option value="384" selected>384 × 384</option><option value="512">512 × 512</option></select></label></div>
+				<button id="qr-reset" type="button" class="button-secondary mt-5">Reset</button>
+			</section>
+		</div>
+
+		<div class="mt-10 grid gap-6 lg:grid-cols-[2fr_1fr]">
+			<div class="space-y-6"><article class="content-card"><h2>Create static QR codes</h2><p>Choose a content type, enter its details, and download a standard static QR code. The encoded content is stored directly in the image; YBS does not provide redirects or dynamic QR tracking.</p></article><article class="content-card"><h2>URL, text and Wi-Fi QR codes</h2><p>Open a website, share plain text, or encode Wi-Fi connection details. Wi-Fi passwords remain on your device while the QR code is generated.</p></article><article class="content-card"><h2>PNG or SVG</h2><p>PNG is convenient for documents and everyday sharing. SVG remains sharp when resized and is useful for print or design work.</p></article><article class="content-card"><h2>Private browser-local generation</h2><p>QR encoding, previewing and downloads happen in your browser. QR contents are not transmitted to YBS or stored in browser storage.</p></article></div>
+			<aside class="content-card self-start"><h2>Related tools</h2><div class="mt-3 space-y-2 text-sm"><a class="related-link" href="/tools/base64-encoder/"><span>Base64 Encoder &amp; Decoder</span><span aria-hidden="true">→</span></a><a class="related-link" href="/tools/json-formatter/"><span>JSON Formatter</span><span aria-hidden="true">→</span></a></div></aside>
+		</div>
+	</ToolLayout>
+	<script>import '../../scripts/qr-code-generator';</script>
+</BaseLayout>
+
+<style>
+	.qr-workspace { display: grid; width: 100%; min-width: 0; gap: 1rem; }
+	.qr-panel { min-width: 0; border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); padding: 1rem; box-shadow: 0 1px 2px rgb(15 23 42 / .05); }
+	.qr-panel, .qr-panel :global(*) { box-sizing: border-box; }
+	.qr-panel h2 { color: var(--text-primary); font-size: 1rem; font-weight: 800; }
+	.type-tabs { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .8rem; padding: 2px; }
+	.type-tabs button { flex: 0 0 auto; border: 1px solid var(--border); border-radius: .65rem; padding: .5rem .7rem; color: var(--text-secondary); font-size: .78rem; font-weight: 700; }
+	.type-tabs button[aria-selected="true"] { border-color: rgb(37 99 235); background: rgb(37 99 235); color: white; }
+	.field-panel { margin-top: 1rem; }
+	.field-panel > label:not(.check-label), .field-grid label, .settings-grid label { display: block; margin-top: .75rem; color: var(--text-secondary); font-size: .76rem; font-weight: 700; }
+	.field-panel label span { color: var(--text-muted); font-weight: 500; }
+	.field-panel input:not([type="checkbox"]), .field-panel textarea, .field-panel select, .settings-grid select { display: block; width: 100%; max-width: 100%; min-width: 0; margin-top: .35rem; border: 1px solid var(--border); border-radius: .7rem; background: var(--input-background); padding: .68rem .75rem; color: var(--text-primary); outline: none; }
+	.field-panel input:focus, .field-panel textarea:focus, .field-panel select:focus, .settings-grid select:focus { border-color: rgb(59 130 246); box-shadow: 0 0 0 4px rgb(59 130 246 / .15); }
+	.field-panel textarea { resize: vertical; }
+	.check-label { display: flex; align-items: center; gap: .55rem; margin-top: 1rem; color: var(--text-secondary); font-size: .8rem; font-weight: 700; }
+	.check-label input { width: 1rem; height: 1rem; }
+	.field-grid, .settings-grid { display: grid; gap: 0 .75rem; }
+	.settings-grid input[type="color"] { display: block; width: 100%; height: 2.75rem; margin-top: .35rem; border: 1px solid var(--border); border-radius: .7rem; background: var(--input-background); padding: .25rem; }
+	.qr-preview-panel { align-self: start; text-align: center; }
+	.qr-empty, .qr-preview { display: grid; min-height: 18rem; place-items: center; align-content: center; margin-top: .8rem; border: 1px dashed var(--border); border-radius: .9rem; background: var(--background-subtle); padding: 1rem; }
+	.qr-empty.hidden, .qr-preview.hidden { display: none; }
+	.qr-empty span { color: rgb(148 163 184); font-size: 4rem; line-height: 1; }
+	.qr-empty strong { margin-top: .8rem; }
+	.qr-empty p { margin-top: .3rem; color: var(--text-muted); font-size: .8rem; }
+	.qr-preview :global(svg) { display: block; width: min(100%, 24rem); height: auto; }
+	.error-message { margin-top: .75rem; border-radius: .65rem; background: rgb(254 226 226); padding: .65rem; color: rgb(153 27 27); font-size: .8rem; text-align: left; }
+	.status-message { min-height: 1.25rem; margin-top: .65rem; color: var(--text-secondary); font-size: .78rem; }
+	.action-grid { display: grid; gap: .5rem; margin-top: .5rem; }
+	.action-grid button:disabled { cursor: not-allowed; opacity: .5; }
+	.privacy-note { margin-top: 1rem; color: var(--text-muted); font-size: .75rem; line-height: 1.5; }
+	@media (min-width: 640px) { .field-grid, .settings-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .action-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+	@media (min-width: 1024px) { .qr-workspace { grid-template-columns: minmax(0, 1.15fr) minmax(20rem, .85fr); } .qr-content-panel { grid-column: 1; grid-row: 1; } .qr-preview-panel { grid-column: 2; grid-row: 1 / span 2; } .qr-settings-panel { grid-column: 1; grid-row: 2; } .qr-panel { padding: 1.25rem; } }
+</style>

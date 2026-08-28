@@ -119,6 +119,15 @@ export const tools: readonly Tool[] = [
 		available: true,
 	},
 	{
+		slug: 'qr-code-generator',
+		name: 'QR Code Generator',
+		description: 'Create QR codes for links, text, Wi-Fi, messages, and contact details.',
+		icon: 'QR',
+		category: 'Developer',
+		tags: ['Developer'],
+		available: true,
+	},
+	{
 		slug: 'windows-update-simulator',
 		name: 'Windows Update Simulator',
 		description: 'Create a harmless fullscreen update simulation with customizable progress, timing, and messages.',
