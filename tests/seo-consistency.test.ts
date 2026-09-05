@@ -96,3 +96,22 @@ test('the shared layout is the only canonical tag source', async () => {
 	}
 	assert.equal(canonicalTags, 1);
 });
+
+test('tool structured data uses canonical URLs without duplicate root schemas', async () => {
+	const layout = await readFile(path.join(projectRoot, 'src', 'layouts', 'BaseLayout.astro'), 'utf8');
+	assert.equal((layout.match(/'@type'\s*:\s*'WebSite'/g) ?? []).length, 1);
+	assert.equal((layout.match(/'@type'\s*:\s*'BreadcrumbList'/g) ?? []).length, 1);
+
+	for (const file of (await pageFiles()).filter((page) => page.includes(`${path.sep}tools${path.sep}`))) {
+		const source = await readFile(file, 'utf8');
+		const canonicalPath = source.match(/canonicalPath="([^"]+)"/)?.[1]
+			?? source.match(/const canonicalPath\s*=\s*['"]([^'"]+)['"]/)?.[1];
+		assert.ok(canonicalPath);
+		assert.equal((source.match(/'@type'\s*:\s*'WebApplication'/g) ?? []).length, 1, `${path.basename(file)} must define one WebApplication`);
+		assert.ok(
+			source.includes(`https://ybstools.com${canonicalPath}`) || source.includes(`new URL('${canonicalPath}', Astro.site)`),
+			`${path.basename(file)} schema URL must match its canonical path`,
+		);
+		assert.ok((source.match(/'@type'\s*:\s*'FAQPage'/g) ?? []).length <= 1, `${path.basename(file)} must not duplicate FAQPage`);
+	}
+});

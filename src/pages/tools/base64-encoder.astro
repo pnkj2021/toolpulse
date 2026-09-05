@@ -15,13 +15,34 @@ const faqs = [
 	{ question: 'When should I use Base64?', answer: 'Base64 is useful when binary data must be embedded in JSON, HTML, CSS, email, or another text-only format. It increases data size, so regular file transfer is preferable when available.' },
 	{ question: 'Can Base64 store files?', answer: 'Base64 can represent the bytes of any file as text. To restore the original file accurately, retain its original name and MIME type alongside the encoded data.' },
 ];
+const description = 'Free online Base64 Encoder and Decoder. Encode and decode text or files securely in your browser. No uploads. Fast and free.';
+const appSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebApplication',
+	name: 'YBS Base64 Encoder & Decoder',
+	url: 'https://ybstools.com/tools/base64-encoder/',
+	description,
+	applicationCategory: 'DeveloperApplication',
+	operatingSystem: 'Any',
+	offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+const faqSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faqs.map((faq) => ({
+		'@type': 'Question',
+		name: faq.question,
+		acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+	})),
+};
 ---
 
 <BaseLayout
 	title="Base64 Encoder & Decoder | YBS"
-	description="Free online Base64 Encoder and Decoder. Encode and decode text or files securely in your browser. No uploads. Fast and free."
+	description={description}
 	canonicalPath="/tools/base64-encoder/"
 >
+	<Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(appSchema)} /><script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} /></Fragment>
 	<ToolLayout>
 		<span slot="breadcrumb">Base64 Encoder &amp; Decoder</span>
 		<ToolHeader

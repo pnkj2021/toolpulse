@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { BRAND, SEO } from '../config/brand';
+import { availableTools, toolHref } from '../data/tools';
 import '../styles/global.css';
 
 interface Props {
@@ -22,14 +23,23 @@ const canonicalUrl = canonicalPath && Astro.site
 	? new URL(canonicalPath, Astro.site).href
 	: undefined;
 const socialImageUrl = Astro.site ? new URL(SEO.openGraphImage, Astro.site).href : SEO.openGraphImage;
+const canonicalTool = availableTools.find((tool) => toolHref(tool) === canonicalPath);
 const structuredData = {
 	'@context': 'https://schema.org',
 	'@type': 'WebSite',
 	name: BRAND.shortName,
 	alternateName: BRAND.fullName,
 	url: Astro.site?.href ?? BRAND.url,
-	description,
+	description: BRAND.description,
 };
+const breadcrumbData = canonicalTool && canonicalUrl && Astro.site ? {
+	'@context': 'https://schema.org',
+	'@type': 'BreadcrumbList',
+	itemListElement: [
+		{ '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site).href },
+		{ '@type': 'ListItem', position: 2, name: canonicalTool.breadcrumbName ?? canonicalTool.name, item: canonicalUrl },
+	],
+} : undefined;
 ---
 
 <!doctype html>
@@ -69,6 +79,7 @@ const structuredData = {
 		<meta name="theme-color" content={BRAND.primaryColor} />
 		<title>{title}</title>
 		<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+		{breadcrumbData && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbData)} />}
 		<slot name="head" />
 	</head>
 	<body class="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">

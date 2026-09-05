@@ -11,6 +11,7 @@ export type ToolCategory = (typeof toolCategories)[number];
 export interface Tool {
 	slug: string;
 	name: string;
+	breadcrumbName?: string;
 	description: string;
 	icon: string;
 	category: ToolCategory;
@@ -58,6 +59,7 @@ export const tools: readonly Tool[] = [
 	{
 		slug: 'yaml-viewer',
 		name: 'YAML Viewer & API Explorer',
+		breadcrumbName: 'YAML Viewer',
 		description: 'View, validate, and explore YAML, including API endpoints, schemas, parameters, and responses.',
 		icon: 'YML',
 		category: 'Developer',

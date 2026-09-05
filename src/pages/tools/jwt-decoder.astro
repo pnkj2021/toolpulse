@@ -20,10 +20,19 @@ const faqs = [
 	['Is it safe to decode a JWT online?', 'YBS performs decoding locally and never transmits or stores the token. Tokens can still contain sensitive information, so only use tools whose privacy behavior you trust.'],
 	['Does decoding verify a JWT signature?', 'No. Decoding requires no signing key and does not prove authenticity. Signature verification must be performed by the system that knows the expected algorithm and trusted key.'],
 ];
+const faqSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faqs.map(([question, answer]) => ({
+		'@type': 'Question',
+		name: question,
+		acceptedAnswer: { '@type': 'Answer', text: answer },
+	})),
+};
 ---
 
 <BaseLayout title={title} description={description} canonicalPath="/tools/jwt-decoder/">
-	<Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} /></Fragment>
+	<Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} /><script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} /></Fragment>
 	<ToolLayout>
 		<span slot="breadcrumb">JWT Decoder &amp; Inspector</span>
 		<ToolHeader title="JWT Decoder & Inspector" description="Decode and inspect JWT contents locally. No uploads, storage, or signing keys." />
