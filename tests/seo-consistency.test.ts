@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readdir, readFile } from 'node:fs/promises';
+import { access, readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
 import { availableTools, toolHref } from '../src/data/tools.ts';
@@ -60,26 +60,23 @@ test('literal internal page links use trailing slashes', async () => {
 	}
 });
 
-test('sitemap contains every indexable canonical URL exactly once', async () => {
-	const sitemap = await readFile(path.join(projectRoot, 'public', 'sitemap.xml'), 'utf8');
-	const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-	assert.equal(new Set(urls).size, urls.length, 'sitemap URLs must be unique');
-	for (const url of urls) assert.ok(new URL(url).pathname.endsWith('/'), `${url} must end in /`);
-
-	const expectedRoutes = (await pageFiles())
-		.filter((file) => path.basename(file) !== '404.astro')
-		.map(routeForPage)
-		.sort();
-	const sitemapRoutes = urls.map((url) => new URL(url).pathname).sort();
-	assert.deepEqual(sitemapRoutes, expectedRoutes);
+test('official sitemap generation uses the canonical site configuration', async () => {
+	const config = await readFile(path.join(projectRoot, 'astro.config.mjs'), 'utf8');
+	const robots = await readFile(path.join(projectRoot, 'public', 'robots.txt'), 'utf8');
+	assert.match(config, /import sitemap from ['"]@astrojs\/sitemap['"]/);
+	assert.match(config, /process\.env\.SITE_URL \?\? ['"]https:\/\/ybstools\.com['"]/);
+	assert.match(config, /trailingSlash:\s*['"]always['"]/);
+	assert.match(config, /integrations:\s*\[sitemap\(/);
+	assert.match(robots, /Sitemap: https:\/\/ybstools\.com\/sitemap-index\.xml/);
+	await assert.rejects(access(path.join(projectRoot, 'public', 'sitemap.xml')));
 });
 
 test('Cloudflare permanently redirects every non-home page to its canonical route', async () => {
 	const redirects = await readFile(path.join(projectRoot, 'public', '_redirects'), 'utf8');
 	const rules = redirects.trim().split(/\r?\n/).map((line) => line.split(/\s+/));
-	const sitemap = await readFile(path.join(projectRoot, 'public', 'sitemap.xml'), 'utf8');
-	const canonicalRoutes = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)]
-		.map((match) => new URL(match[1]).pathname)
+	const canonicalRoutes = (await pageFiles())
+		.filter((file) => path.basename(file) !== '404.astro')
+		.map(routeForPage)
 		.filter((route) => route !== '/');
 
 	assert.equal(rules.length, canonicalRoutes.length);
