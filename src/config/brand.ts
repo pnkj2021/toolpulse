@@ -9,7 +9,7 @@ export const BRAND = {
 	darkColor: '#0F172A',
 	backgroundColor: '#F8FAFC',
 	email: 'hello@ybs.tools',
-	url: 'https://ybstools.com',
+	url: 'https://ybstools.com/',
 } as const;
 
 export const SEO = {
